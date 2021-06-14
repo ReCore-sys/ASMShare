@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Home</title>
+
+    <!--Inter UI font-->
+    <link href="https://rsms.me/inter/inter-ui.css" rel="stylesheet">
+
+    <!--vendors styles-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.min.css">
+
+    <!-- Bootstrap CSS / Color Scheme -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/default.css')}}" id="theme-color">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/cards.css')}}" id="theme-color">
+    <link rel="stylesheet" href="../static/css/cards.css" id="theme-color">
+    <link rel="stylesheet" href="../static/css/default.css" id="theme-color">
+</head>
+<body>
+  <section class="smart-scroll">
+      <div class="container-fluid">
+          <nav class="navbar navbar-expand-md navbar-dark">
+              <a class="navbar-brand heading-black" href="index.html">
+                  ASMShare
+              </a>
+              <button class="navbar-toggler navbar-toggler-right border-0" type="button" data-toggle="collapse"
+                      data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false"
+                      aria-label="Toggle navigation">
+                  <span data-feather="grid"></span>
+              </button>
+          </nav>
+      </div>
+  </section>
+<!--hero header-->
+<section class="py-7 py-md-0 bg-hero" id="home">
+    <div class="container">
+        <div class="row vh-md-100">
+            <div class="col-md-8 col-sm-10 col-12 mx-auto my-auto text-center">
+                <h1 class="heading-black text-capitalize">Welcome</h1>
+                <p class="lead py-3">Pretty empty for now, But I will add stuff I promise</p>
+                <button class="btn btn-primary d-inline-flex flex-row align-items-center" onclick="window.location.href='/'">
+                    Home
+                    <em class="ml-2" data-feather="arrow-right"></em>
+                </button>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- THIS IS THE PART THAT HANDLES THE DISPLAY OF ITEMS -->
+<section>
+  {% for y in cards %}
+  <div class="CardHolder">
+    {% for x in y %}
+    <div class="card" onclick="window.location.href='/items/{{x}}'">
+      <img src={{y[x]["image"]}} class="CardImg">
+      <div class="container">
+        <h4><b>{{x}}</b></h4>
+        <p>{{y[x]["short"]}}</p>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% endfor %}
+</section>
+<!-- theme switcher (FOR DEMO ONLY - REMOVE FROM PRODUCTION)-->
+<div class="switcher-wrap">
+    <div class="switcher-trigger">
+        <span class="fa fa-gear"></span>
+    </div>
+    <div class="color-switcher">
+        <h6>Color Switcher</h6>
+        <ul class="mt-3 clearfix">
+            <li class="bg-teal active" data-color="default" title="Default Teal"></li>
+            <li class="bg-purple" data-color="purple" title="Purple"></li>
+            <li class="bg-blue" data-color="blue" title="Blue"></li>
+            <li class="bg-red" data-color="red" title="Red"></li>
+            <li class="bg-green" data-color="green" title="Green"></li>
+            <li class="bg-indigo" data-color="indigo" title="Indigo"></li>
+            <li class="bg-orange" data-color="orange" title="Orange"></li>
+            <li class="bg-cyan" data-color="cyan" title="Cyan"></li>
+            <li class="bg-yellow" data-color="yellow" title="Yellow"></li>
+            <li class="bg-pink" data-color="pink" title="Pink"></li>
+        </ul>
+        <p>These are just demo colors. You can <b>easily</b> create your own color scheme.</p>
+    </div>
+</div>
+<script src="{{ url_for('static', filename='js/scripts.js')}}"></script>
+
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.7.3/feather.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
+
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+</body>
+</html>

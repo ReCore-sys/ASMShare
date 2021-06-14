@@ -1,0 +1,29 @@
+.UploadField {
+	margin          : auto;
+	width           : 60vw;
+	height          : 60vh;
+	background-color: #3d3d3d;
+	border-radius   : 10px;
+}
+
+.dropzone {
+	color         : #3d3d3d;
+	text-rendering: optimizeLegibility;
+	box-sizing    : border-box;
+	margin        : 0;
+	padding       : 0;
+	border        : 0;
+	font-size     : 100%;
+	font          : inherit;
+	vertical-align: baseline;
+	max-width     : 720px;
+	margin-left   : auto;
+	margin-right  : auto;
+	margin-bottom : 3rem;
+}
+
+.upbutton {
+	margin-left : auto;
+	margin-right: auto;
+	margin-top  : 50wh;
+}
