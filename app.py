@@ -1,3 +1,27 @@
+"""
+READ ME YOU FOOL
+
+Ok so here is where you will learn how to help me with this. This will assume 0 prior knowledge of how to code a website or how to use python.
+
+We are using a nice bit of code called Flask to make our site. It runs on python (My language of choice) to make websites. Pretty much, it gets .html files and displays them. It also does a load of other funky stuff, but we will deal with that later.
+
+So just some simple stuff first.
+Anything in a line with a hash (#) is a comment. It does not affect the code in any way and is just used for explaining stuff.
+Anything inside 3 quotation marks (Like this big lump of text) is also a comment. This is called a multi-line comment.
+Nice and easy.
+
+Now, that only matters for python files (a file ending in .py).
+There are going to be 3 other types of files we will mostly be dealing with.
+In .html files, a comment is anything inside a <!-- comment -->. These can be over multiple lines.
+In .css files a comment can be created with /* comment */. Again, multiple lines are fine.
+.js comments can either be // (Single line) or /* comment */ (Multi line)
+
+
+
+
+
+
+"""
 # //////////////////////////////////////////////////////////////////////////// #
 
 # IMPORT EVERYTHING
@@ -141,15 +165,22 @@ def fourohsixpage():
 
 @app.errorhandler(500)
 def fivehundred(e):
-    print("+" * 20)
-    print(e)
-    print("+" * 20)
     return render_template('errors/500.html'), 500
 
 
 @app.route("/500")
 def fivehundredpage():
     return render_template('errors/500.html')
+
+
+@app.errorhandler(553)
+def fivethreethree(e):
+    return render_template('errors/553.html'), 553
+
+
+@app.route("/553")
+def fivethreethreepage():
+    return render_template('errors/553.html')
 
 
 @app.errorhandler(408)
@@ -251,11 +282,6 @@ def home():
         return render_template('loginredir.html')
 
 
-@app.route("/UhOh.jpg")
-def bademail():
-    return render_template('loginInvalid.html')
-
-
 @app.route('/items/<item>')
 def some_place_page(item):
     if item in cards:
@@ -325,7 +351,10 @@ def callback():
         users_email = userinfo_response.json()["email"]
         picture = userinfo_response.json()["picture"]
         users_name = userinfo_response.json()["given_name"]
-        if "@asms.sa.edu.au" in users_email:
+        print("-" * 20)
+        print(userinfo_response.json())
+        print("-" * 20)
+        if userinfo_response.json()["hd"] == "asms.sa.edu.au":
             user = User(
                 id_=unique_id, name=users_name, email=users_email, profile_pic=picture
             )
@@ -335,9 +364,9 @@ def callback():
             login_user(user)
             return redirect(url_for("home"))
         else:
-            return redirect(url_for("bademail"))
+            return redirect(url_for("fivethreethree"))
     else:
-        return "User email not available or not verified by Google.", 400
+        return "User email not available or not verified by Google.", 553
 
 
 @app.route('/upload')
@@ -349,9 +378,27 @@ def upload():
 def success():
     if request.method == 'POST':
         f = request.files['file']
+        # //////////////////////////////////////////////////////////////////////////// #
+
+        # Details
+
+        # //////////////////////////////////////////////////////////////////////////// #
+        z = {}
+        z["time"] = time.time()
+        z["uploader"] = users_name
+        z["name"] = f.filename
+        # //////////////////////////////////////////////////////////////////////////// #
+
+        # Details
+
+        # //////////////////////////////////////////////////////////////////////////// #
+
         f.save(f"{app.config['UPLOAD_PATH']}/{f.filename}")
         return redirect(url_for("index"))
 
 
 if __name__ == "__main__":
-    app.run(ssl_context="adhoc", threaded=True, use_reloader=True)
+    app.run(ssl_context="adhoc",  # ssl go brrrt
+            threaded=True,  # cos fast
+            use_reloader=True  # I don't even use this but eh
+            )

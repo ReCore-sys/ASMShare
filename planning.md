@@ -3,6 +3,7 @@
 ## Ideas:
 * SQL database for individual files. Use that to store data like name, description and stuff like that. Also store file location. That, or just pull the name from it and match to the files directory
 * Use PIL to turn PDF files into images for thumbnails. If the file is an image, just use that as a thumbnail. If any other type, get a stylized version of it's file thumbnail (Adobe Illustrator go brrrt) as the site thumbnail. If I can, turn .docx files into an image as well.
+* For people's accounts, add a way to do custom names. That way NB people can change theirs. Make it default to their google one but you can change it.
 
 
 ## Drafting ideas
