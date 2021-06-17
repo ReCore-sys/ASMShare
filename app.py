@@ -72,31 +72,55 @@ My solution: Host a very basic HTTP server on the same address in a different th
 some_thread = threading.Thread(target=startserve)
 some_thread.start()
 
+# //////////////////////////////////////////////////////////////////////////// #
+
+# Flask config
+
+# //////////////////////////////////////////////////////////////////////////// #
+
 
 app = Flask(__name__)
 app.config['MINIFY_HTML'] = True
 app.config['UPLOAD_PATH'] = f"{filepath}/files/"
 app.config['MAX_CONTENT_LENGTH'] = 50 * 1024 * 1024
+app.config['TESTING'] = False
 
 htmlmin = HTMLMIN(app)
-# I don't really need this, but it makes the code look more professional
-
-# //////////////////////////////////////////////////////////////////////////// #
-
-# Keys are called from the secrets file, for good reason
-
-# //////////////////////////////////////////////////////////////////////////// #
 
 login_manager = LoginManager()
 login_manager.init_app(app)
+login_manager.login_view = 'login'
 client = WebApplicationClient(GOOGLE_CLIENT_ID)
 app.secret_key = appkey
+
+# //////////////////////////////////////////////////////////////////////////// #
+
+# SQL config
+
+# //////////////////////////////////////////////////////////////////////////// #
 
 try:
     init_db_command()
 except sqlite3.OperationalError:
     # Assume it's already been created
     pass
+
+
+db = sqlite3.connect("database.db")
+cursor = db.cursor()
+
+try:
+    cursor.execute("CREATE TABLE filemapping (name TEXT, shortdesc TEXT, longdesc TEXT, uploader TEXT, subject TEXT, tags TEXT, time TIME);")
+except:
+    pass
+db.commit()
+db.close()
+
+# //////////////////////////////////////////////////////////////////////////// #
+
+# Varibles definition
+
+# //////////////////////////////////////////////////////////////////////////// #
 
 # region 404 errors
 fourohfour = ["Welp. This is awkward",
@@ -119,6 +143,7 @@ fourohfour = ["Welp. This is awkward",
               ]
 
 random.shuffle(fourohfour)
+
 
 c = 0
 
@@ -171,11 +196,6 @@ def fivehundred(e):
 @app.route("/500")
 def fivehundredpage():
     return render_template('errors/500.html')
-
-
-@app.errorhandler(553)
-def fivethreethree(e):
-    return render_template('errors/553.html'), 553
 
 
 @app.route("/553")
@@ -274,14 +294,13 @@ def index():
 
 
 @app.route("/home")
+@login_required
 def home():
     """Home page for user"""
-    if current_user.is_authenticated:
-        return render_template('land.html', cards=shred(cards, 4))
-    else:
-        return render_template('loginredir.html')
+    return render_template('land.html', cards=shred(cards, 4))
 
 
+@login_required
 @app.route('/items/<item>')
 def some_place_page(item):
     if item in cards:
@@ -290,13 +309,16 @@ def some_place_page(item):
         return render_template('errors/404.html', message=notfoundmessage()), 404
 
 
-@app.route("/logout")
 @login_required
+@app.route("/logout")
 def logout():
     logout_user()
     return redirect(url_for("index"))
 
+# even i don't know what the next few bits do. google auth is a pain
 
+
+@login_manager.unauthorized_handler
 @app.route("/login")
 def login():
     # Find out what URL to hit for Google login
@@ -364,11 +386,12 @@ def callback():
             login_user(user)
             return redirect(url_for("home"))
         else:
-            return redirect(url_for("fivethreethree"))
+            return redirect(url_for("fivethreethreepage"))
     else:
-        return "User email not available or not verified by Google.", 553
+        return "User email not available or not verified by Google.", 400
 
 
+@login_required
 @app.route('/upload')
 def upload():
     return render_template("upload.html")
@@ -378,27 +401,14 @@ def upload():
 def success():
     if request.method == 'POST':
         f = request.files['file']
-        # //////////////////////////////////////////////////////////////////////////// #
-
-        # Details
-
-        # //////////////////////////////////////////////////////////////////////////// #
-        z = {}
-        z["time"] = time.time()
-        z["uploader"] = users_name
-        z["name"] = f.filename
-        # //////////////////////////////////////////////////////////////////////////// #
-
-        # Details
-
-        # //////////////////////////////////////////////////////////////////////////// #
-
+        db = sqlite3.connect("database.db")
+        cursor = db.cursor()
+        cursor.execute(f'INSERT INTO filemapping VALUES (?, ?, ?, ?, ?, ?, time())',
+                       (f.filename, "example1", "example2", current_user.name, "example3", "example4"))
+        db.commit()
         f.save(f"{app.config['UPLOAD_PATH']}/{f.filename}")
         return redirect(url_for("index"))
 
 
 if __name__ == "__main__":
-    app.run(ssl_context="adhoc",  # ssl go brrrt
-            threaded=True,  # cos fast
-            use_reloader=True  # I don't even use this but eh
-            )
+    app.run(ssl_context="adhoc")

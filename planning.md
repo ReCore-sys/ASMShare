@@ -4,8 +4,7 @@
 * SQL database for individual files. Use that to store data like name, description and stuff like that. Also store file location. That, or just pull the name from it and match to the files directory
 * Use PIL to turn PDF files into images for thumbnails. If the file is an image, just use that as a thumbnail. If any other type, get a stylized version of it's file thumbnail (Adobe Illustrator go brrrt) as the site thumbnail. If I can, turn .docx files into an image as well.
 * For people's accounts, add a way to do custom names. That way NB people can change theirs. Make it default to their google one but you can change it.
-
-
-## Drafting ideas
-* Drafts can be uploaded. You can provide feedback on a draft. It will only be visible to the person who submitted it. Pretty simple.
-* Maybe a rep system? You can earn rep by drafting. Good feedback will get you rep and bad will make you lose rep. The higher your rep is, the higher on the display list your submissions are. So the more you provide, the more likely you are to have your draft seen. It could also cost rep to submit a draft. If your rep is in the negatives, you can't submit feedback (So you can't earn any rep) but your rep will go up by ```x``` amount every ```y```
+* Searching is gunna be a pain. The best I can do is run fuzzy search against each criteria. The higher on the list each item is, the more "search points" it gets. Run this on all the criteria, then display items based on its search points.<br>
+Or, compile all the criteria into a string (example: `"name-shortdesc-longdesc-subject-tags"`) and fuzzy search that. Not sure about the sensitivity of fuzzy search tho. If it's too low, it won't pick up the stuff.
+* <strong> FOR THE LOVE OF GOD ENCODE ALL FILE NAMES TO BASE 64</strong><br>
+No but for real, if you don't I will slap you so hard your grandkids will get a hand mark on their face 

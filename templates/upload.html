@@ -20,13 +20,36 @@
 		<link rel="stylesheet" href="{{ url_for('static', filename='css/upload.css')}}" id="theme-color">
 	</head>
 	<body>
+		<div class="UploadField">
+			<form action="/success" method="post" enctype="multipart/form-data" class="form-container">
 
-		<!--hero header-->
-		<div class="UploadField dropzone">
-			<form action="/success" method="post" enctype="multipart/form-data">
-				<input type="file" name="file" class="btn btn-primary d-inline-flex align-items-center upbutton"/>
-				<input type="submit" value="Upload" class="btn btn-primary d-inline-flex align-items-center upbutton">
-				<script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.1/min/dropzone.min.js"></script>
+				<section class="filearea formpart outline">
+					<input type="file" name="file" class="btn btn-primary subbutton" required="true">
+				</section>
+
+				<div class="centrebuttons">
+					<section class="subjectarea formpart inline">
+						<label for="subject" class="btn btn-primary upbutton">Subject</label>
+						<input type="text" name="subject" class="btn subjectarea upbutton" required="true">
+					</section>
+					<section class="shortarea formpart inline">
+						<label for="short" class="btn btn-primary upbutton">Short description</label>
+						<input type="text" name="short" class="btn shortarea upbutton" required="true">
+					</section>
+					<section class="longarea formpart inline">
+						<label for="long" class="btn btn-primary upbutton">long description</label>
+						<input type="text" name="long" class="btn longarea upbutton" required="true">
+					</section>
+					<section class="tagarea formpart inline">
+						<label for="tags" class="btn btn-primary upbutton">Tags (comma seperated)</label>
+						<input type="text" name="tags" class="btn tagarea upbutton" required="true">
+					</section>
+				</div>
+
+				<section class="submitarea formpart outline">
+					<input type="submit" value="Upload" class="btn btn-primary subbutton">
+				</section>
+
 			</form>
 		</div>
 	</section>

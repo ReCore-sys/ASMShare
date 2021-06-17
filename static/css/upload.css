@@ -4,6 +4,8 @@
 	height          : 60vh;
 	background-color: #3d3d3d;
 	border-radius   : 10px;
+	margin-left     : auto;
+	margin-right    : auto;
 }
 
 .dropzone {
@@ -14,10 +16,49 @@
 	border        : 0;
 	font-size     : 100%;
 	font          : inherit;
-	vertical-align: baseline;
+	vertical-align: center;
 	max-width     : 720px;
 	margin-left   : auto;
 	margin-right  : auto;
+	margin-top    : auto;
 }
 
-.upbutton {}
+.upbutton {
+	display     : block;
+	margin-left : 2vh;
+	margin-right: 2vh;
+	margin-top  : auto;
+	width       : 26vw;
+	text-align  : center;
+}
+
+.formpart {
+	margin-bottom: 5vh;
+	width        : auto;
+	text-align   : center;
+}
+
+.inline {
+	display     : inline-block;
+	margin-left : auto;
+	margin-right: auto;
+}
+
+.outline {
+	display     : block;
+	margin-left : auto;
+	margin-right: auto;
+}
+
+.centrebuttons {
+	margin-left : auto;
+	margin-right: auto;
+	display     : block;
+}
+
+.form-container {
+	max-height  : 50vh;
+	padding     : 3vh;
+	margin-left : auto;
+	margin-right: auto;
+}
