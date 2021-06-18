@@ -36,6 +36,8 @@ import sqlite3
 import sys
 import threading
 import time
+import urllib
+from base64 import b64decode, b64encode
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 from secrets import *
 
@@ -46,6 +48,7 @@ from flask import *
 from flask_htmlmin import HTMLMIN
 from flask_login import (LoginManager, UserMixin, current_user, login_required,
                          login_user, logout_user)
+from loguru import logger as log
 from oauthlib.oauth2 import WebApplicationClient
 from user import User
 from werkzeug.utils import secure_filename
@@ -83,13 +86,12 @@ app = Flask(__name__)
 app.config['MINIFY_HTML'] = True
 app.config['UPLOAD_PATH'] = f"{filepath}/files/"
 app.config['MAX_CONTENT_LENGTH'] = 50 * 1024 * 1024
-app.config['TESTING'] = False
 
 htmlmin = HTMLMIN(app)
 
 login_manager = LoginManager()
 login_manager.init_app(app)
-login_manager.login_view = 'login'
+# login_manager.login_view = 'login'
 client = WebApplicationClient(GOOGLE_CLIENT_ID)
 app.secret_key = appkey
 
@@ -285,8 +287,10 @@ def load_user(user_id):
 
 
 @app.route("/")
+@log.catch
 def index():
     """Main Page"""
+    print(current_user)
     if current_user.is_authenticated:
         return render_template('index.html', redir="/home", logged=f"Logged In: {current_user.name}")
     else:
@@ -300,8 +304,8 @@ def home():
     return render_template('land.html', cards=shred(cards, 4))
 
 
-@login_required
 @app.route('/items/<item>')
+@login_required
 def some_place_page(item):
     if item in cards:
         return render_template('cardview.html', card=cards[item])
@@ -309,8 +313,8 @@ def some_place_page(item):
         return render_template('errors/404.html', message=notfoundmessage()), 404
 
 
-@login_required
 @app.route("/logout")
+@login_required
 def logout():
     logout_user()
     return redirect(url_for("index"))
@@ -336,6 +340,8 @@ def login():
 
 
 @app.route("/login/callback")
+@app.route('/upload/callback')
+@app.route('/home/callback')
 def callback():
     # Get authorization code Google sent back to you
     code = request.args.get("code")
@@ -391,8 +397,8 @@ def callback():
         return "User email not available or not verified by Google.", 400
 
 
-@login_required
 @app.route('/upload')
+@login_required
 def upload():
     return render_template("upload.html")
 
@@ -401,11 +407,14 @@ def upload():
 def success():
     if request.method == 'POST':
         f = request.files['file']
+        fname = urllib.parse.quote_plus(f.filename)
+        form = request.form
         db = sqlite3.connect("database.db")
         cursor = db.cursor()
         cursor.execute(f'INSERT INTO filemapping VALUES (?, ?, ?, ?, ?, ?, time())',
-                       (f.filename, "example1", "example2", current_user.name, "example3", "example4"))
+                       (fname, form["short"], form["long"], current_user.name, form["subject"], form["tags"]))
         db.commit()
+        db.close()
         f.save(f"{app.config['UPLOAD_PATH']}/{f.filename}")
         return redirect(url_for("index"))
 
