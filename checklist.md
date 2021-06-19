@@ -1,0 +1,24 @@
+### Stuff to do
+
+- [ ] Implement the fuzzy search
+- [ ] Live type search
+- [ ] Game in an error page
+- [ ] Allow users to download file
+- [ ] Write a better "How to help file"
+- [ ] Clean up code
+- [ ] Add error 500 logger
+- [ ] Require admin to see logs
+- [ ] Users can change their name
+- [ ] Users can change their password
+- [ ] Add a "Report" button to the user page
+- [ ] Add a "Logout" link to the top of every page
+- [ ] Add a "Help" link to the top of every page
+- [ ] Add an about page
+- [ ] Add a credits page
+- [ ] Write documentation for API and other stuffs
+- [ ] Add a "Contribute" button to the top of every page
+- [ ] Add a "Report Bug" button to the top of every page
+- [ ] Add a "Submit Feature Request" button to the top of every page
+- [ ] Add an "About" link to the footer
+- [ ] Add an "API Documentation" link to the footer
+- [ ] Add a "Change Log" link to the footer

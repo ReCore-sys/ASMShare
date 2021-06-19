@@ -38,6 +38,7 @@ import threading
 import time
 import urllib
 from base64 import b64decode, b64encode
+from datetime import datetime
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 from secrets import *
 
@@ -48,8 +49,8 @@ from flask import *
 from flask_htmlmin import HTMLMIN
 from flask_login import (LoginManager, UserMixin, current_user, login_required,
                          login_user, logout_user)
-from loguru import logger as log
 from oauthlib.oauth2 import WebApplicationClient
+from pdf2image import convert_from_bytes, convert_from_path
 from user import User
 from werkzeug.utils import secure_filename
 
@@ -101,19 +102,15 @@ app.secret_key = appkey
 
 # //////////////////////////////////////////////////////////////////////////// #
 
-try:
-    init_db_command()
-except sqlite3.OperationalError:
-    # Assume it's already been created
-    pass
-
 
 db = sqlite3.connect("database.db")
 cursor = db.cursor()
 
 try:
-    cursor.execute("CREATE TABLE filemapping (name TEXT, shortdesc TEXT, longdesc TEXT, uploader TEXT, subject TEXT, tags TEXT, time TIME);")
+    # try create the database if it does not exist
+    cursor.execute("CREATE TABLE filemapping (name TEXT, shortdesc TEXT, longdesc TEXT, uploader TEXT, subject TEXT, tags TEXT, time TIME, score INT);")
 except:
+    # looks like it does exist
     pass
 db.commit()
 db.close()
@@ -151,18 +148,76 @@ c = 0
 
 # //////////////////////////////////////////////////////////////////////////// #
 
-# Errors
+# Helper functions
 
 # //////////////////////////////////////////////////////////////////////////// #
 
 
+def log(message, level=2):
+    """Logs input to a file
+
+     Parameters
+     ----------
+     message : str
+     The message to log
+
+     Level : int
+     What level of logging to use
+     """
+    with open(f"{filepath}/logs", mode="a") as f:
+        f.write(f"\n{(datetime.now()).strftime('%d/%m/%Y- %I:%M:%S %p')}: {message}")
+
+
 def notfoundmessage():
+    """Loops through the list of 404 messages"""
     global c
     message = fourohfour[c]
     c += 1
     if c == len(fourohfour):
         c = 0
     return message
+
+
+def shred(d, n=2):
+    """Custom function to split a dict into a list of dicts
+
+     Parameters
+     ----------
+     d : dict
+     The dictionary to split
+
+     n : int
+     How many dictionaries per chunk in the list
+
+     Returns
+     -------
+     y: list
+     The list cut into parts with n length
+
+     Examples
+     --------
+     >>> shred({key1: result1, key2: result2, key3: result3, key4: result4}, 2)
+     > [{key1: result1, key2: result2}, {key3: result3, key4: result4}]"""
+    c = 0
+    y = []
+    g = {}
+    for x in d:
+        g[x] = d[x]
+        c = c + 1
+        if c == n:
+            y.append(g)
+            g = {}
+            c = 0
+    if g != {}:
+        y.append(g)
+    return y
+
+
+# //////////////////////////////////////////////////////////////////////////// #
+
+# Errors
+
+# //////////////////////////////////////////////////////////////////////////// #
 
 
 @app.errorhandler(404)
@@ -231,63 +286,93 @@ def fourhundredpage():
 # //////////////////////////////////////////////////////////////////////////// #
 
 
-def shred(d, n=2):
-    """Custom function to split a dict into a list of dicts
+def findfileicon(filename):
+    """File icon finder
 
      Parameters
      ----------
-     d : dict
-     The dictionary to split
-
-     n : int
-     How many dictionaries per chunk in the list
+     File name : str
+     The name of the file to get the icon for
 
      Returns
      -------
-     y: list
-     The list cut into parts with n length
+     path to icon: str
+     Path to the icon to use
 
      Examples
      --------
-     >>> shred({key1: result1, key2: result2, key3: result3, key4: result4}, 2)
-     > [{key1: result1, key2: result2}, {key3: result3, key4: result4}]"""
-    c = 0
-    y = []
-    g = {}
-    for x in d:
-        g[x] = d[x]
-        c = c + 1
-        if c == n:
-            y.append(g)
-            g = {}
-            c = 0
-    if g != {}:
-        y.append(g)
-    return y
+     >>> file.docx
+     > http://127.0.0.1:5001/static/file-images/docxjpg"""
+    ext = filename.split(".")[1]
+    # if the file is an image, just use the image
+    if ext in ["jpg", "png", "jpeg", "gif", "svg", "webp", "bmp"]:
+        fileicon = r"""http://127.0.0.1:5001/files/""" + filename
+    # if it is a video, use this format
+    elif ext in ["mov", "mkv", "mp4"]:
+        fileicon = r"""http://127.0.0.1:5001/static/file-images/video.jpg"""
+    # now this is funky. If the file is a pdf, create and show a preview of the file
+    elif ext in ["pdf"]:
+        # only create a preview if it does not exist
+        if (filename + ".jpg") not in os.listdir(f"{filepath}/static/file-images/pdfs"):
+            convert_from_path(f'{filepath}/files/{filename}', output_folder=f"{filepath}/static/file-images/pdfs",
+                              fmt="jpeg", single_file=True, output_file=filename)
+        fileicon = r"""http://127.0.0.1:5001/static/file-images/pdfs/""" + filename + ".jpg"
+    else:
+        # if it fits into none of the above catagories, search for a jpg named the file type (docx.jpg, txt.jpg, ect)
+        if (ext + ".jpg") in os.listdir(f"{filepath}/static/file-images"):
+            fileicon = r"""http://127.0.0.1:5001/static/file-images/""" + ext + ".jpg"
+        else:
+            # if it still can't find it, use a unknown icon
+            fileicon = r"""http://127.0.0.1:5001/static/file-images/unknown.jpg"""
+    return fileicon
 
 
+cards = {}
 imgfolder = r"""http://127.0.0.1:5001/static/file-images/"""
 
-cards = {
-    "example1": {"short": "short demo", "long": "A really long description that goes super in depth into what the assignment was on", "grade": "A+", "subject": "Demonstration", "image": f"{imgfolder}/img1.jpg"},
-    "example2": {"short": "demo", "long": "long description of the demo", "grade": "B-", "subject": "Demonstration", "image": f"{imgfolder}/img2.jpg"},
-    "example3": {"short": "demo", "long": "long description of the demo", "grade": "D+", "subject": "Demonstration", "image": f"{imgfolder}/img3.jpg"},
-    "example4": {"short": "demo", "long": "long description of the demo", "grade": "C", "subject": "Demonstration", "image": f"{imgfolder}/img4.jpg"},
-    "example5": {"short": "demo", "long": "long description of the demo", "grade": "B", "subject": "Demonstration", "image": f"{imgfolder}/img5.jpg"},
-}
+
+def compileimages():
+    """Turns the sql entry for each file into a dictionary so the site can display it"""
+    global cards
+    cards = {}
+    db = sqlite3.connect("database.db")
+    cursor = db.cursor()
+    cursor.execute('SELECT * from filemapping')
+    # loops through all the entries in the db then adds the specified type to the dict
+    for x in cursor.fetchall():
+        # creates the dict entry for the file
+        cards[x[0]] = {}
+        # adds the short description
+        cards[x[0]]["short"] = x[1]
+        # adds the long description
+        cards[x[0]]["long"] = x[2]
+        # adds uploader's name
+        cards[x[0]]["uploader"] = x[3]
+        # subject is added
+        cards[x[0]]["subject"] = x[4]
+        # tags
+        cards[x[0]]["tags"] = x[5]
+        # uses the above function to get/create an image for the thumbnail
+        cards[x[0]]["image"] = findfileicon(x[0])
+    db.close()
 
 
+compileimages()
+
+
+# This is just unholy magic
 def get_google_provider_cfg():
     return requests.get(GOOGLE_DISCOVERY_URL).json()
 
 
-@login_manager.user_loader
+# Even god does not know what this bit does
+@ login_manager.user_loader
 def load_user(user_id):
     return User.get(user_id)
 
 
-@app.route("/")
-@log.catch
+# Main page. If the user is logged in, shows that on the login button and the user's name
+@ app.route("/")
 def index():
     """Main Page"""
     print(current_user)
@@ -297,15 +382,24 @@ def index():
         return render_template('index.html', redir="/login", logged="Log in")
 
 
-@app.route("/home")
-@login_required
+# This will be the main page for logged in users. Will show the exemplars
+@ app.route("/home")
+@ login_required
 def home():
     """Home page for user"""
     return render_template('land.html', cards=shred(cards, 4))
 
 
-@app.route('/items/<item>')
-@login_required
+@ app.route("/rickroll")
+def rickroll():
+    """Home page for user"""
+    return render_template('rickroll.html')
+
+# A full screen view of the examplars
+
+
+@ app.route('/items/<item>')
+@ login_required
 def some_place_page(item):
     if item in cards:
         return render_template('cardview.html', card=cards[item])
@@ -313,17 +407,23 @@ def some_place_page(item):
         return render_template('errors/404.html', message=notfoundmessage()), 404
 
 
-@app.route("/logout")
-@login_required
+# No real use but meh
+@ app.route("/logout")
+@ login_required
 def logout():
     logout_user()
     return redirect(url_for("index"))
 
+
+@ app.route("/logs")
+def logs():
+    with open(f'{filepath}/logs', 'r') as f:
+        return render_template('logs.html', logfile=f.readlines())
+
+
 # even i don't know what the next few bits do. google auth is a pain
-
-
-@login_manager.unauthorized_handler
-@app.route("/login")
+@ login_manager.unauthorized_handler
+@ app.route("/login")
 def login():
     # Find out what URL to hit for Google login
     google_provider_cfg = get_google_provider_cfg()
@@ -339,9 +439,10 @@ def login():
     return redirect(request_uri)
 
 
-@app.route("/login/callback")
-@app.route('/upload/callback')
-@app.route('/home/callback')
+# ALL of the callbacks
+@ app.route("/login/callback")
+@ app.route('/upload/callback')
+@ app.route('/home/callback')
 def callback():
     # Get authorization code Google sent back to you
     code = request.args.get("code")
@@ -390,19 +491,27 @@ def callback():
             if not User.get(unique_id):
                 User.create(unique_id, users_name, users_email, picture)
             login_user(user)
-            return redirect(url_for("home"))
+            log(f"User {current_user.name} {userinfo_response.json()['family_name']} has logged in")
+            hold = random.randint(1, 10000)
+            if hold == 1:
+                # has a 1 in 10000 chance to rickroll the user on login
+                return redirect(url_for("rickroll"))
+            else:
+                return redirect(url_for("home"))
         else:
             return redirect(url_for("fivethreethreepage"))
     else:
         return "User email not available or not verified by Google.", 400
 
 
+# Page where you upload your files
 @app.route('/upload')
 @login_required
 def upload():
     return render_template("upload.html")
 
 
+# If the upload goes well, send it here to actually be stored
 @app.route('/success', methods=['POST'])
 def success():
     if request.method == 'POST':
@@ -411,12 +520,14 @@ def success():
         form = request.form
         db = sqlite3.connect("database.db")
         cursor = db.cursor()
-        cursor.execute(f'INSERT INTO filemapping VALUES (?, ?, ?, ?, ?, ?, time())',
+        cursor.execute(f'INSERT INTO filemapping VALUES (?, ?, ?, ?, ?, ?, time(), 1)',
                        (fname, form["short"], form["long"], current_user.name, form["subject"], form["tags"]))
         db.commit()
         db.close()
-        f.save(f"{app.config['UPLOAD_PATH']}/{f.filename}")
-        return redirect(url_for("index"))
+        f.save(f"{app.config['UPLOAD_PATH']}/{fname}")
+        log(f"User {current_user.name} has uploaded '{fname}'")
+        compileimages()
+        return redirect(url_for("home"))
 
 
 if __name__ == "__main__":

@@ -1,38 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-	<!-- Required meta tags -->
-	<meta charset="utf-8">
-	<meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
-	<title>Why</title>
-	<meta content="Knight is a beautiful Bootstrap 4 template for product landing pages." name="description"><!--Inter UI font-->
-	<link href="https://rsms.me/inter/inter-ui.css" rel="stylesheet"><!--vendors styles-->
-	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-	<link href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css" rel="stylesheet">
-	<link href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.min.css" rel="stylesheet"><!-- Bootstrap CSS / Color Scheme -->
-  <link href="{{ url_for('static', filename='css/fullcard.css')}}" id="theme-color" rel="stylesheet">
-	<link href="../static/css/fullcard.css" id="theme-color" rel="stylesheet">
-</head>
 
-<body>
-  <div class="wrapper">
-    <div class="product-img">
-      <img src={{card["image"]}} height="420" width="327">
-    </div>
-    <div class="product-info">
-      <div class="product-text">
-        <h1>{{card["short"]}}: {{card["grade"]}}</h1>
-        <p>{{card["long"]}}</p>
-      </div>
-      <div class="product-price-btn">
-        <button type="button" style="width: 48;">{{card["subject"]}}</button>
-      </div>
-    </div>
-  </div>
-  <button class="btn" onclick="window.location.href='/home'">
-      Back
-      <em class="ml-2" data-feather="arrow-right"></em>
-  </button>
+	<head>
+		<!-- Required meta tags -->
+		<meta charset="utf-8">
+		<meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+		<title>Why</title>
+		<meta content="Knight is a beautiful Bootstrap 4 template for product landing pages." name="description">
+		<!--Inter UI font-->
+		<link href="https://rsms.me/inter/inter-ui.css" rel="stylesheet">
+		<!--vendors styles-->
+		<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+		<link href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css" rel="stylesheet">
+		<link href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.min.css" rel="stylesheet"><!-- Bootstrap CSS / Color Scheme -->
+		<link href="{{ url_for('static', filename='css/fullcard.css')}}" id="theme-color" rel="stylesheet">
+		<link href="../static/css/fullcard.css" id="theme-color" rel="stylesheet">
+	</head>
 
-</body>
+	<body>
+		<div class="wrapper">
+			<div class="product-img">
+				<img src={{card["image"]}} height="420" width="327">
+			</div>
+			<div class="product-info">
+				<div class="product-text">
+					<h1>{{card["short"]}}: {{card["uploader"]}}</h1>
+					<p>{{card["long"]}}</p>
+				</div>
+				<div class="product-price-btn">
+					<button type="button" style="width: 48;">{{card["subject"]}}</button>
+				</div>
+			</div>
+		</div>
+		<button class="btn" onclick="window.location.href='/home'">
+			Back
+			<em class="ml-2" data-feather="arrow-right"></em>
+		</button>
+
+	</body>
+
 </html>
