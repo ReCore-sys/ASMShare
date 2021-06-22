@@ -28,7 +28,6 @@ In .css files a comment can be created with /* comment */. Again, multiple lines
 
 # //////////////////////////////////////////////////////////////////////////// #
 
-import getpass
 import json
 import os
 import random
@@ -44,11 +43,13 @@ from secrets import *
 
 import flask
 import requests
+import searchhelper
 from db import init_db_command
 from flask import *
 from flask_htmlmin import HTMLMIN
 from flask_login import (LoginManager, UserMixin, current_user, login_required,
                          login_user, logout_user)
+from fuzzywuzzy import fuzz, process
 from oauthlib.oauth2 import WebApplicationClient
 from pdf2image import convert_from_bytes, convert_from_path
 from user import User
@@ -108,7 +109,7 @@ cursor = db.cursor()
 
 try:
     # try create the database if it does not exist
-    cursor.execute("CREATE TABLE filemapping (name TEXT, shortdesc TEXT, longdesc TEXT, uploader TEXT, subject TEXT, tags TEXT, time TIME, score INT);")
+    cursor.execute("CREATE TABLE filemapping (name TEXT, shortdesc TEXT, longdesc TEXT, uploader TEXT, subject TEXT, tags TEXT, time TIME, score INT, veryshort TEXT, id INT);")
 except:
     # looks like it does exist
     pass
@@ -302,33 +303,38 @@ def findfileicon(filename):
      Examples
      --------
      >>> file.docx
-     > http://127.0.0.1:5001/static/file-images/docxjpg"""
-    ext = filename.split(".")[1]
+     > ../static/file-images/docx.jpg"""
+    ext = filename.split(".")[len(filename.split(".")) - 1]
     # if the file is an image, just use the image
     if ext in ["jpg", "png", "jpeg", "gif", "svg", "webp", "bmp"]:
-        fileicon = r"""http://127.0.0.1:5001/files/""" + filename
+        if (filename) not in os.listdir(f"{filepath}/static/file-images/images"):
+            with open(f"{filepath}/files/{filename}", "rb") as f:
+                data = f.read()
+            with open(f"{filepath}/static/file-images/images/{filename}", "wb") as f:
+                f.write(data)
+        fileicon = r"""../static/file-images/images/""" + filename
     # if it is a video, use this format
     elif ext in ["mov", "mkv", "mp4"]:
-        fileicon = r"""http://127.0.0.1:5001/static/file-images/video.jpg"""
+        fileicon = r"""../static/file-images/video.jpg"""
     # now this is funky. If the file is a pdf, create and show a preview of the file
     elif ext in ["pdf"]:
         # only create a preview if it does not exist
         if (filename + ".jpg") not in os.listdir(f"{filepath}/static/file-images/pdfs"):
             convert_from_path(f'{filepath}/files/{filename}', output_folder=f"{filepath}/static/file-images/pdfs",
                               fmt="jpeg", single_file=True, output_file=filename)
-        fileicon = r"""http://127.0.0.1:5001/static/file-images/pdfs/""" + filename + ".jpg"
+        fileicon = r"""../static/file-images/pdfs/""" + filename + ".jpg"
     else:
         # if it fits into none of the above catagories, search for a jpg named the file type (docx.jpg, txt.jpg, ect)
         if (ext + ".jpg") in os.listdir(f"{filepath}/static/file-images"):
-            fileicon = r"""http://127.0.0.1:5001/static/file-images/""" + ext + ".jpg"
+            fileicon = r"""../static/file-images/""" + ext + ".jpg"
         else:
             # if it still can't find it, use a unknown icon
-            fileicon = r"""http://127.0.0.1:5001/static/file-images/unknown.jpg"""
+            fileicon = r"""../static/file-images/unknown.jpg"""
     return fileicon
 
 
 cards = {}
-imgfolder = r"""http://127.0.0.1:5001/static/file-images/"""
+imgfolder = r"""../static/file-images/"""
 
 
 def compileimages():
@@ -341,19 +347,23 @@ def compileimages():
     # loops through all the entries in the db then adds the specified type to the dict
     for x in cursor.fetchall():
         # creates the dict entry for the file
-        cards[x[0]] = {}
+        cards[x[9]] = {}
+        # Data structure is fun (No it's not please help me)
+        cards[x[9]]["name"] = x[0]
         # adds the short description
-        cards[x[0]]["short"] = x[1]
+        cards[x[9]]["short"] = x[1]
         # adds the long description
-        cards[x[0]]["long"] = x[2]
+        cards[x[9]]["long"] = x[2]
         # adds uploader's name
-        cards[x[0]]["uploader"] = x[3]
+        cards[x[9]]["uploader"] = x[3]
         # subject is added
-        cards[x[0]]["subject"] = x[4]
+        cards[x[9]]["subject"] = x[4]
         # tags
-        cards[x[0]]["tags"] = x[5]
+        cards[x[9]]["tags"] = x[5]
         # uses the above function to get/create an image for the thumbnail
-        cards[x[0]]["image"] = findfileicon(x[0])
+        cards[x[9]]["image"] = findfileicon(x[9])
+        # Shorter short description
+        cards[x[9]]["veryshort"] = x[8]
     db.close()
 
 
@@ -383,11 +393,15 @@ def index():
 
 
 # This will be the main page for logged in users. Will show the exemplars
-@ app.route("/home")
+@ app.route("/home", methods=["GET", "POST"])
 @ login_required
 def home():
     """Home page for user"""
-    return render_template('land.html', cards=shred(cards, 4))
+    if request.method == "GET":
+        return render_template('land.html', cards=shred(cards, 4))
+    elif request.method == "POST":
+        query = request.form["query"]
+        return redirect(url_for('search', query=query))
 
 
 @ app.route("/rickroll")
@@ -516,19 +530,40 @@ def upload():
 def success():
     if request.method == 'POST':
         f = request.files['file']
-        fname = urllib.parse.quote_plus(f.filename)
+        ext = (f.filename).split(".")[1]
+        print((f.filename).split(".")[1])
         form = request.form
-        db = sqlite3.connect("database.db")
-        cursor = db.cursor()
-        cursor.execute(f'INSERT INTO filemapping VALUES (?, ?, ?, ?, ?, ?, time(), 1)',
-                       (fname, form["short"], form["long"], current_user.name, form["subject"], form["tags"]))
-        db.commit()
-        db.close()
-        f.save(f"{app.config['UPLOAD_PATH']}/{fname}")
-        log(f"User {current_user.name} has uploaded '{fname}'")
-        compileimages()
-        return redirect(url_for("home"))
+        short = form["short"]
+        fname = form["name"]
+        if len(short) > 35:
+            veryshort = "".join([short[:32]]) + "..."
+        else:
+            veryshort = short
+        if len([fname, form["short"], form["long"], current_user.name, form["subject"], form["tags"]]) == 6:
+            db = sqlite3.connect("database.db")
+            cursor = db.cursor()
+            cursor.execute("select id from filemapping")
+            usedids = [x[0] for x in cursor.fetchall()]
+            tryid = random.randint(int("1" + ("0" * 5)), int("9" * 6))
+            while tryid in usedids:
+                tryid = random.randint(int("1" + ("0" * 5)), int("9" * 6))
+            # name TEXT, shortdesc TEXT, longdesc TEXT, uploader TEXT, subject TEXT, tags TEXT, time TIME, score INT, veryshort TEXT, id INT
+            cursor.execute(f'INSERT INTO filemapping VALUES (?, ?, ?, ?, ?, ?, time(), 1, ?, ?)',
+                           (fname, short, form["long"], current_user.name, form["subject"], form["tags"], veryshort, f"{tryid}.{ext}"))
+            db.commit()
+            db.close()
+            f.save(f"{app.config['UPLOAD_PATH']}/{tryid}.{ext}")
+            log(f"User {current_user.name} has uploaded '{fname}' ({tryid})")
+            compileimages()
+            return redirect(url_for("home"))
+
+
+@app.route("/search/<query>")
+def search(query):
+    # So I wrote a custom function here to evaluate and order the options. I imported it from another file so go check out the searchhelper.py file to see how it works
+    results = searchhelper.search(cards, query)
+    return render_template("search.html", results=results, query=query)
 
 
 if __name__ == "__main__":
-    app.run(ssl_context="adhoc")
+    app.run(ssl_context="adhoc", host="0.0.0.0")

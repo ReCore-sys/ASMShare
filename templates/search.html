@@ -18,14 +18,15 @@
 		<!-- Bootstrap CSS / Color Scheme -->
 		<link rel="stylesheet" href="{{ url_for('static', filename='css/default.css')}}" id="theme-color">
 		<link rel="stylesheet" href="{{ url_for('static', filename='css/cards.css')}}" id="theme-color">
-		<link rel="stylesheet" href="{{ url_for('static', filename='css/search.css')}}" id="theme-color">
+		<link rel="stylesheet" href="../static/css/cards.css" id="theme-color">
+		<link rel="stylesheet" href="../static/css/default.css" id="theme-color">
 	</head>
 
 	<body>
 		<section class="smart-scroll">
 			<div class="container-fluid">
 				<nav class="navbar navbar-expand-md navbar-dark">
-					<a class="navbar-brand heading-black" href="/">
+					<a class="navbar-brand heading-black" href="index.html">
 						ASMShare
 					</a>
 					<button class="navbar-toggler navbar-toggler-right border-0" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
@@ -39,48 +40,29 @@
 			<div class="container">
 				<div class="row vh-md-100">
 					<div class="col-md-8 col-sm-10 col-12 mx-auto my-auto text-center">
-						<h1 class="heading-black text-capitalize">Welcome</h1>
+						<h1 class="heading-black text-capitalize">{{query}}</h1>
 						<p class="lead py-3">Pretty empty for now, But I will add stuff I promise</p>
 						<button class="btn btn-primary d-inline-flex flex-row align-items-center" onclick="window.location.href='/upload'">
 							Upload
 							<em class="ml-2" data-feather="arrow-right"></em>
 						</button>
 					</div>
-
-					<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-					<input id="post_id" class="searchbar" type="text">
-
-					<a id="link" class="searchbutton" href="#">Go</a>
-					<!--
-          Look, I don't want to use jQuery either, but here we are. If someone wants to convert this to regular js, go for it
-          -->
-					<script>
-						$("input#post_id").on("change", function() { // Whenever this field changes
-
-							var post_id = $("input#post_id").val(); // Get the value of the field
-
-							$("a#link").attr("href", "search/" + post_id); // Update the href in the link to match the id inserted in the input field
-
-						});
-					</script>
 				</div>
 			</div>
 		</section>
 		<!-- THIS IS THE PART THAT HANDLES THE DISPLAY OF ITEMS -->
 		<section>
-			{% for y in cards %}
+			{% for x in results %}
 			<div class="CardHolder">
-				{% for x in y %}
 				<div class="card" onclick="window.location.href='/items/{{x}}'">
-					<img src={{(y[x]["image"])}} class="CardImg">
+					<img src={{results[x]["image"]}} class="CardImg">
 					<div class="container">
 						<h4>
-							<b>{{y[x]["name"]}}</b>
+							<b>{{results[x]["name"]}}</b>
 						</h4>
-						<p>{{y[x]["veryshort"]}}</p>
+						<p>{{results[x]["short"]}}</p>
 					</div>
 				</div>
-				{% endfor %}
 			</div>
 			{% endfor %}
 		</section>
@@ -88,12 +70,11 @@
 
 		</div>
 
-
+		<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.7.3/feather.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
-
 
 		<!-- jQuery first, then Popper.js, then Bootstrap JS -->
 	</body>

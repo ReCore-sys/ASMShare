@@ -1,26 +1,11 @@
 .UploadField {
-	margin-top      : 20vh;
+	margin-top      : 5vh;
 	width           : 60vw;
-	height          : 60vh;
+	height          : 90vh;
 	background-color: #3d3d3d;
 	border-radius   : 10px;
 	margin-left     : auto;
 	margin-right    : auto;
-}
-
-.dropzone {
-	color         : #3d3d3d;
-	text-rendering: optimizeLegibility;
-	box-sizing    : border-box;
-	padding       : 0;
-	border        : 0;
-	font-size     : 100%;
-	font          : inherit;
-	vertical-align: center;
-	max-width     : 720px;
-	margin-left   : auto;
-	margin-right  : auto;
-	margin-top    : auto;
 }
 
 .upbutton {
@@ -36,6 +21,7 @@
 	margin-bottom: 5vh;
 	width        : auto;
 	text-align   : center;
+	display      : block;
 }
 
 .inline {
@@ -60,5 +46,20 @@
 	max-height  : 50vh;
 	padding     : 3vh;
 	margin-left : auto;
+	margin-right: auto;
+}
+
+.longarea {
+	width      : 54.4vw;
+	margin-left: 0.5vw;
+}
+
+.longinput {
+	height: 15vh;
+}
+
+.tagarea {
+	margin-left : auto;
+	display     : block;
 	margin-right: auto;
 }
