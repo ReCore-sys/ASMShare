@@ -323,11 +323,16 @@ def findfileicon(filename):
         fileicon = r"""../static/file-images/video.jpg"""
     # now this is funky. If the file is a pdf, create and show a preview of the file
     elif ext in ["pdf"]:
-        # only create a preview if it does not exist
-        if (filename + ".jpg") not in os.listdir(f"{filepath}/static/file-images/pdfs"):
-            convert_from_path(f'{filepath}/files/{filename}', output_folder=f"{filepath}/static/file-images/pdfs",
-                              fmt="jpeg", single_file=True, output_file=filename)
-        fileicon = r"""../static/file-images/pdfs/""" + filename + ".jpg"
+        # Stick it inside a try cos someone is gunna upload a .exe after renaming it to a .pdf (Duncan I'm looking at you)
+        try:
+            # only create a preview if it does not exist
+            if (filename + ".jpg") not in os.listdir(f"{filepath}/static/file-images/pdfs"):
+                convert_from_path(f'{filepath}/files/{filename}', output_folder=f"{filepath}/static/file-images/pdfs",
+                                  fmt="jpeg", single_file=True, output_file=filename)
+            fileicon = r"""../static/file-images/pdfs/""" + filename + ".jpg"
+        # if the library nopes out, just keep going and use the normal pdf icon
+        except:
+            pass
     else:
         # if it fits into none of the above catagories, search for a jpg named the file type (docx.jpg, txt.jpg, ect)
         if (ext + ".jpg") in os.listdir(f"{filepath}/static/file-images"):
@@ -560,7 +565,7 @@ def success():
         short = form["short"]
         fname = form["name"]
 
-        # If the short description if over 35 character, only add the first 32 and then add a "..." on the end
+        # If the short description if over 35 characters, only add the first 32 and then add a "..." on the end
         if len(short) > 35:
             veryshort = "".join([short[:32]]) + "..."
         else:
