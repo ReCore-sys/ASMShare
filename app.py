@@ -93,7 +93,6 @@ htmlmin = HTMLMIN(app)
 
 login_manager = LoginManager()
 login_manager.init_app(app)
-# login_manager.login_view = 'login'
 client = WebApplicationClient(GOOGLE_CLIENT_ID)
 app.secret_key = appkey
 
@@ -282,7 +281,7 @@ def fourhundredpage():
 
 # //////////////////////////////////////////////////////////////////////////// #
 
-# End errors
+# Function to get the thumbnail for a file type
 
 # //////////////////////////////////////////////////////////////////////////// #
 
@@ -304,14 +303,20 @@ def findfileicon(filename):
      --------
      >>> file.docx
      > ../static/file-images/docx.jpg"""
+
     ext = filename.split(".")[len(filename.split(".")) - 1]
     # if the file is an image, just use the image
     if ext in ["jpg", "png", "jpeg", "gif", "svg", "webp", "bmp"]:
+        # I would just return the path to the file, but noooooooo, flask has to be special, so instead we clone it to the directory with the rest of the stuff
+        # First we check if the file is already there cos why not
         if (filename) not in os.listdir(f"{filepath}/static/file-images/images"):
+            # Copy the binary data and save to f the variable f
             with open(f"{filepath}/files/{filename}", "rb") as f:
                 data = f.read()
+            # Now go write f to a new file with the same name in the static directory
             with open(f"{filepath}/static/file-images/images/{filename}", "wb") as f:
                 f.write(data)
+        # Now return the path to the new file
         fileicon = r"""../static/file-images/images/""" + filename
     # if it is a video, use this format
     elif ext in ["mov", "mkv", "mp4"]:
@@ -335,6 +340,12 @@ def findfileicon(filename):
 
 cards = {}
 imgfolder = r"""../static/file-images/"""
+
+# //////////////////////////////////////////////////////////////////////////// #
+
+# Recompiles the cards (Call whenever db gets updated)
+
+# //////////////////////////////////////////////////////////////////////////// #
 
 
 def compileimages():
@@ -376,13 +387,19 @@ def get_google_provider_cfg():
 
 
 # Even god does not know what this bit does
-@ login_manager.user_loader
+@login_manager.user_loader
 def load_user(user_id):
     return User.get(user_id)
 
+# //////////////////////////////////////////////////////////////////////////// #
+
+# Page functions
+
+# //////////////////////////////////////////////////////////////////////////// #
+
 
 # Main page. If the user is logged in, shows that on the login button and the user's name
-@ app.route("/")
+@app.route("/")
 def index():
     """Main Page"""
     print(current_user)
@@ -393,8 +410,8 @@ def index():
 
 
 # This will be the main page for logged in users. Will show the exemplars
-@ app.route("/home", methods=["GET", "POST"])
-@ login_required
+@app.route("/home", methods=["GET", "POST"])
+@login_required
 def home():
     """Home page for user"""
     if request.method == "GET":
@@ -404,16 +421,15 @@ def home():
         return redirect(url_for('search', query=query))
 
 
-@ app.route("/rickroll")
+@app.route("/rickroll")
 def rickroll():
-    """Home page for user"""
     return render_template('rickroll.html')
 
 # A full screen view of the examplars
 
 
-@ app.route('/items/<item>')
-@ login_required
+@app.route('/items/<item>')
+@login_required
 def some_place_page(item):
     if item in cards:
         return render_template('cardview.html', card=cards[item])
@@ -422,22 +438,22 @@ def some_place_page(item):
 
 
 # No real use but meh
-@ app.route("/logout")
-@ login_required
+@app.route("/logout")
+@login_required
 def logout():
     logout_user()
     return redirect(url_for("index"))
 
 
-@ app.route("/logs")
+@app.route("/logs")
 def logs():
     with open(f'{filepath}/logs', 'r') as f:
         return render_template('logs.html', logfile=f.readlines())
 
 
 # even i don't know what the next few bits do. google auth is a pain
-@ login_manager.unauthorized_handler
-@ app.route("/login")
+@login_manager.unauthorized_handler
+@app.route("/login")
 def login():
     # Find out what URL to hit for Google login
     google_provider_cfg = get_google_provider_cfg()
@@ -454,9 +470,9 @@ def login():
 
 
 # ALL of the callbacks
-@ app.route("/login/callback")
-@ app.route('/upload/callback')
-@ app.route('/home/callback')
+@app.route("/login/callback")
+@app.route('/upload/callback')
+@app.route('/home/callback')
 def callback():
     # Get authorization code Google sent back to you
     code = request.args.get("code")
@@ -528,33 +544,66 @@ def upload():
 # If the upload goes well, send it here to actually be stored
 @app.route('/success', methods=['POST'])
 def success():
+    # Oh boy, this one is gunna be a pain to explain
+
+    # We assume the request will be a GET request. If not, idk. I'll deal with that later
     if request.method == 'POST':
+
+        # Assign the file to the variable f. I'm not sure what data type this is, but I assume binary
         f = request.files['file']
-        ext = (f.filename).split(".")[1]
-        print((f.filename).split(".")[1])
+
+        # Split the name at the last . to get the file extension. This is to make sure we ignore any other .'s in tha name
+        ext = (f.filename).split(".")[len((f.filename).split(".")) - 1]
         form = request.form
+
+        # get the short description and name from the form, then assign them to their own variables. I should probs do it with the rest but eh
         short = form["short"]
         fname = form["name"]
+
+        # If the short description if over 35 character, only add the first 32 and then add a "..." on the end
         if len(short) > 35:
             veryshort = "".join([short[:32]]) + "..."
         else:
+
+            # If the short description is not, leave it as it is
             veryshort = short
+
+        # Honestly I don't know why I have this. So far it hasn't caused any issues so I'll leave it
         if len([fname, form["short"], form["long"], current_user.name, form["subject"], form["tags"]]) == 6:
+
+            # SQL stuff
             db = sqlite3.connect("database.db")
             cursor = db.cursor()
+
+            # get all the ids from the database
             cursor.execute("select id from filemapping")
+
+            # add em to a list
             usedids = [x[0] for x in cursor.fetchall()]
+
+            # Create a random 6 digit number to assign to the upload
             tryid = random.randint(int("1" + ("0" * 5)), int("9" * 6))
+
+            # If the id is already in the database, try again
             while tryid in usedids:
                 tryid = random.randint(int("1" + ("0" * 5)), int("9" * 6))
-            # name TEXT, shortdesc TEXT, longdesc TEXT, uploader TEXT, subject TEXT, tags TEXT, time TIME, score INT, veryshort TEXT, id INT
+
+            # Add all the stuff the the database
             cursor.execute(f'INSERT INTO filemapping VALUES (?, ?, ?, ?, ?, ?, time(), 1, ?, ?)',
                            (fname, short, form["long"], current_user.name, form["subject"], form["tags"], veryshort, f"{tryid}.{ext}"))
             db.commit()
             db.close()
+
+            # Save the file in the folder
             f.save(f"{app.config['UPLOAD_PATH']}/{tryid}.{ext}")
+
+            # Log the upload
             log(f"User {current_user.name} has uploaded '{fname}' ({tryid})")
+
+            # Reload the image cache to account for the new uploads
             compileimages()
+
+            # Head back home
             return redirect(url_for("home"))
 
 
@@ -565,5 +614,14 @@ def search(query):
     return render_template("search.html", results=results, query=query)
 
 
+# //////////////////////////////////////////////////////////////////////////// #
+
+# If we run the file directly, start a server
+
+# //////////////////////////////////////////////////////////////////////////// #
+
+
 if __name__ == "__main__":
-    app.run(ssl_context="adhoc", host="0.0.0.0")
+    app.run(ssl_context="adhoc",  # Free ssl cert. I'll get a proper one at some point
+            host="0.0.0.0"  # Listen on all available ips
+            )
