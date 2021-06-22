@@ -560,7 +560,7 @@ def success():
 
 @app.route("/search/<query>")
 def search(query):
-    # So I wrote a custom function here to evaluate and order the options. I imported it from another file so go check out the searchhelper.py file to see how it works
+    # So I wrote a custom function here to evaluate and order the options. I imported it from another file so go check out the searchhelper.py (https://github.com/ReCore-sys/ASMShare/blob/main/searchhelper.py) file to see how it works
     results = searchhelper.search(cards, query)
     return render_template("search.html", results=results, query=query)
 
