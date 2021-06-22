@@ -1,0 +1,28 @@
+.searchbar {
+	display      : block;
+	margin-left  : -5vw !important;
+	width        : 60vw;
+	text-align   : center;
+	height       : 5vh;
+	border-radius: 10px;
+	border       : 0;
+}
+
+.searchbar:focus,
+input:focus {
+	outline: none;
+}
+
+.searchbutton {
+	display         : block;
+	margin-left     : auto;
+	margin-right    : auto;
+	width           : 10vw;
+	text-align      : center;
+	height          : 5vh;
+	background-color: #1de9b6;
+	color           : white;
+	border-radius   : 10px;
+	padding         : 1%;
+	justify-content : center;
+}

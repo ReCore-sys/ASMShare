@@ -375,7 +375,9 @@ def compileimages():
         # subject is added
         cards[x[9]]["subject"] = x[4]
         # tags
-        cards[x[9]]["tags"] = x[5]
+        cards[x[9]]["tags"] = (x[5].replace(" ", "")).split(",")
+        cards[x[9]]["date"] = x[6]
+        cards[x[9]]["score"] = x[7]
         # uses the above function to get/create an image for the thumbnail
         cards[x[9]]["image"] = findfileicon(x[9])
         # Shorter short description
@@ -434,7 +436,6 @@ def rickroll():
 
 
 @app.route('/items/<item>')
-@login_required
 def some_place_page(item):
     if item in cards:
         return render_template('cardview.html', card=cards[item])
@@ -594,8 +595,8 @@ def success():
                 tryid = random.randint(int("1" + ("0" * 5)), int("9" * 6))
 
             # Add all the stuff the the database
-            cursor.execute(f'INSERT INTO filemapping VALUES (?, ?, ?, ?, ?, ?, time(), 1, ?, ?)',
-                           (fname, short, form["long"], current_user.name, form["subject"], form["tags"], veryshort, f"{tryid}.{ext}"))
+            cursor.execute(f'INSERT INTO filemapping VALUES (?, ?, ?, ?, ?, ?, ?, 1, ?, ?)',
+                           (fname, short, form["long"], current_user.name, form["subject"], form["tags"], ((datetime.now()).strftime('%d/%m/%Y')), veryshort, f"{tryid}.{ext}"))
             db.commit()
             db.close()
 
