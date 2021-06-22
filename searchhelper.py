@@ -3,15 +3,17 @@ from loguru import logger
 
 
 @logger.catch
-def search(all, query):
-    """Fuzzy search nested dictionaries
+def search(search_dict: dict,
+           query: str) -> dict:
+    """
+Fuzzy search nested dictionaries
 
      Parameters
      ----------
-     All : dict
+     search_dict : dict
      The dictionary to search
 
-     Query : str
+     query : str
      The words to match for
 
 
@@ -20,47 +22,50 @@ def search(all, query):
      results : dict
      The ordered dict that is sorted by similarity to the query
     """
+
     # Create a dictionary to store
-    scoretable = {v: 0 for v in all}
+    scoretable = {k: 0 for k in search_dict}
 
     # Create empty dict to store the results in
     results = {}
 
     # Looping fun
-    for y in all:
-        for x in all[y]:
+    for y in search_dict:
+        for x in search_dict[y]:
             if x not in ["score", "date", "image"]:
-                if type(all[y][x]) == list:
-                    acc = 0
-                    for v in all[y][x]:
-                        acc += (fuzz.ratio(v.lower(), query.lower()) / len(all[y][x]))
+                if type(search_dict[y][x]) == list:
+                    accuracy = 0
+                    for value in search_dict[y][x]:
+                        accuracy += (fuzz.ratio(value.lower(), query.lower()) / len(search_dict[y][x]))
                 else:
                     # This function from fuzzywuzzy works out the similarity of the 2 arguments in a score of 1-100
-                    acc = fuzz.ratio((all[y][x]).lower(), query.lower())
+                    accuracy = fuzz.ratio((search_dict[y][x]).lower(), query.lower())
 
                 # if the match is in the tags, double the score
                 if x == "tags":
-                    acc *= 2
+                    accuracy *= 2
 
-                # if the query is directly in the part we are matching for (ie, if we search for "example", if the result for the section is "lorum ipsum example") add 50 points. This helps narrow searches when you know exactly what you are after
-                if type(all[y][x]) == list:
-                    for v in all[y][x]:
-                        if query.lower() in v.lower():
-                            acc += 50
+                # if the query is directly in the part we are matching for (ie, if we search for "example", if the
+                # result for the section is "lorum ipsum example") add 50 points. This helps narrow searches when you
+                # know exactly what you are after
+                if type(search_dict[y][x]) == list:
+                    for value in search_dict[y][x]:
+                        if query.lower() in value.lower():
+                            accuracy += 50
                 else:
-                    if query.lower() in all[y][x].lower():
-                        acc += 50
+                    if query.lower() in search_dict[y][x].lower():
+                        accuracy += 50
 
-                # add the points the the scorboard, then start again
-                scoretable[y] += round(acc)
+                # add the points the the scoretable, then start again
+                scoretable[y] += round(accuracy)
 
     # Sort the dict by the values from biggest to smallest
     scoretable = {k: v for k, v in sorted(scoretable.items(), key=lambda item: item[1], reverse=True)}
 
-    # Now we sort our original dict so it has the same order as the scorboard
+    # Now we sort our original dict so it has the same order as the scoreboard
     for x in scoretable:
         print(f"{x}: {scoretable[x]}")
-        results[x] = all[x]
+        results[x] = search_dict[x]
 
     # return it
     return results
