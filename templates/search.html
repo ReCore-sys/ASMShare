@@ -27,7 +27,7 @@
 		<section class="smart-scroll">
 			<div class="container-fluid">
 				<nav class="navbar navbar-expand-md navbar-dark">
-					<a class="navbar-brand heading-black" href="index.html">
+					<a class="navbar-brand heading-black" href="/">
 						ASMShare
 					</a>
 					<button class="navbar-toggler navbar-toggler-right border-0" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
@@ -61,8 +61,13 @@
 
 								var post_id = $("input#post_id").val(); // Get the value of the field
 
-								$("a#link").attr("href", "search/" + post_id); // Update the href in the link to match the id inserted in the input field
+								$("a#link").attr("href", "../search/" + post_id); // Update the href in the link to match the id inserted in the input field
 
+							});
+							$(document).on('keypress', function(e) {
+								if (e.which == 13) {
+									location.href = ('../search/' + post_id.value);
+								}
 							});
 						</script>
 						<!-- region typing script -->

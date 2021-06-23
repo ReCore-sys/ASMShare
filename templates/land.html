@@ -69,6 +69,11 @@
 							$("a#link").attr("href", "search/" + post_id); // Update the href in the link to match the id inserted in the input field
 
 						});
+						$(document).on('keypress', function(e) {
+							if (e.which == 13) {
+								location.href = ('search/' + post_id.value);
+							}
+						});
 					</script>
 					<!-- region typing script -->
 					<script>

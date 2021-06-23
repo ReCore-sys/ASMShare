@@ -409,7 +409,6 @@ def load_user(user_id):
 @app.route("/")
 def index():
     """Main Page"""
-    print(current_user)
     if current_user.is_authenticated:
         return render_template('index.html', redir="/home", logged=f"Logged In: {current_user.name}")
     else:
@@ -438,7 +437,7 @@ def rickroll():
 @app.route('/items/<item>')
 def some_place_page(item):
     if item in cards:
-        return render_template('cardview.html', card=cards[item])
+        return render_template('cardview.html', card=cards[item], download=item)
     else:
         return render_template('errors/404.html', message=notfoundmessage()), 404
 
@@ -516,9 +515,6 @@ def callback():
         users_email = userinfo_response.json()["email"]
         picture = userinfo_response.json()["picture"]
         users_name = userinfo_response.json()["given_name"]
-        print("-" * 20)
-        print(userinfo_response.json())
-        print("-" * 20)
         if userinfo_response.json()["hd"] == "asms.sa.edu.au":
             user = User(
                 id_=unique_id, name=users_name, email=users_email, profile_pic=picture
@@ -617,7 +613,16 @@ def success():
 def search(query):
     # So I wrote a custom function here to evaluate and order the options. I imported it from another file so go check out the searchhelper.py (https://github.com/ReCore-sys/ASMShare/blob/main/searchhelper.py) file to see how it works
     results = searchhelper.search(cards, query)
+    if len(query) > 30:
+        query = query[:27] + "..."
     return render_template("search.html", results=results, query=query)
+
+
+@app.route('/download/<filename>', methods=['GET', 'POST'])
+def download(filename):
+    log(f"{current_user.name} has downloaded {filename}")
+    path = f"{filepath}/files/{filename}"
+    return send_file(path, as_attachment=True)
 
 
 # //////////////////////////////////////////////////////////////////////////// #
