@@ -433,6 +433,11 @@ def home():
 def rickroll():
     return render_template('rickroll.html')
 
+
+@app.route("/feedback")
+def feedback():
+    return render_template('feedback.html')
+
 # A full screen view of the examplars
 
 

@@ -4,7 +4,7 @@
 ### Pre-beta
 - [x] Implement the fuzzy search
 - [x] Allow users to download file
-- [ ] Feedback form
+- [x] Feedback form
 ### Pre-launch
 - [ ] Add search caching
 - [ ] Live type search
@@ -21,6 +21,7 @@
 - [ ] Add a "Submit Feature Request" button to the top of every page
 - [ ] Block .exe, .jar, .py and other executable file uploads
 - [ ] Check for code embedded in pdf's
+- [ ] Add voting
 ### Post-launch
 - [ ] Game in an error page
 - [ ] Add a credits page
