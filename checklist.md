@@ -1,10 +1,13 @@
-### Stuff to do
+# Stuff to do
 
+
+### Pre-beta
 - [x] Implement the fuzzy search
+- [x] Allow users to download file
+- [ ] Feedback form
+### Pre-launch
 - [ ] Add search caching
 - [ ] Live type search
-- [ ] Game in an error page
-- [ ] Allow users to download file
 - [ ] Write a better "How to help file"
 - [ ] Clean up code
 - [ ] Add error 500 logger
@@ -14,10 +17,15 @@
 - [ ] Add a "Logout" link to the top of every page
 - [ ] Add a "Help" link to the top of every page
 - [ ] Add an about page
+- [ ] Add a "Report Bug" button to the top of every page
+- [ ] Add a "Submit Feature Request" button to the top of every page
+- [ ] Block .exe, .jar, .py and other executable file uploads
+- [ ] Check for code embedded in pdf's
+### Post-launch
+- [ ] Game in an error page
 - [ ] Add a credits page
 - [ ] Write documentation for API and other stuffs
 - [ ] Add a "Contribute" button to the top of every page
-- [ ] Add a "Report Bug" button to the top of every page
-- [ ] Add a "Submit Feature Request" button to the top of every page
 - [ ] Add an "About" link to the footer
 - [ ] Add a "Change Log" link to the footer
+- [ ] Thread the upload part so it doesn't take ages

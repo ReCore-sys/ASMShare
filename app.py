@@ -322,6 +322,8 @@ def findfileicon(filename):
     elif ext in ["mov", "mkv", "mp4"]:
         fileicon = r"""../static/file-images/video.jpg"""
     # now this is funky. If the file is a pdf, create and show a preview of the file
+    elif ext in ["mp3", "ogg", "wav"]:
+        fileicon = r"""../static/file-images/audio.jpg"""
     elif ext in ["pdf"]:
         # Stick it inside a try cos someone is gunna upload a .exe after renaming it to a .pdf (Duncan I'm looking at you)
         try:
@@ -605,8 +607,8 @@ def success():
             # Reload the image cache to account for the new uploads
             compileimages()
 
-            # Head back home
-            return redirect(url_for("home"))
+    # Head back home
+    return redirect(url_for("home"))
 
 
 @app.route("/search/<query>")
