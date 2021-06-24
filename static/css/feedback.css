@@ -1,0 +1,27 @@
+.feedbackform {
+	margin-left  : auto;
+	margin-right : auto;
+	width        : 922px;
+	height       : auto;
+	margin-bottom: 10vh;
+}
+
+.feedbackform::-webkit-scrollbar-thumb {
+	background   : #666;
+	border-radius: 10px;
+	margin       : 1px;
+}
+
+.feedbackform::-webkit-scrollbar-track {
+	border-radius: 10px;
+	margin       : 1px;
+}
+
+.feedbackform::-webkit-scrollbar {
+	width : 10px;
+	margin: 1px;
+}
+
+.feedbackform::-webkit-scrollbar-corner {
+	visibility: hidden;
+}

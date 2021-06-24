@@ -134,6 +134,7 @@ __pycache__\
 secrets.py
 *sql
 *db*
+!feedback*
 static/file-images/pdfs/*
 static/file-images/images/*
 logs
