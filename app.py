@@ -112,8 +112,17 @@ try:
 except:
     # looks like it does exist
     pass
+
+
 db.commit()
 db.close()
+
+# Naive database setup
+try:
+    init_db_command()
+except sqlite3.OperationalError:
+    # Assume it's already been created
+    pass
 
 # //////////////////////////////////////////////////////////////////////////// #
 
@@ -640,6 +649,7 @@ def download(filename):
 
 
 if __name__ == "__main__":
-    app.run(ssl_context="adhoc",  # Free ssl cert. I'll get a proper one at some point
-            host="0.0.0.0"  # Listen on all available ips
+    app.run(ssl_context=("/etc/letsencrypt/live/asmshare.xyz/fullchain.pem", "/etc/letsencrypt/live/asmshare.xyz/privkey.pem"),  # Free ssl cert. I'll get a proper one at some point
+            host="0.0.0.0",  # Listen on all available ips
+            port=443
             )
