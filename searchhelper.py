@@ -64,7 +64,6 @@ Fuzzy search nested dictionaries
 
     # Now we sort our original dict so it has the same order as the scoreboard
     for x in scoretable:
-        print(f"{x}: {scoretable[x]}")
         results[x] = search_dict[x]
 
     # return it

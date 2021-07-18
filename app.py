@@ -1,27 +1,3 @@
-"""
-READ ME YOU FOOL
-
-Ok so here is where you will learn how to help me with this. This will assume 0 prior knowledge of how to code a website or how to use python.
-
-We are using a nice bit of code called Flask to make our site. It runs on python (My language of choice) to make websites. Pretty much, it gets .html files and displays them. It also does a load of other funky stuff, but we will deal with that later.
-
-So just some simple stuff first.
-Anything in a line with a hash (#) is a comment. It does not affect the code in any way and is just used for explaining stuff.
-Anything inside 3 quotation marks (Like this big lump of text) is also a comment. This is called a multi-line comment.
-Nice and easy.
-
-Now, that only matters for python files (a file ending in .py).
-There are going to be 3 other types of files we will mostly be dealing with.
-In .html files, a comment is anything inside a <!-- comment -->. These can be over multiple lines.
-In .css files a comment can be created with /* comment */. Again, multiple lines are fine.
-.js comments can either be // (Single line) or /* comment */ (Multi line)
-
-
-
-
-
-
-"""
 # //////////////////////////////////////////////////////////////////////////// #
 
 # IMPORT EVERYTHING
@@ -62,20 +38,6 @@ from werkzeug.utils import secure_filename
 # //////////////////////////////////////////////////////////////////////////// #
 # this gets the directory this script is in. Makes it much easier to transfer between systems.
 filepath = os.path.abspath(os.path.dirname(__file__))
-
-
-def startserve():
-    httpd = HTTPServer(('localhost', 5001), SimpleHTTPRequestHandler)
-    httpd.serve_forever()
-
-
-"""
-Ok cos chrome hates everyone, for some god forsaken reason you can't call an image from a local file system. It's shit I know.
-My solution: Host a very basic HTTP server on the same address in a different thread and pull the images from there. Somehow that works
-"""
-
-some_thread = threading.Thread(target=startserve)
-some_thread.start()
 
 # //////////////////////////////////////////////////////////////////////////// #
 
