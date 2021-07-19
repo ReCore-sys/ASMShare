@@ -1,1 +1,10 @@
-{"test": 2, "test2": 2, "testing": 2, "video": 2}
+{
+	"maths": 1,
+	"english": 1,
+	"tech": 1,
+	"central-studies": 2,
+	"yr10": 1,
+	"yr11": 1,
+	"yr12": 1
+
+}

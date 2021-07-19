@@ -26,3 +26,20 @@ input:focus {
 	padding         : 1%;
 	justify-content : center;
 }
+
+.card {
+	width  : 85vw;
+	height : 490px;
+	display: inline-block;
+}
+
+.CardImg {
+	float : left;
+	height: 470px;
+	width : 300px;
+}
+
+.cardtext {
+	float  : left;
+	padding: 5%;
+}

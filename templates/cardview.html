@@ -16,6 +16,7 @@
 		<link href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.min.css" rel="stylesheet"><!-- Bootstrap CSS / Color Scheme -->
 		<link href="{{ url_for('static', filename='css/fullcard.css')}}" id="theme-color" rel="stylesheet">
 		<link href="../static/css/fullcard.css" id="theme-color" rel="stylesheet">
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.7.3/feather.min.js"></script>
 	</head>
 
 	<body>
@@ -30,9 +31,26 @@
 			</div>
 			<div class="utility-info">
 				<ul class="utility-list">
-					<li><span class="licon icon-like"></span><a href="#">{{card["score"]}}</a></li>
-					<li><span class="licon icon-dat"></span>{{card["date"]}}</li>
-					<li><span class="licon icon-tag"></span>{% for x in card["tags"] %}<a href='../search/{{x}}'> {{x}}</a> {% endfor %}
+					<li>
+						<span class="icon" data-feather="heart">
+						</span>
+						<a class="contentdata">{{card["score"]}}
+						</a>
+					</li>
+					<li>
+						<span class="icon" data-feather="calendar">
+						</span>
+						<a class="contentdata">{{card["date"]}}
+						</a>
+					</li>
+					<li>
+						<span class="icon" data-feather="tag">
+						</span>
+						{% for x in card["tags"] %}
+						<a class="contentdata" href='../search/{{x}}'> {{x}}
+						</a>
+						{% endfor %}
+					</li>
 				</ul>
 			</div>
 			<div class="gradient-overlay"></div>
@@ -43,6 +61,9 @@
 				<h2>Download</h2>
 			</button>
 		</section>
+		<script>
+          feather.replace()
+        </script>
 
 	</body>
 

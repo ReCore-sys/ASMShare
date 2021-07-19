@@ -138,13 +138,17 @@
 			{% for x in results %}
 			<div class="CardHolder">
 				<div class="card" onclick="window.location.href='/items/{{x}}'">
-					<img src={{results[x]["image"]}} class="CardImg">
-					<div class="container">
-						<h4>
-							<b>{{results[x]["name"]}}</b>
-						</h4>
-						<p>{{results[x]["short"]}}</p>
-					</div>
+					<section>
+						<img src={{results[x]["image"]}} class="CardImg">
+					</section>
+					<section>
+						<div class="cardtext">
+							<h4>
+								<b>{{results[x]["name"]}}</b>
+							</h4>
+							<p>{{results[x]["short"]}}</p>
+						</div>
+					</section>
 				</div>
 			</div>
 			{% endfor %}

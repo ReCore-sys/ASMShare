@@ -610,7 +610,8 @@ def success():
 
             # Reload the image cache to account for the new uploads
             compileimages()
-
+    else:
+        return redirect(url_for("fourohsixpage"))
     # Head back home
     return redirect(url_for("home"))
 

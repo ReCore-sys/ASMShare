@@ -62,4 +62,5 @@
 	margin-left : auto;
 	display     : block;
 	margin-right: auto;
+	overflow    : auto;
 }

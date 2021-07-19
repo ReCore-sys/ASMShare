@@ -6,7 +6,7 @@ html {
 }
 
 body {
-	background : linear-gradient(to bottom, rgba(0,5,10,0.4) 0%,rgba(0,0,0,0) 100%);
+	background : linear-gradient(to bottom, rgba(0,5,10,0.6) 0%,rgba(0,0,0,0) 100%);
 	font-family: 'Droid Serif', serif;
 }
 
@@ -15,7 +15,7 @@ body {
 	width          : 100%;
 	height         : 500px;
 	position       : absolute;
-	font-family    : 'Droid Serif', serif;
+	font-family    : 'Helvetica', sans-serif;
 	color          : #fff;
 	top            : 20%;
 	right          : 0;
@@ -99,7 +99,7 @@ h1 {
 	font-size     : 1.9em;
 	font-weight   : 400;
 	letter-spacing: 1px;
-	font-family   : 'Abril Fatface', serif;
+	font-family   : 'Helvetica', sans-serif;
 	margin-bottom : 0;
 	display       : inline-block;
 }
@@ -216,27 +216,6 @@ h3:after {
 	font-size: 0.8em;
 }
 
-.licon {
-	position      : relative;
-	width         : 23px;
-	height        : 15px;
-	display       : inline-block;
-	vertical-align: middle;
-}
-
-.licon:before {
-	content        : "";
-	background     : url("https://rawcdn.githack.com/Nodws/NodPen/ffad95aa5244b4b09a3c7c1508a018959bbedb7e/postItem/licons.svg?") -2px -6px no-repeat;
-	background-size: 250px;
-	width          : 26px;
-	height         : 20px;
-	display        : inline-block;
-	vertical-align : middle;
-	position       : absolute;
-	top            : -3px;
-	left           : 0;
-}
-
 .icon-white {
 	filter: brightness(10);
 }
@@ -246,20 +225,12 @@ h3:after {
 	opacity: 0.6;
 }
 
-.icon-like:before {
-	background-position: -183px -6px;
+.icon {
+	height: 20px;
 }
 
-.icon-com:before {
-	background-position: -63px -4px;
-}
-
-.icon-dat:before {
-	background-position: -94px -7px;
-}
-
-.icon-tag:before {
-	background-position: -33px -6px;
+.contentdata {
+	font-size: 1.5em;
 }
 @media (max-width:750px) {
 	.utility-info {
