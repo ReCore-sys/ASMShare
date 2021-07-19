@@ -6,19 +6,15 @@
 - [x] Allow users to download file
 - [x] Feedback form
 ### Pre-launch
-- [ ] Add search caching
 - [x] Live type search
 - [ ] Write a better "How to help file"
-- [ ] Clean up code
 - [ ] Add error 500 logger
 - [x] Require admin to see logs
 - [ ] Users can change their name
 - [ ] Add a "Report" button to the user page
-- [ ] Add a "Logout" link to the top of every page
 - [ ] Add a "Help" link to the top of every page
 - [ ] Add an about page
 - [ ] Add a "Report Bug" button to the top of every page
-- [ ] Add a "Submit Feature Request" button to the top of every page
 - [ ] Block .exe, .jar, .py and other executable file uploads
 - [ ] Check for code embedded in pdf's
 - [ ] Add voting
@@ -30,3 +26,5 @@
 - [ ] Add an "About" link to the footer
 - [ ] Add a "Change Log" link to the footer
 - [ ] Thread the upload part so it doesn't take ages
+- [ ] Add search caching
+- [ ] Clean up code
