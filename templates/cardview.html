@@ -47,7 +47,7 @@
 						<span class="icon" data-feather="tag">
 						</span>
 						{% for x in card["tags"] %}
-						<a class="contentdata" href='../search/{{x}}'> {{x}}
+						<a class="contentdata" href='../search/{{x|trim}}'>{{x|trim}}{% if x != (card["tags"] | last) %},{% endif %}
 						</a>
 						{% endfor %}
 					</li>

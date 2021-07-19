@@ -7,7 +7,7 @@
 - [x] Feedback form
 ### Pre-launch
 - [x] Live type search
-- [ ] Write a better "How to help file"
+- [x] Write a better "How to help file"
 - [ ] Add error 500 logger
 - [x] Require admin to see logs
 - [ ] Users can change their name
@@ -26,5 +26,5 @@
 - [ ] Add an "About" link to the footer
 - [ ] Add a "Change Log" link to the footer
 - [ ] Thread the upload part so it doesn't take ages
-- [ ] Add search caching
+- [x] Add search caching
 - [ ] Clean up code

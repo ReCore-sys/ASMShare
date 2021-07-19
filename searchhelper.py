@@ -62,9 +62,26 @@ Fuzzy search nested dictionaries
     # Sort the dict by the values from biggest to smallest
     scoretable = {k: v for k, v in sorted(scoretable.items(), key=lambda item: item[1], reverse=True)}
 
-    # Now we sort our original dict so it has the same order as the scoreboard
+    # Now some funky logic to narrow the search for a query
+    # First we compile a list of all the scores
+    vals = [scoretable[x] for x in scoretable]
+    # Assign the biggest and smallest to mx and mn
+    mx, mn = max(vals), min(vals)
+    print("Min and max: ", mx, mn)
+    # Get the range
+    rng = mx - mn
+    print("range", rng)
+    # Set a percentage. This can be tweaked
+    percentage = 65
+    # Get a threshold based off these number (Gets percentage% of the range, then adds it to the min)
+    threshold = mn + round((rng / 100) * percentage)
+    print("threshold: ", threshold)
+    print("")
     for x in scoretable:
-        results[x] = search_dict[x]
+        print(f"{x}: {scoretable[x]}")
+        # Only include the item if it's score is over the threshold
+        if scoretable[x] > threshold:
+            results[x] = search_dict[x]
 
     # return it
     return results

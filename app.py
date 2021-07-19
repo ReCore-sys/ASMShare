@@ -117,6 +117,8 @@ random.shuffle(fourohfour)
 
 c = 0
 
+cached = {}
+
 # //////////////////////////////////////////////////////////////////////////// #
 
 # Helper functions
@@ -578,7 +580,8 @@ def success():
             # Now we do some funky stuff with tags
             tags = json.loads(form["tags"])
             print(tags)
-            tags = [x["value"] for x in tags]
+            # max of 5 tags. You can enter more, but they won't show up
+            tags = [x["value"] for x in tags][:5]
 
             prettytags = ",".join(tags)
 
@@ -618,8 +621,24 @@ def success():
 
 @app.route("/search/<query>")
 def search(query):
-    # So I wrote a custom function here to evaluate and order the options. I imported it from another file so go check out the searchhelper.py (https://github.com/ReCore-sys/ASMShare/blob/main/searchhelper.py) file to see how it works
-    results = searchhelper.search(cards, query)
+    global cached
+    query = query.strip()
+    # Here we cache the results of a search
+    if query in cached:
+        # If the query is in the cache, use the cached version
+        results = cached[query]
+        print("Using cache for ", query)
+    # If not, toast the cpu
+    else:
+        # So I wrote a custom function here to evaluate and order the options. I imported it from another file so go check out the searchhelper.py (https://github.com/ReCore-sys/ASMShare/blob/main/searchhelper.py) file to see how it works
+        results = searchhelper.search(cards, query)
+        # Store the result
+        cached[query] = results
+        print("Not using cache for ", query)
+    # If the cache's size is over 750MB, remove the last item in the cache. Keep going until the size is under 750MB
+    while sys.getsizeof(cached) > 786432000:
+        k = cached.keys()
+        cached.pop(k[len(x) - 1])
     if len(query) > 30:
         query = query[:27] + "..."
     return render_template("search.html", results=results, query=query)

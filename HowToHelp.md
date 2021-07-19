@@ -26,7 +26,7 @@ Hey there. So you wanna help out with this thing? Cool. You don't need to be abl
 
 * Make the site look nicer. You could add some cool CSS animations, resize some elements or just redesign a page.
 
-* Find some funky Python libraries that could do some useful things for the site.
+* Find some funky Python/JS libraries that could do some useful things for the site.
 
 * <strong>HARD WORK</strong> Turn the site into a desktop app. I can provide API's n stuff to get the actual data, but you will need to create a UI to show these. React would probably be easiest since it can support most of the existing CSS and scripts.
 

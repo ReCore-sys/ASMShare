@@ -27,6 +27,12 @@ input:focus {
 	justify-content : center;
 }
 
+.besmall {
+	align-content: center;
+	margin-bottom: 0 !important;
+	margin-top   : 5vh !important;
+}
+
 .card {
 	width  : 85vw;
 	height : 490px;
@@ -42,4 +48,12 @@ input:focus {
 .cardtext {
 	float  : left;
 	padding: 5%;
+}
+
+.nonefoundtxt {
+	bottom       : 50vh;
+	margin-left  : auto;
+	margin-right : auto;
+	text-align   : center;
+	align-content: center;
 }

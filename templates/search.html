@@ -38,10 +38,10 @@
 			</div>
 		</section>
 		<!--hero header-->
-		<section class="py-7 py-md-0 bg-hero" id="home">
+		<section class="py-7 py-md-0 bg-hero" id="home" style="height: 500px;">
 			<div class="container">
 				<div class="row vh-md-100">
-					<div class="col-md-8 col-sm-10 col-12 mx-auto my-auto text-center">
+					<div class="col-md-8 col-sm-10 col-12 mx-auto my-auto text-center besmall">
 						<h1 class="heading-black text-capitalize">{{query}}</h1>
 						<p class="lead py-3">Pretty empty for now, But I will add stuff I promise</p>
 						<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -136,6 +136,11 @@
 		</section>
 		<!-- THIS IS THE PART THAT HANDLES THE DISPLAY OF ITEMS -->
 		<section>
+			{% if results | length == 0 %}
+			<span class="nonefoundimg" data-feather="frown"></span>
+			<h1 class="heading-black text-capitalize nonefoundtxt">We couldn't find anything. Try again later</h1>
+
+			{% else %}
 			{% for x in results %}
 			<div class="CardHolder">
 				<div class="card" onclick="window.location.href='/items/{{x}}'">
@@ -153,6 +158,7 @@
 				</div>
 			</div>
 			{% endfor %}
+			{% endif %}
 		</section>
 		<!-- theme switcher (FOR DEMO ONLY - REMOVE FROM PRODUCTION)-->
 
