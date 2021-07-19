@@ -348,7 +348,7 @@ def compileimages():
         # subject is added
         cards[x[9]]["subject"] = x[4]
         # tags
-        cards[x[9]]["tags"] = (x[5].replace(" ", "")).split(",")
+        cards[x[9]]["tags"] = x[5].split(",")
         cards[x[9]]["date"] = x[6]
         cards[x[9]]["score"] = x[7]
         # uses the above function to get/create an image for the thumbnail
@@ -413,9 +413,10 @@ def feedback():
 
 
 @app.route('/items/<item>')
-def some_place_page(item):
+def fullcard(item):
+    taglist = cards[item]["tags"]
     if item in cards:
-        return render_template('cardview.html', card=cards[item], download=item)
+        return render_template('cardview.html', card=cards[item], download=item, taglist=taglist)
     else:
         return render_template('errors/404.html', message=notfoundmessage()), 404
 
@@ -430,8 +431,11 @@ def logout():
 
 @app.route("/logs")
 def logs():
-    with open(f'{filepath}/logs', 'r') as f:
-        return render_template('logs.html', logfile=f.readlines())
+    if any(i.isdigit() for i in current_user.email) and current_user.email not in admins:
+        return redirect(url_for("fourohthreepage"))
+    else:
+        with open(f'{filepath}/logs', 'r') as f:
+            return render_template('logs.html', logfile=f.readlines())
 
 
 # even i don't know what the next few bits do. google auth is a pain
@@ -502,6 +506,7 @@ def callback():
                 User.create(unique_id, users_name, users_email, picture)
             login_user(user)
             log(f"User {current_user.name} {userinfo_response.json()['family_name']} has logged in")
+            print(f"usr: {current_user.email}")
             hold = random.randint(1, 10000)
             if hold == 1:
                 # has a 1 in 10000 chance to rickroll the user on login
@@ -518,7 +523,10 @@ def callback():
 @app.route('/upload')
 @login_required
 def upload():
-    return render_template("upload.html")
+    tagfile = json.load(open(f"{filepath}/tags.json", "r"))
+    tagsdict = {k: v for k, v in sorted(tagfile.items(), key=lambda item: item[1], reverse=True)}
+    tags = [x for x in tagsdict]
+    return render_template("upload.html", tags=tags)
 
 
 # If the upload goes well, send it here to actually be stored
@@ -567,12 +575,32 @@ def success():
             # If the id is already in the database, try again
             while tryid in usedids:
                 tryid = random.randint(int("1" + ("0" * 5)), int("9" * 6))
+            # Now we do some funky stuff with tags
+            tags = json.loads(form["tags"])
+            print(tags)
+            tags = [x["value"] for x in tags]
+
+            prettytags = ",".join(tags)
 
             # Add all the stuff the the database
             cursor.execute(f'INSERT INTO filemapping VALUES (?, ?, ?, ?, ?, ?, ?, 1, ?, ?)',
-                           (fname, short, form["long"], current_user.name, form["subject"], form["tags"], ((datetime.now()).strftime('%d/%m/%Y')), veryshort, f"{tryid}.{ext}"))
+                           (fname, short, form["long"], current_user.name, form["subject"], prettytags, ((datetime.now()).strftime('%d/%m/%Y')), veryshort, f"{tryid}.{ext}"))
             db.commit()
             db.close()
+
+            # This bit just pulls apart the list into it's indvidual tags, then takes apart the tag, putting it back together but only with alphanumetic characters or hyphens
+            tags = [x for x in [ch.lower() for ch in tags if ch.isalnum() or "-"]]
+            # Opens a json file to store the tag frequency
+            tagfile = json.load(open(f"{filepath}/tags.json", "r"))
+            # Loops though all the tags
+            for x in tags:
+                # If the tag already exists in the json file, just add 1 to it's frequency
+                if x in tagfile:
+                    tagfile[x] = tagfile[x] + 1
+                # Otherwise just set the frequency to 1
+                else:
+                    tagfile[x] = 1
+            json.dump(tagfile, open(f"{filepath}/tags.json", "w"))
 
             # Save the file in the folder
             f.save(f"{app.config['UPLOAD_PATH']}/{tryid}.{ext}")
@@ -611,7 +639,14 @@ def download(filename):
 
 
 if __name__ == "__main__":
-    app.run(ssl_context=("/etc/letsencrypt/live/asmshare.xyz/fullchain.pem", "/etc/letsencrypt/live/asmshare.xyz/privkey.pem"),  # Free ssl cert. I'll get a proper one at some point
-            host="0.0.0.0",  # Listen on all available ips
-            port=443
-            )
+    # Checks if the ssl cert files exist. If they don't, fall back to a testing cert
+    if os.path.isfile(r"/etc/letsencrypt/live/asmshare.xyz/fullchain.pem") and os.path.isfile(r"/etc/letsencrypt/live/asmshare.xyz/privkey.pem"):
+        app.run(ssl_context=("/etc/letsencrypt/live/asmshare.xyz/fullchain.pem", "/etc/letsencrypt/live/asmshare.xyz/privkey.pem"),  # Tries to find the actual good ssl cert
+                host="0.0.0.0",  # Listen on all available ips
+                port=443
+                )
+    else:
+        app.run(ssl_context="adhoc",  # If the good one fails, use a testing one
+                host="0.0.0.0",  # Listen on all ips
+                port=5000
+                )

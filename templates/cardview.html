@@ -20,7 +20,7 @@
 	<body>
 		<div class="blog-card spring-fever" style="background: url({{card['image']}}) center no-repeat;">
 			<div class="title-content">
-				<h3><a href="#">{{card["name"]}}</a></h3>
+				<h3><a href="#" class="nofade">{{card["name"]}}</a></h3>
 				<div class="intro"> <a href="#">{{card["short"]}}</a> </div>
 			</div>
 			<div class="card-info">
@@ -31,7 +31,7 @@
 				<ul class="utility-list">
 					<li><span class="licon icon-like"></span><a href="#">{{card["score"]}}</a></li>
 					<li><span class="licon icon-dat"></span>{{card["date"]}}</li>
-					<li><span class="licon icon-tag"></span>{% for x in card["tags"] %}<a href='../search/{{x}}'> {{x}}</a>,{% endfor %}
+					<li><span class="licon icon-tag"></span>{% for x in card["tags"] %}<a href='../search/{{x}}'> {{x}}</a> {% endfor %}
 				</ul>
 			</div>
 			<div class="gradient-overlay"></div>

@@ -16,6 +16,11 @@
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css">
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.min.css">
 
+		<!-- Autocomplete scripts -->
+		<script src="https://unpkg.com/@yaireo/tagify"></script>
+		<script src="https://unpkg.com/@yaireo/tagify@3.1.0/dist/tagify.polyfills.min.js"></script>
+		<link rel="stylesheet" href="{{ url_for('static', filename='css/tags.css')}}" id="theme-color">
+
 		<!-- Bootstrap CSS / Color Scheme -->
 		<link rel="stylesheet" href="{{ url_for('static', filename='css/default.css')}}" id="theme-color">
 		<link rel="stylesheet" href="{{ url_for('static', filename='css/upload.css')}}" id="theme-color">
@@ -25,14 +30,15 @@
 		<div class="UploadField ">
 			<form action="/success" method="post" enctype="multipart/form-data" class="form-container">
 
-				<section class="filearea formpart outline">
-					<input type="file" name="file" class="btn btn-primary subbutton" required="true">
-				</section>
-				<section class="shortarea formpart inline">
-					<input type="text" name="name" class="btn namearea upbutton" required="true" placeholder="Upload name">
-				</section>
+
 
 				<div class="centrebuttons">
+					<section class="filearea formpart inline">
+						<input type="file" name="file" class="btn btn-primary upbutton" required="true">
+					</section>
+					<section class="shortarea formpart inline">
+						<input type="text" name="name" class="btn namearea upbutton" required="true" placeholder="Upload name">
+					</section>
 					<section class="subjectarea formpart inline">
 						<label for="subject" class="btn btn-primary upbutton">Subject</label>
 						<input type="text" name="subject" class="btn subjectarea upbutton" required="true">
@@ -47,9 +53,19 @@
 					</section>
 					<section class="tagarea formpart inline">
 						<label for="tags" class="btn btn-primary upbutton tagarea">Tags (comma seperated)</label>
-						<input type="text" name="tags" class="btn tagarea upbutton" required="true">
+						<input type="text" name="tags" class="btn tagarea upbutton">
 					</section>
 				</div>
+				<script>
+        var input = document.querySelector('input[name="tags"]')
+        if (input !== "") {
+        var tagify = new Tagify(input, {
+          dropdown: {
+            enabled: 0
+          },
+           whitelist: {{tags|tojson}}
+        })}
+        </script>
 
 				<section class="submitarea formpart outline">
 					<input type="submit" value="Upload" class="btn btn-primary subbutton">

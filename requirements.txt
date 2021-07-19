@@ -1,0 +1,6 @@
+flask
+requests
+flask_htmlmin
+flask_login
+fuzzywuzzy
+loguru
