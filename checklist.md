@@ -7,11 +7,11 @@
 - [x] Feedback form
 ### Pre-launch
 - [ ] Add search caching
-- [ ] Live type search
+- [x] Live type search
 - [ ] Write a better "How to help file"
 - [ ] Clean up code
 - [ ] Add error 500 logger
-- [ ] Require admin to see logs
+- [x] Require admin to see logs
 - [ ] Users can change their name
 - [ ] Add a "Report" button to the user page
 - [ ] Add a "Logout" link to the top of every page
