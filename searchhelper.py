@@ -72,7 +72,7 @@ Fuzzy search nested dictionaries
     rng = mx - mn
     print("range", rng)
     # Set a percentage. This can be tweaked
-    percentage = 65
+    percentage = 45
     # Get a threshold based off these number (Gets percentage% of the range, then adds it to the min)
     threshold = mn + round((rng / 100) * percentage)
     print("threshold: ", threshold)

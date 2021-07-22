@@ -198,10 +198,6 @@ h3:after {
 	height         : 15px;
 }
 
-.utility-info a:hover {
-	text-decoration: underline;
-}
-
 .utility-list {
 	list-style-type: none;
 	margin         : 0 0 10px 20px;
@@ -278,7 +274,6 @@ h3:after {
 }
 /*  ================  */
 /* ignore this bit :P */
-
 #profile-badges:after {
 	content       : "BRO";
 	font-family   : "Lato", "Lucida Grande", "Lucida Sans Unicode", Tahoma, Sans-Serif;

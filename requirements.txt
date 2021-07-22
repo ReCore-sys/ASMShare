@@ -4,3 +4,4 @@ flask_htmlmin
 flask_login
 fuzzywuzzy
 loguru
+python-Levenshtein

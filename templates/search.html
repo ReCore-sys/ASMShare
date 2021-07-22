@@ -19,18 +19,18 @@
 		<!-- Bootstrap CSS / Color Scheme -->
 		<link rel="stylesheet" href="{{ url_for('static', filename='css/default.css')}}" id="theme-color">
 		<link rel="stylesheet" href="{{ url_for('static', filename='css/cards.css')}}" id="theme-color">
-		<link rel="stylesheet" href="../static/css/cards.css" id="theme-color">
-		<link rel="stylesheet" href="../static/css/default.css" id="theme-color">
 		<link rel="stylesheet" href="{{ url_for('static', filename='css/fullsearch.css')}}" id="theme-color">
+		<link rel="stylesheet" href="{{ url_for('static', filename='css/search.css')}}" id="theme-color">
 	</head>
 
 	<body>
 		<section class="smart-scroll">
 			<div class="container-fluid">
 				<nav class="navbar navbar-expand-md navbar-dark">
-					<a class="navbar-brand heading-black" href="/">
-						ASMShare
-					</a>
+					<!--
+					{% include "menu.html" %}
+					{% block menu %}
+					{% endblock %}-->
 					<button class="navbar-toggler navbar-toggler-right border-0" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
 						<span data-feather="grid"></span>
 					</button>
@@ -47,12 +47,8 @@
 						<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
 
-						<section>
-							<input id="post_id" class="searchbar" type="text" placeholder="Search">
-						</section>
-						<br>
-						<section>
-							<a id="link" class="searchbutton" href="#">Go</a>
+						<section class="search">
+							<input id="post_id" class="searchbar" type="text" placeholder="Search" style="width: auto; border-radius: 10px;">
 						</section>
 						<!--
             Look, I don't want to use jQuery either, but here we are. If someone wants to convert this to regular js, go for it
@@ -131,38 +127,40 @@
 							});
 						</script>
 					</div>
-				</div>
-			</div>
-		</section>
-		<!-- THIS IS THE PART THAT HANDLES THE DISPLAY OF ITEMS -->
-		<section>
-			{% if results | length == 0 %}
-			<span class="nonefoundimg" data-feather="frown"></span>
-			<h1 class="heading-black text-capitalize nonefoundtxt">We couldn't find anything. Try again later</h1>
 
-			{% else %}
-			{% for x in results %}
-			<div class="CardHolder">
-				<div class="card" onclick="window.location.href='/items/{{x}}'">
-					<section>
-						<img src={{results[x]["image"]}} class="CardImg">
-					</section>
-					<section>
-						<div class="cardtext">
-							<h4>
-								<b>{{results[x]["name"]}}</b>
-							</h4>
-							<p>{{results[x]["short"]}}</p>
+					<!-- THIS IS THE PART THAT HANDLES THE DISPLAY OF ITEMS -->
+					<section style="width: 100%;">
+						{% if query == "" %}
+						<h1 class="heading-black text-capitalize nonefoundtxt">Try searching for something with the bar above</h1>
+
+						{% elif results | length == 0 %}
+						<h1 class="heading-black text-capitalize nonefoundtxt">We couldn't find anything. Try again later</h1>
+						{% else %}
+						{% for x in results %}
+						<div class="CardHolder">
+							<div class="card" onclick="window.location.href='/items/{{x}}'">
+								<section>
+									<img src={{results[x]["image"]}} class="CardImg">
+								</section>
+								<section>
+									<div class="cardtext">
+										<h4>
+											<b>{{results[x]["name"]}}</b>
+										</h4>
+										<p>{{results[x]["short"]}}</p>
+									</div>
+								</section>
+							</div>
 						</div>
+						{% endfor %}
+						{% endif %}
 					</section>
+					<!-- theme switcher (FOR DEMO ONLY - REMOVE FROM PRODUCTION)-->
+
 				</div>
 			</div>
-			{% endfor %}
-			{% endif %}
+			</div>
 		</section>
-		<!-- theme switcher (FOR DEMO ONLY - REMOVE FROM PRODUCTION)-->
-
-		</div>
 
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>

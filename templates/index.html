@@ -18,7 +18,10 @@
 
 		<!-- Bootstrap CSS / Color Scheme -->
 		<link rel="stylesheet" href="{{ url_for('static', filename='css/default.css')}}" id="theme-color">
-
+		<!--
+		{% include "menu.html" %}
+		{% block menu %}
+		{% endblock %}-->
 	</head>
 
 	<body>
@@ -31,9 +34,7 @@
 		<section class="smart-scroll">
 			<div class="container-fluid">
 				<nav class="navbar navbar-expand-md navbar-dark">
-					<a class="navbar-brand heading-black" href="/">
-						ASMShare
-					</a>
+
 					<button class="navbar-toggler navbar-toggler-right border-0" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
 						<span data-feather="grid"></span>
 					</button>
@@ -122,7 +123,8 @@
 									</div>
 								</div>
 								<h5>Stylish design</h5>
-								<p class="text-muted">I hate light as much as you guys, so thats why I didn't add it. Your eyes are safe from flashbangs</p>
+								<p class="text-muted">I hate light mode as much as you guys, so thats why I didn't add it. Your eyes are safe from flashbangs. I also spent ages making sure it look nice and snazzy, on my laptop at least. I have no idea what it looks like for
+									you.</p>
 							</div>
 							<div class="col-md-6 box">
 								<div class="icon-box box-primary">
@@ -162,7 +164,7 @@
 						<div class="row">
 							<div class="col-md-6 mb-5">
 								<h6>Do you have my password?</h6>
-								<p class="text-muted">Nope. Google does though. Through some funky web magic, You sign in with google and then google just gives me your name and email. Your password is safe.</p>
+								<p class="text-muted">Nope. Google does though. Through some funky web magic, you sign in with Google and then Google just gives me your name and email. Your password is safe.</p>
 							</div>
 							<div class="col-md-6 mb-5">
 								<h6>Why did you make this?</h6>

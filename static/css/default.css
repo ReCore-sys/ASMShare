@@ -65,7 +65,6 @@ footer,
 header,
 hgroup,
 main,
-nav,
 section {
 	display: block;
 }
@@ -4189,16 +4188,6 @@ input[type="button"].btn-block {
 	border-radius   : 1rem;
 }
 
-.nav {
-	display      : -ms-flexbox;
-	display      : flex;
-	-ms-flex-wrap: wrap;
-	flex-wrap    : wrap;
-	padding-left : 0;
-	margin-bottom: 0;
-	list-style   : none;
-}
-
 .nav-link {
 	display: block;
 	padding: 0.25rem 1rem;
@@ -4293,7 +4282,6 @@ input[type="button"].btn-block {
 	align-items    : center;
 	-ms-flex-pack  : justify;
 	justify-content: space-between;
-	padding        : 1.5rem 1.25rem;
 }
 
 .navbar > .container,

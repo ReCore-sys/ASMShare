@@ -30,9 +30,10 @@
 		<section class="smart-scroll">
 			<div class="container-fluid">
 				<nav class="navbar navbar-expand-md navbar-dark">
-					<a class="navbar-brand heading-black" href="/">
-						ASMShare
-					</a>
+					<!--
+					{% include "menu.html" %}
+					{% block menu %}
+					{% endblock %}-->
 					<button class="navbar-toggler navbar-toggler-right border-0" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
 						<span data-feather="grid"></span>
 					</button>
@@ -56,11 +57,8 @@
 					<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.js"></script>
 
 
-					<section>
+					<section class="search">
 						<input id="post_id" class="searchbar" type="text" placeholder="Search">
-					</section>
-					<br>
-					<section>
 						<a id="link" class="searchbutton" href="#">Go</a>
 					</section>
 					<!--

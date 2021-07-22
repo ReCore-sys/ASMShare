@@ -131,7 +131,7 @@ dmypy.json
 *.db
 files/
 __pycache__\
-secrets.py
+secret_data.py
 *sql
 *db*
 !feedback*

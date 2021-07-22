@@ -7,15 +7,8 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 		<title>Upload</title>
 		<link rel="shortcut icon" href="{{ url_for('static', filename='img/ASMS.ico') }}">
-		<meta name="description" content="Knight is a beautiful Bootstrap 4 template for product landing pages." />
+		<link href='https://fonts.googleapis.com/css?family=Oswald' rel='stylesheet' type='text/css'>
 
-		<!--Inter UI font-->
-		<link href="https://rsms.me/inter/inter-ui.css" rel="stylesheet">
-
-		<!--vendors styles-->
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css">
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.min.css">
 
 		<!-- Autocomplete scripts -->
 		<script src="https://unpkg.com/@yaireo/tagify"></script>
@@ -28,7 +21,7 @@
 	</head>
 
 	<body>
-		<div class="UploadField ">
+		<!--<div class="UploadField ">
 			<form action="/success" method="post" enctype="multipart/form-data" class="form-container">
 
 
@@ -57,23 +50,38 @@
 						<input type="text" name="tags" class="btn tagarea upbutton">
 					</section>
 				</div>
-				<script>
-        var input = document.querySelector('input[name="tags"]')
-        if (input !== "") {
-        var tagify = new Tagify(input, {
-          dropdown: {
-            enabled: 0
-          },
-           whitelist: {{tags|tojson}}
-        })}
-        </script>
+
 
 				<section class="submitarea formpart outline">
 					<input type="submit" value="Upload" class="btn btn-primary subbutton">
 				</section>
 
 			</form>
-		</div>
+		</div>-->
+		<form action="/success" method="post" enctype="multipart/form-data">
+			<div class="form-wrap">
+
+				<h1>Upload</h1>
+				<input type="file" placeholder="File">
+				<input type="text" placeholder="Name" name="name" required="true">
+				<input type="text" placeholder="Subject" name="subject" required="true">
+				<input type="text" placeholder="Short description" name="short" required="true">
+				<input type="text" placeholder="Long description" name="long" required="true" class="longarea">
+				<input type="text" placeholder="Tags" name="tags">
+				<input type="submit" value="Submit" class="topmarg">
+
+			</div>
+		</form>
+		<script>
+    var input = document.querySelector('input[name="tags"]')
+    if (input !== "") {
+    var tagify = new Tagify(input, {
+      dropdown: {
+        enabled: 0
+      },
+       whitelist: {{tags|tojson}}
+    })}
+    </script>
 		</section>
 
 		<!-- jQuery first, then Popper.js, then Bootstrap JS -->

@@ -28,6 +28,7 @@
 	display     : inline-block;
 	margin-left : auto;
 	margin-right: auto;
+	align-self  : center;
 }
 
 .outline {
@@ -50,8 +51,7 @@
 }
 
 .longarea {
-	width      : 54.4vw;
-	margin-left: 0.5vw;
+	height: 15vh !important;
 }
 
 .longinput {
@@ -63,4 +63,105 @@
 	display     : block;
 	margin-right: auto;
 	overflow    : auto;
+}
+/************************************************* MIXINS *************************************************/
+/************************************************* BODY *************************************************/
+body {
+	background: #222d3a;
+}
+/************************************************* FORM WRAPPER *************************************************/
+.form-wrap {
+	width : 700px;
+	margin: 50px auto 0;
+	height: auto;
+}
+/************************************************* FORM FIELDS *************************************************/
+input[type="text"],
+textarea {
+	overflow-x   : auto;
+	width        : 100%;
+	background   : #222d3a;
+	outline      : none;
+	padding      : 10px;
+	border       : 2px solid rgba(0, 0, 0, 0.1);
+	margin-bottom: 30px;
+	color        : #474747;
+	font         : 12px Century Gothic;
+	height       : auto;
+	box-shadow   : #1f2934 1px 1px, #1f2934 2px 2px, #1f2934 3px 3px, #1f2934 4px 4px, #1f2934 5px 5px, #1f2934 6px 6px, #1f2934 7px 7px, #1f2934 8px 8px, #1f2934 9px 9px, #1f2934 10px 10px, #1f2934 11px 11px, #1f2934 12px 12px, #1f2934 13px 13px, #1f2934 14px 14px, #1f2934 15px 15px, #1f2934 16px 16px, #1f2934 17px 17px, #1f2934 18px 18px, #1f2934 19px 19px, #1f2934 20px 20px, #1f2934 21px 21px, #1f2934 22px 22px, #1f2934 23px 23px, #1f2934 24px 24px, #1f2934 25px 25px, #1f2934 26px 26px, #1f2934 27px 27px, #1f2934 28px 28px, #1f2934 29px 29px, #1f2934 30px 30px, #1f2934 31px 31px, #1f2934 32px 32px, #1f2934 33px 33px, #1f2934 34px 34px, #1f2934 35px 35px, #1f2934 36px 36px, #1f2934 37px 37px, #1f2934 38px 38px, #1f2934 39px 39px, #1f2934 40px 40px, #1f2934 41px 41px, #1f2934 42px 42px, #1f2934 43px 43px, #1f2934 44px 44px, #1f2934 45px 45px, #1f2934 46px 46px, #1f2934 47px 47px, #1f2934 48px 48px, #1f2934 49px 49px, #1f2935 50px 50px, #1f2935 51px 51px, #1f2935 52px 52px, #1f2935 53px 53px, #1f2935 54px 54px, #1f2a35 55px 55px, #1f2a35 56px 56px, #1f2a35 57px 57px, #1f2a35 58px 58px, #1f2a35 59px 59px, #202a36 60px 60px, #202a36 61px 61px, #202a36 62px 62px, #202a36 63px 63px, #202a36 64px 64px, #202a36 65px 65px, #202a36 66px 66px, #202a36 67px 67px, #202a36 68px 68px, #202a36 69px 69px, #202b37 70px 70px, #202b37 71px 71px, #202b37 72px 72px, #202b37 73px 73px, #202b37 74px 74px, #202b37 75px 75px, #202b37 76px 76px, #202b37 77px 77px, #202b37 78px 78px, #202b37 79px 79px, #212b38 80px 80px, #212b38 81px 81px, #212b38 82px 82px, #212b38 83px 83px, #212b38 84px 84px, #212c38 85px 85px, #212c38 86px 86px, #212c38 87px 87px, #212c38 88px 88px, #212c38 89px 89px, #212c39 90px 90px, #212c39 91px 91px, #212c39 92px 92px, #212c39 93px 93px, #212c39 94px 94px, #212c39 95px 95px, #212c39 96px 96px, #212c39 97px 97px, #212c39 98px 98px, #212c39 99px 99px, #222d3a 100px 100px;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+textarea:focus {
+	border            : 2px solid rgba(27, 196, 163, 0.5);
+	-webkit-transition: ease 1s;
+	-moz-transition   : ease 1s;
+	-o-transition     : ease 1s;
+	-ms-transition    : ease 1s;
+	transition        : ease 1s;
+}
+
+textarea {
+	height: 200px;
+	font  : 12px Century Gothic;
+	width : 97%;
+}
+
+input[type="file"],
+input[type="submit"] {
+	border        : none;
+	align-content : center;
+	opacity       : 0.7;
+	width         : 100%;
+	padding       : 12px;
+	font-size     : 13px;
+	color         : #fff;
+	text-shadow   : #000 0 1px 2px;
+	background    : #1bc4a3;
+	font-family   : "Oswald";
+	text-transform: uppercase;
+	margin-bottom : 3vh;
+	transition    : opacity 250ms linear;
+}
+
+.topmarg {
+	margin-top: 10vh;
+}
+
+input[type="file"]:hover,
+input[type="submit"]:hover {
+	opacity   : 1;
+	cursor    : pointer;
+	transition: opacity 250ms linear;
+}
+/************************************************* CUSTOM PLACEHOLDER *************************************************/
+::-webkit-input-placeholder {
+	color: #6d6d6d;
+}
+
+:-moz-placeholder {
+	/* Firefox 18- */
+	color: #6d6d6d;
+}
+
+::-moz-placeholder {
+	/* Firefox 19+ */
+	color: #6d6d6d;
+}
+
+:-ms-input-placeholder {
+	color: #6d6d6d;
+}
+
+[placeholder]:focus::-webkit-input-placeholder {
+	transition: all 0.2s linear;
+	transform : translate(30px, 0);
+	opacity   : 0;
+}
+/************************************************* TYPOGRAPHY *************************************************/
+h1 {
+	font   : 30px Oswald;
+	color  : #fff;
+	opacity: 0.5;
 }

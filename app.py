@@ -15,7 +15,6 @@ import urllib
 from base64 import b64decode, b64encode
 from datetime import datetime
 from http.server import HTTPServer, SimpleHTTPRequestHandler
-from secrets import *
 
 import flask
 import requests
@@ -28,6 +27,7 @@ from flask_login import (LoginManager, UserMixin, current_user, login_required,
 from fuzzywuzzy import fuzz, process
 from oauthlib.oauth2 import WebApplicationClient
 from pdf2image import convert_from_bytes, convert_from_path
+from secret_data import *
 from user import User
 from werkzeug.utils import secure_filename
 
@@ -499,7 +499,7 @@ def callback():
         users_email = userinfo_response.json()["email"]
         picture = userinfo_response.json()["picture"]
         users_name = userinfo_response.json()["given_name"]
-        if userinfo_response.json()["hd"] == "asms.sa.edu.au":
+        if "@asms.sa.edu.au" in users_email:
             user = User(
                 id_=unique_id, name=users_name, email=users_email, profile_pic=picture
             )
@@ -525,9 +525,12 @@ def callback():
 @app.route('/upload')
 @login_required
 def upload():
+    # Retrieves the tags from a file
     tagfile = json.load(open(f"{filepath}/tags.json", "r"))
+    # Sorts the tags by their usage
     tagsdict = {k: v for k, v in sorted(tagfile.items(), key=lambda item: item[1], reverse=True)}
-    tags = [x for x in tagsdict]
+    # Turns them into a list of keys
+    tags = tagsdict.keys()
     return render_template("upload.html", tags=tags)
 
 
@@ -581,7 +584,7 @@ def success():
             tags = json.loads(form["tags"])
             print(tags)
             # max of 5 tags. You can enter more, but they won't show up
-            tags = [x["value"] for x in tags][:5]
+            tags = [x["value"].replace(" ", "-") for x in tags][:5]
 
             prettytags = ",".join(tags)
 
@@ -619,6 +622,11 @@ def success():
     return redirect(url_for("home"))
 
 
+@app.route("/search/")
+def emptysearch():
+    return render_template("search.html", query="")
+
+
 @app.route("/search/<query>")
 def search(query):
     global cached
@@ -645,6 +653,7 @@ def search(query):
 
 
 @app.route('/download/<filename>', methods=['GET', 'POST'])
+@login_required
 def download(filename):
     log(f"{current_user.name} has downloaded {filename}")
     path = f"{filepath}/files/{filename}"
