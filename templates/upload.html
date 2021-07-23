@@ -18,46 +18,16 @@
 		<!-- Bootstrap CSS / Color Scheme -->
 		<link rel="stylesheet" href="{{ url_for('static', filename='css/default.css')}}" id="theme-color">
 		<link rel="stylesheet" href="{{ url_for('static', filename='css/upload.css')}}" id="theme-color">
+		<script src="https://animejs.com/lib/anime.min.js"></script>
+		<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.7.3/feather.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
+		<script src="{{ url_for('static', filename='js/scripts.js')}}"></script>
 	</head>
 
 	<body>
-		<!--<div class="UploadField ">
-			<form action="/success" method="post" enctype="multipart/form-data" class="form-container">
-
-
-
-				<div class="centrebuttons">
-					<section class="filearea formpart inline">
-						<input type="file" name="file" class="btn btn-primary upbutton" required="true">
-					</section>
-					<section class="shortarea formpart inline">
-						<input type="text" name="name" class="btn namearea upbutton" required="true" placeholder="Upload name">
-					</section>
-					<section class="subjectarea formpart inline">
-						<label for="subject" class="btn btn-primary upbutton">Subject</label>
-						<input type="text" name="subject" class="btn subjectarea upbutton" required="true">
-					</section>
-					<section class="shortarea formpart inline">
-						<label for="short" class="btn btn-primary upbutton">Short description</label>
-						<input type="text" name="short" class="btn shortarea upbutton" required="true">
-					</section>
-					<section class="longarea formpart inline">
-						<label for="long" class="btn btn-primary upbutton longarea">long description</label>
-						<input type="text" name="long" class="btn longarea upbutton longinput" required="true">
-					</section>
-					<section class="tagarea formpart inline">
-						<label for="tags" class="btn btn-primary upbutton tagarea">Tags (comma seperated)</label>
-						<input type="text" name="tags" class="btn tagarea upbutton">
-					</section>
-				</div>
-
-
-				<section class="submitarea formpart outline">
-					<input type="submit" value="Upload" class="btn btn-primary subbutton">
-				</section>
-
-			</form>
-		</div>-->
 		<form action="/success" method="post" enctype="multipart/form-data">
 			<div class="form-wrap">
 
@@ -69,28 +39,23 @@
 				<input type="text" placeholder="Long description" name="long" required="true" class="longarea">
 				<input type="text" placeholder="Tags" name="tags">
 				<input type="submit" value="Submit" class="topmarg">
-
+				<!-- The tags library -->
+				<script>
+        var input = document.querySelector('input[name="tags"]')
+        if (input !== "") {
+        var tagify = new Tagify(input, {
+          dropdown: {
+            enabled: 0
+          },
+           whitelist: {{tags|tojson}}
+        })}
+        </script>
 			</div>
 		</form>
-		<script>
-    var input = document.querySelector('input[name="tags"]')
-    if (input !== "") {
-    var tagify = new Tagify(input, {
-      dropdown: {
-        enabled: 0
-      },
-       whitelist: {{tags|tojson}}
-    })}
-    </script>
-		</section>
-
-		<!-- jQuery first, then Popper.js, then Bootstrap JS -->
-		<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
-		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.7.3/feather.min.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
-		<script src="{{ url_for('static', filename='js/scripts.js')}}"></script>
+		<!-- Here we import a loading screen from loader.html. Once the user submits, it runs it. Go to the file to see how it works -->
+		{% include "loader.html" %}
+		{% block loader %}
+		{% endblock %}
 	</body>
 
 </html>

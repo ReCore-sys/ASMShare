@@ -47,11 +47,8 @@ filepath = os.path.abspath(os.path.dirname(__file__))
 
 
 app = Flask(__name__)
-app.config['MINIFY_HTML'] = True
 app.config['UPLOAD_PATH'] = f"{filepath}/files/"
 app.config['MAX_CONTENT_LENGTH'] = 50 * 1024 * 1024
-
-htmlmin = HTMLMIN(app)
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -523,14 +520,14 @@ def callback():
 
 # Page where you upload your files
 @app.route('/upload')
-@login_required
+# @login_required
 def upload():
     # Retrieves the tags from a file
     tagfile = json.load(open(f"{filepath}/tags.json", "r"))
     # Sorts the tags by their usage
     tagsdict = {k: v for k, v in sorted(tagfile.items(), key=lambda item: item[1], reverse=True)}
     # Turns them into a list of keys
-    tags = tagsdict.keys()
+    tags = [x for x in tagsdict]
     return render_template("upload.html", tags=tags)
 
 
@@ -541,7 +538,6 @@ def success():
 
     # We assume the request will be a GET request. If not, idk. I'll deal with that later
     if request.method == 'POST':
-
         # Assign the file to the variable f. I'm not sure what data type this is, but I assume binary
         f = request.files['file']
 

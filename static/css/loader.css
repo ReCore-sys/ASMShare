@@ -1,0 +1,29 @@
+body,
+html {
+	position        : absolute;
+	display         : flex;
+	flex-wrap       : wrap;
+	justify-content : center;
+	align-items     : center;
+	width           : 100vw;
+	height          : 100vh;
+	background-color: black;
+	overflow        : hidden;
+}
+
+.stagger-visualizer {
+	display        : flex;
+	flex-wrap      : wrap;
+	justify-content: center;
+	align-items    : center;
+	width          : 17rem;
+	height         : 17rem;
+}
+
+.stagger-visualizer div {
+	/*position: absolute;*/
+	width           : 1rem;
+	height          : 1rem;
+	border          : 1px solid #1bc4a3;
+	background-color: #1bc4a3;
+}
