@@ -18,6 +18,7 @@
 - [ ] Block .exe, .jar, .py and other executable file uploads
 - [ ] Check for code embedded in pdf's
 - [ ] Add voting
+- [ ] Redo home page to be more helpful
 ### Post-launch
 - [ ] Game in an error page
 - [ ] Add a credits page
@@ -25,6 +26,5 @@
 - [ ] Add a "Contribute" button to the top of every page
 - [ ] Add an "About" link to the footer
 - [ ] Add a "Change Log" link to the footer
-- [ ] Thread the upload part so it doesn't take ages
 - [x] Add search caching
 - [ ] Clean up code

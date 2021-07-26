@@ -10803,7 +10803,6 @@ a.text-dark:hover {
 /*****************
 Custom CSS
 *****************/
-
 body {
 	border-color: #000000;
 }
@@ -10824,7 +10823,6 @@ body {
 	font-weight: 800;
 }
 /* Box shadow */
-
 .btn {
 	font-size: 15px;
 }
@@ -10933,7 +10931,6 @@ body {
 	box-shadow: none !important;
 }
 /*Navbar*/
-
 .navbar.navbar-transparent {
 	opacity: 0.98;
 }
@@ -11025,7 +11022,6 @@ body {
 	}
 }
 /*smart scrolling*/
-
 .smart-scroll {
 	position  : fixed;
 	top       : 0;
@@ -11046,7 +11042,6 @@ body {
 	transition       : all 0.3s ease-out;
 }
 /**dividers */
-
 .divider {
 	position: relative;
 }
@@ -11075,7 +11070,6 @@ body {
 	background: linear-gradient(to right, rgba(29, 233, 182, 0.24) 0, #263238 50%, rgba(29, 233, 182, 0.24) 100%);
 }
 /*vertical heights */
-
 .vh-100 {
 	height: 100vh;
 }
@@ -11091,24 +11085,20 @@ body {
 }
 
 .bg-hero {
-	background-color     : #000000;
 	background-image     : url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='100%25' viewBox='0 0 800 800'%3E%3Cg %3E%3Ccircle fill='#000000' cx='400' cy='400' r='600'/%3E%3Ccircle fill='#053529' cx='400' cy='400' r='500'/%3E%3Ccircle fill='#0a634d' cx='400' cy='400' r='400'/%3E%3Ccircle fill='#0e9271' cx='400' cy='400' r='300'/%3E%3Ccircle fill='#13c095' cx='400' cy='400' r='200'/%3E%3Ccircle fill='#1de9b6' cx='400' cy='400' r='100'/%3E%3C/g%3E%3C/svg%3E");
 	/* background by SVGBackgrounds.com */
 	background-attachment: fixed;
 	background-size      : cover;
-	position             : relative;
 }
 
 .bg-hero:before {
-	position        : absolute;
-	z-index         : 1;
-	width           : 100%;
-	height          : 100%;
-	display         : block;
-	left            : 0;
-	top             : 0;
-	content         : "";
-	background-color: rgba(0, 0, 0, 0.7);
+	position: absolute;
+	z-index : 1;
+	width   : 100%;
+	height  : 100%;
+	left    : 0;
+	top     : 0;
+	content : "";
 }
 
 .bg-hero .container {
@@ -11116,7 +11106,6 @@ body {
 	position: relative;
 }
 /*features boxes*/
-
 .feature-boxes {
 	text-align: center;
 }
@@ -11125,7 +11114,6 @@ body {
 	padding: 3rem;
 }
 /*features-list */
-
 .features-list {
 	list-style: none;
 }
@@ -11149,7 +11137,6 @@ body {
 	margin     : 0 0.75rem 0 0;
 }
 /*Pricing tables*/
-
 .pricing-table .pricing-list {
 	margin-bottom: 3rem;
 	margin-top   : 2rem;
@@ -11180,7 +11167,6 @@ body {
 	color: #ffffff;
 }
 /**slick slider */
-
 .slick-dots {
 	top: -4rem;
 }
@@ -11205,7 +11191,6 @@ body {
 	color: #1de9b6;
 }
 /*footer*/
-
 footer ul > li {
 	padding: 0.5rem 0;
 }
@@ -11227,7 +11212,6 @@ footer h5 {
 	text-transform: uppercase;
 }
 /*social icons*/
-
 .social a {
 	width        : 45px;
 	height       : 45px;
@@ -11257,7 +11241,6 @@ footer h5 {
 	border-radius: 50%;
 }
 /*scroll to top */
-
 .scroll-top {
 	bottom          : 20px;
 	font-size       : 20px;
@@ -11284,7 +11267,6 @@ footer h5 {
 	right: 20px;
 }
 /* Icon Boxes */
-
 .icon-box {
 	position        : relative;
 	border-radius   : 50%;
@@ -11352,7 +11334,6 @@ footer h5 {
 	padding: 1rem;
 }
 /*all themes colors*/
-
 .bg-black {
 	background-color: #000000;
 }
@@ -11397,7 +11378,6 @@ footer h5 {
 	background-color: #00e5ff;
 }
 /*theme switcher*/
-
 .switcher-wrap {
 	position  : fixed;
 	top       : 250px;

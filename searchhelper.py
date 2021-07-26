@@ -36,14 +36,10 @@ Fuzzy search nested dictionaries
                 if type(search_dict[y][x]) == list:
                     accuracy = 0
                     for value in search_dict[y][x]:
-                        accuracy += (fuzz.ratio(value.lower(), query.lower()) / len(search_dict[y][x]))
+                        accuracy += fuzz.ratio(value.lower(), query.lower())
                 else:
                     # This function from fuzzywuzzy works out the similarity of the 2 arguments in a score of 1-100
                     accuracy = fuzz.ratio((search_dict[y][x]).lower(), query.lower())
-
-                # if the match is in the tags, double the score
-                if x == "tags":
-                    accuracy *= 2
 
                 # if the query is directly in the part we are matching for (ie, if we search for "example", if the
                 # result for the section is "lorum ipsum example") add 50 points. This helps narrow searches when you

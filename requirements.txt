@@ -5,3 +5,4 @@ flask_login
 fuzzywuzzy
 loguru
 python-Levenshtein
+gunicorn

@@ -15,8 +15,8 @@ import urllib
 from base64 import b64decode, b64encode
 from datetime import datetime
 from http.server import HTTPServer, SimpleHTTPRequestHandler
+from pathlib import Path
 
-import flask
 import requests
 import searchhelper
 from db import init_db_command
@@ -46,7 +46,7 @@ filepath = os.path.abspath(os.path.dirname(__file__))
 # //////////////////////////////////////////////////////////////////////////// #
 
 
-app = Flask(__name__)
+app = Flask("ASMShare")
 app.config['UPLOAD_PATH'] = f"{filepath}/files/"
 app.config['MAX_CONTENT_LENGTH'] = 50 * 1024 * 1024
 
@@ -123,6 +123,32 @@ cached = {}
 # //////////////////////////////////////////////////////////////////////////// #
 
 
+def convert_bytes(num):
+    """Converts bytes to human readable format
+
+     Parameters
+     ----------
+     Bytes : Int
+     Total bytes to be formatted
+
+     Returns
+     -------
+     Formatted : Str
+     Bytes in KB/MB/GB
+
+     Examples
+     --------
+     >>> 10000
+     > 9.765625 KB"""
+
+    step_unit = 1024
+
+    for x in ['B', 'KB', 'MB', 'GB', 'TB']:
+        if num < step_unit:
+            return "%3.1f %s" % (num, x)
+        num /= step_unit
+
+
 def log(message, level=2):
     """Logs input to a file
 
@@ -182,6 +208,20 @@ def shred(d, n=2):
         y.append(g)
     return y
 
+
+def updatestats(type=None):
+    db = sqlite3.connect("database.db")
+    cursor = db.cursor()
+    cursor.execute("select * from stats")
+    if type == None:
+        print("No stat specified")
+    else:
+        if type == "logins":
+            cursor.execute("update stats set logins = logins + 1")
+        elif type == "downloads":
+            cursor.execute("update stats set downloads = downloads + 1")
+        db.commit()
+        db.close()
 
 # //////////////////////////////////////////////////////////////////////////// #
 
@@ -274,7 +314,7 @@ def findfileicon(filename):
      >>> file.docx
      > ../static/file-images/docx.jpg"""
 
-    ext = filename.split(".")[len(filename.split(".")) - 1]
+    ext = filename.split(".")[-1]
     # if the file is an image, just use the image
     if ext in ["jpg", "png", "jpeg", "gif", "svg", "webp", "bmp"]:
         # I would just return the path to the file, but noooooooo, flask has to be special, so instead we clone it to the directory with the rest of the stuff
@@ -360,7 +400,33 @@ def compileimages():
 compileimages()
 
 
+stats = {}
+
+
+def create_stats():
+    db = sqlite3.connect("database.db")
+    cursor = db.cursor()
+    cursor.execute("SELECT COUNT(1) FROM filemapping;")
+    stats["uploads"] = cursor.fetchone()[0]
+    db.close()
+
+    db = sqlite3.connect("sqlite_db")
+    cursor = db.cursor()
+    cursor.execute("SELECT COUNT(1) FROM user;")
+    stats["users"] = cursor.fetchone()[0]
+    db.close()
+
+    root_directory = Path(f"{filepath}/files")
+    b = sum(f.stat().st_size for f in root_directory.glob('**/*') if f.is_file())
+    stats["size"] = convert_bytes(b)
+
+
+create_stats()
+print(stats)
+
 # This is just unholy magic
+
+
 def get_google_provider_cfg():
     return requests.get(GOOGLE_DISCOVERY_URL).json()
 
@@ -393,7 +459,7 @@ def index():
 def home():
     """Home page for user"""
     if request.method == "GET":
-        return render_template('land.html', cards=shred(cards, 4))
+        return render_template('land.html', stats=stats)
     elif request.method == "POST":
         query = request.form["query"]
         return redirect(url_for('search', query=query))
@@ -511,6 +577,7 @@ def callback():
                 # has a 1 in 10000 chance to rickroll the user on login
                 return redirect(url_for("rickroll"))
             else:
+                updatestats("logins")
                 return redirect(url_for("home"))
         else:
             return redirect(url_for("fivethreethreepage"))
@@ -527,7 +594,7 @@ def upload():
     # Sorts the tags by their usage
     tagsdict = {k: v for k, v in sorted(tagfile.items(), key=lambda item: item[1], reverse=True)}
     # Turns them into a list of keys
-    tags = [x for x in tagsdict]
+    tags = list(tagsdict.keys())
     return render_template("upload.html", tags=tags)
 
 
@@ -542,7 +609,7 @@ def success():
         f = request.files['file']
 
         # Split the name at the last . to get the file extension. This is to make sure we ignore any other .'s in tha name
-        ext = (f.filename).split(".")[len((f.filename).split(".")) - 1]
+        ext = (f.filename).split(".")[-1]
         form = request.form
 
         # get the short description and name from the form, then assign them to their own variables. I should probs do it with the rest but eh
@@ -641,8 +708,8 @@ def search(query):
         print("Not using cache for ", query)
     # If the cache's size is over 750MB, remove the last item in the cache. Keep going until the size is under 750MB
     while sys.getsizeof(cached) > 786432000:
-        k = cached.keys()
-        cached.pop(k[len(x) - 1])
+        k = list(cached.keys())
+        cached.pop(k[-1])
     if len(query) > 30:
         query = query[:27] + "..."
     return render_template("search.html", results=results, query=query)
@@ -653,6 +720,7 @@ def search(query):
 def download(filename):
     log(f"{current_user.name} has downloaded {filename}")
     path = f"{filepath}/files/{filename}"
+    updatestats("downloads")
     return send_file(path, as_attachment=True)
 
 
@@ -666,12 +734,22 @@ def download(filename):
 if __name__ == "__main__":
     # Checks if the ssl cert files exist. If they don't, fall back to a testing cert
     if os.path.isfile(r"/etc/letsencrypt/live/asmshare.xyz/fullchain.pem") and os.path.isfile(r"/etc/letsencrypt/live/asmshare.xyz/privkey.pem"):
-        app.run(ssl_context=("/etc/letsencrypt/live/asmshare.xyz/fullchain.pem", "/etc/letsencrypt/live/asmshare.xyz/privkey.pem"),  # Tries to find the actual good ssl cert
-                host="0.0.0.0",  # Listen on all available ips
-                port=443
-                )
+        def redir():
+            redir = Flask(__name__)
+
+            @app.route('/')
+            def hello():
+                return redirect("https://asmshare.xyz", code=302)
+
+            if __name__ == '__main__':
+                redir.run(host='0.0.0.0', port=80)
+        # run a simple server in another thread. This just redirects to the https version
+        threading.Thread(target="redir").start()
+        os.sys(f"gnunicorn -c {filepath}/wsig-config.py")  # Use gnunicorn to run the server if we are on prod
+
     else:
         app.run(ssl_context="adhoc",  # If the good one fails, use a testing one
                 host="0.0.0.0",  # Listen on all ips
                 port=5000
                 )
+        print("We got this far")
