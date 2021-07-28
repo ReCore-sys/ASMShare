@@ -4,6 +4,7 @@
 
 # //////////////////////////////////////////////////////////////////////////// #
 
+import functools
 import json
 import os
 import random
@@ -22,9 +23,10 @@ import searchhelper
 from db import init_db_command
 from flask import *
 from flask_htmlmin import HTMLMIN
-from flask_login import (LoginManager, UserMixin, current_user, login_required,
-                         login_user, logout_user)
+from flask_login import (LoginManager, UserMixin, current_user, login_user,
+                         logout_user)
 from fuzzywuzzy import fuzz, process
+from loguru import logger
 from oauthlib.oauth2 import WebApplicationClient
 from pdf2image import convert_from_bytes, convert_from_path
 from secret_data import *
@@ -54,6 +56,7 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 client = WebApplicationClient(GOOGLE_CLIENT_ID)
 app.secret_key = appkey
+login_needed = True
 
 # //////////////////////////////////////////////////////////////////////////// #
 
@@ -145,7 +148,7 @@ def convert_bytes(num):
 
     for x in ['B', 'KB', 'MB', 'GB', 'TB']:
         if num < step_unit:
-            return "%3.1f %s" % (num, x)
+            return f"{round(num)} {x}"
         num /= step_unit
 
 
@@ -222,72 +225,6 @@ def updatestats(type=None):
             cursor.execute("update stats set downloads = downloads + 1")
         db.commit()
         db.close()
-
-# //////////////////////////////////////////////////////////////////////////// #
-
-# Errors
-
-# //////////////////////////////////////////////////////////////////////////// #
-
-
-@app.errorhandler(404)
-def not_found(e):
-    return render_template('errors/404.html', message=notfoundmessage()), 404
-
-
-@app.errorhandler(403)
-def fourohthree(e):
-    return render_template('errors/403.html'), 403
-
-
-@app.route("/403")
-def fourohthreepage():
-    return render_template('errors/403.html')
-
-
-@app.errorhandler(406)
-def fourohsix(e):
-    return render_template('errors/406.html'), 406
-
-
-@app.route("/406")
-def fourohsixpage():
-    return render_template('errors/406.html')
-
-
-@app.errorhandler(500)
-def fivehundred(e):
-    return render_template('errors/500.html'), 500
-
-
-@app.route("/500")
-def fivehundredpage():
-    return render_template('errors/500.html')
-
-
-@app.route("/553")
-def fivethreethreepage():
-    return render_template('errors/553.html')
-
-
-@app.errorhandler(408)
-def fouroheight(e):
-    return render_template('errors/408.html'), 408
-
-
-@app.route("/408")
-def fouroheightpage():
-    return render_template('errors/408.html')
-
-
-@app.errorhandler(400)
-def fourhundred(e):
-    return render_template('errors/400.html'), 400
-
-
-@app.route("/400")
-def fourhundredpage():
-    return render_template('errors/400.html')
 
 # //////////////////////////////////////////////////////////////////////////// #
 
@@ -399,7 +336,6 @@ def compileimages():
 
 compileimages()
 
-
 stats = {}
 
 
@@ -416,15 +352,90 @@ def create_stats():
     stats["users"] = cursor.fetchone()[0]
     db.close()
 
-    root_directory = Path(f"{filepath}/files")
-    b = sum(f.stat().st_size for f in root_directory.glob('**/*') if f.is_file())
-    stats["size"] = convert_bytes(b)
+    rec = 0
+    paths = [f"{filepath}/files", f"{filepath}/static/file-images/images", f"{filepath}/static/file-images/pdfs"]
+    for x in paths:
+        root_directory = Path(x)
+        b = sum(f.stat().st_size for f in root_directory.glob('**/*') if f.is_file())
+        rec += b
+    stats["size"] = convert_bytes(rec).split(" ")
 
 
 create_stats()
 print(stats)
 
-# This is just unholy magic
+# //////////////////////////////////////////////////////////////////////////// #
+
+# Errors
+
+# //////////////////////////////////////////////////////////////////////////// #
+
+
+@app.errorhandler(404)
+def not_found(e):
+    return render_template('errors/404.html', message=notfoundmessage()), 404
+
+
+@app.errorhandler(403)
+def fourohthree(e):
+    return render_template('errors/403.html'), 403
+
+
+@app.route("/403")
+def fourohthreepage():
+    return render_template('errors/403.html')
+
+
+@app.errorhandler(406)
+def fourohsix(e):
+    return render_template('errors/406.html'), 406
+
+
+@app.route("/406")
+def fourohsixpage():
+    return render_template('errors/406.html')
+
+
+@app.errorhandler(500)
+def fivehundred(e):
+    return render_template('errors/500.html'), 500
+
+
+@app.route("/500")
+def fivehundredpage():
+    return render_template('errors/500.html')
+
+
+@app.route("/553")
+def fivethreethreepage():
+    return render_template('errors/553.html')
+
+
+@app.errorhandler(408)
+def fouroheight(e):
+    return render_template('errors/408.html'), 408
+
+
+@app.route("/408")
+def fouroheightpage():
+    return render_template('errors/408.html')
+
+
+@app.errorhandler(400)
+def fourhundred(e):
+    return render_template('errors/400.html'), 400
+
+
+@app.route("/400")
+def fourhundredpage():
+    return render_template('errors/400.html')
+
+
+# //////////////////////////////////////////////////////////////////////////// #
+
+# Login based black magic
+
+# //////////////////////////////////////////////////////////////////////////// #
 
 
 def get_google_provider_cfg():
@@ -436,16 +447,28 @@ def get_google_provider_cfg():
 def load_user(user_id):
     return User.get(user_id)
 
-# //////////////////////////////////////////////////////////////////////////// #
 
-# Page functions
+def improved_login(func):
+    @functools.wraps(func)
+    def page():
+        if current_user.is_authenticated:
+            return func()
+        res = make_response(redirect(url_for("login")))
+        res.set_cookie("return-page", func.__name__, 60 * 5)
+        return res
+    return page
 
-# //////////////////////////////////////////////////////////////////////////// #
+    # //////////////////////////////////////////////////////////////////////////// #
+
+    # Page functions
+
+    # //////////////////////////////////////////////////////////////////////////// #
+
+    # Main page. If the user is logged in, shows that on the login button and the user's name
 
 
-# Main page. If the user is logged in, shows that on the login button and the user's name
 @app.route("/")
-def index():
+def entry():
     """Main Page"""
     if current_user.is_authenticated:
         return render_template('index.html', redir="/home", logged=f"Logged In: {current_user.name}")
@@ -455,7 +478,7 @@ def index():
 
 # This will be the main page for logged in users. Will show the exemplars
 @app.route("/home", methods=["GET", "POST"])
-@login_required
+@improved_login
 def home():
     """Home page for user"""
     if request.method == "GET":
@@ -488,7 +511,7 @@ def fullcard(item):
 
 # No real use but meh
 @app.route("/logout")
-@login_required
+@improved_login
 def logout():
     logout_user()
     return redirect(url_for("index"))
@@ -506,19 +529,38 @@ def logs():
 # even i don't know what the next few bits do. google auth is a pain
 @login_manager.unauthorized_handler
 @app.route("/login")
+@logger.catch
 def login():
-    # Find out what URL to hit for Google login
-    google_provider_cfg = get_google_provider_cfg()
-    authorization_endpoint = google_provider_cfg["authorization_endpoint"]
+    print(f"Login required: {login_needed}")
+    if login_needed == True:
+        # Find out what URL to hit for Google login
+        google_provider_cfg = get_google_provider_cfg()
+        authorization_endpoint = google_provider_cfg["authorization_endpoint"]
 
-    # Use library to construct the request for Google login and provide
-    # scopes that let you retrieve user's profile from Google
-    request_uri = client.prepare_request_uri(
-        authorization_endpoint,
-        redirect_uri=request.base_url + "/callback",
-        scope=["openid", "email", "profile"],
-    )
-    return redirect(request_uri)
+        # Use library to construct the request for Google login and provide
+        # scopes that let you retrieve user's profile from Google
+        request_uri = client.prepare_request_uri(
+            authorization_endpoint,
+            redirect_uri=request.base_url + "/callback",
+            scope=["openid", "email", "profile"],
+        )
+        return redirect(request_uri)
+    else:
+        unique_id = u"0"
+        users_email = "test1234@asms.sa.edu.au"
+        picture = "https://cdn4.iconfinder.com/data/icons/ionicons/512/icon-ios7-gear-512.png"
+        users_name = "Test User"
+        user = User(
+            id_=unique_id, name=users_name, email=users_email, profile_pic=picture
+        )
+        # Doesn't exist? Add it to the database.
+        if not User.get(unique_id):
+            User.create(unique_id, users_name, users_email, picture)
+        login_user(user)
+        if request.cookies.get("return-page") == None or request.cookies.get("return-page") == "None":
+            return redirect(url_for("home"))
+        else:
+            return redirect(url_for(request.cookies.get("return-page")))
 
 
 # ALL of the callbacks
@@ -578,7 +620,10 @@ def callback():
                 return redirect(url_for("rickroll"))
             else:
                 updatestats("logins")
-                return redirect(url_for("home"))
+                if request.cookies.get("return-page") == None or request.cookies.get("return-page") == "None":
+                    return redirect(url_for("home"))
+                else:
+                    return redirect(url_for(request.cookies.get("return-page")))
         else:
             return redirect(url_for("fivethreethreepage"))
     else:
@@ -587,7 +632,7 @@ def callback():
 
 # Page where you upload your files
 @app.route('/upload')
-# @login_required
+@improved_login
 def upload():
     # Retrieves the tags from a file
     tagfile = json.load(open(f"{filepath}/tags.json", "r"))
@@ -716,7 +761,7 @@ def search(query):
 
 
 @app.route('/download/<filename>', methods=['GET', 'POST'])
-@login_required
+@improved_login
 def download(filename):
     log(f"{current_user.name} has downloaded {filename}")
     path = f"{filepath}/files/{filename}"

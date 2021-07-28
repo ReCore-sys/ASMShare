@@ -82,6 +82,7 @@ video {
 	vertical-align: baseline;
 }
 /* HTML5 display-role reset for older browsers */
+
 article,
 aside,
 details,
@@ -194,8 +195,8 @@ p > svg {
 }
 
 .navigation svg {
-	width         : 30px;
-	height        : 1.5em;
+	width         : 0.8em;
+	height        : 0.8em;
 	vertical-align: text-top;
 }
 
@@ -217,7 +218,6 @@ svg {
 }
 /* END Navigation
 ----------------- */
-
 .navigation {
 	box-shadow                : 0 0;
 	transition-delay          : 0s;
@@ -247,7 +247,7 @@ svg {
 }
 
 .navigation:hover {
-	width: 10em;
+	width: 12em;
 }
 
 .navigation li,
@@ -280,7 +280,7 @@ svg {
 }
 
 .navigation:hover a {
-	width  : 9em;
+	width  : 12em;
 	display: inline-block;
 	padding: 0.8em 0 0.8em 1em;
 }
@@ -336,6 +336,7 @@ svg {
 	fill: #F2F600;
 }
 /* Menu position on the navigation bar */
+
 .menu {
 	position: fixed;
 	top     : 0;
