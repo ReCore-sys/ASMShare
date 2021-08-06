@@ -5,35 +5,25 @@
 # //////////////////////////////////////////////////////////////////////////// #
 
 import functools
-import json
 import os
 import random
-import re
 import sqlite3
 import sys
-import threading
-import time
-import urllib
-from base64 import b64decode, b64encode
 from datetime import datetime
-from http.server import HTTPServer, SimpleHTTPRequestHandler
 from pathlib import Path
 
 import requests
-import searchhelper
-from db import init_db_command
+import ujson as json
 from flask import *
 from flask_compress import Compress
-from flask_htmlmin import HTMLMIN
-from flask_login import (LoginManager, UserMixin, current_user, login_user,
-                         logout_user)
-from fuzzywuzzy import fuzz, process
+from flask_login import LoginManager, current_user, login_user, logout_user
 from loguru import logger
 from oauthlib.oauth2 import WebApplicationClient
-from pdf2image import convert_from_bytes, convert_from_path
+from pdf2image import convert_from_path
+
+import searchhelper
 from secret_data import *
 from user import User
-from werkzeug.utils import secure_filename
 
 # //////////////////////////////////////////////////////////////////////////// #
 
@@ -109,7 +99,8 @@ fourohfour = ["Welp. This is awkward",
               "Get 404'd",
               "Ya done messed up",
               "GET OUT MY ROOM I'M PLAYING MINECRAFT",
-              "Server hamster needs more vodka"
+              "Server hamster needs more vodka",
+              "This isn't the url your looking for"
               ]
 
 random.shuffle(fourohfour)
@@ -127,13 +118,17 @@ cached = {}
 
 
 def convert_bytes(num):
-    """convert_bytes Gets a number of bytes and turns it into something easier to read
+    """convert_bytes Turns a bytecount into a nicely readable string
 
-    Args:
-        num (int): Raw byte count
+    Parameters
+    ----------
+    num : int
+        Number of bytes to evaluate
 
-    Returns:
-        str: Human readable byte count
+    Returns
+    -------
+    str
+        Human readable string
     """
 
     step_unit = 1024
@@ -145,11 +140,14 @@ def convert_bytes(num):
 
 
 def log(message, level=2):
-    """log Logs a message to the logs file
+    """log Writes the input to the log file to
 
-    Args:
-        message (str): What message to use
-        level (int, optional): What level of logging to use. Not implemented yet. Defaults to 2.
+    Parameters
+    ----------
+    message : str
+        The message to log to the file
+    level : int, optional
+        What level of logging to use, by default 2
     """
     with open(f"{filepath}/logs", mode="a") as f:
         f.write(
@@ -157,10 +155,12 @@ def log(message, level=2):
 
 
 def notfoundmessage():
-    """notfoundmessage Returns a random message for the 404 page
+    """notfoundmessage Gets a message to display on the 404 page.
 
-    Returns:
-        str: Message to use
+    Returns
+    -------
+    str
+        The message to use
     """
     global c
     message = fourohfour[c]
@@ -171,14 +171,19 @@ def notfoundmessage():
 
 
 def shred(d, n=2):
-    """shred Cuts a dict into a list of dict of `n` size
+    """shred Cuts a dict into a list of n sized dicts
 
-    Args:
-        d (dict): The dict to cut up
-        n (int, optional): What size to cut it into. Defaults to 2.
+    Parameters
+    ----------
+    d : dict
+        The dict to cut
+    n : int, optional
+        Size of each chunk, by default 2
 
-    Returns:
-        list: list of dicts
+    Returns
+    -------
+    list
+        List of dicts
     """
     c = 0
     y = []
@@ -196,10 +201,12 @@ def shred(d, n=2):
 
 
 def updatestats(type=None):
-    """updatestats Update the statistics
+    """updatestats Adds 1 to the specified stat
 
-    Args:
-        type (str, optional): The stat to increase. Defaults to None.
+    Parameters
+    ----------
+    type : str, optional
+        What stat to modify, by default None
     """
     create_stats()
     db = sqlite3.connect("database.db")
@@ -217,13 +224,17 @@ def updatestats(type=None):
 
 
 def findfileicon(filename):
-    """findfileicon Returns a path to the image to use for a file
+    """findfileicon Gets an icon for each type of file
 
-    Args:
-        filename (str): The name of the file to find an image for
+    Parameters
+    ----------
+    filename : str
+        The name of the file to get a file
 
-    Returns:
-        str: Path to image
+    Returns
+    -------
+    str
+        Path to image to use for the file
     """
 
     ext = filename.split(".")[-1]
@@ -272,7 +283,7 @@ imgfolder = r"""../static/file-images/"""
 
 
 def compileimages():
-    """compileimages Recompiles the cards dict
+    """compileimages Recompiles the image dict
     """
     global cards
     cards = {}
@@ -310,7 +321,7 @@ stats = {}
 
 
 def create_stats():
-    """create_stats Creates and updates the stats dict
+    """create_stats Pulls stats from the db
     """
     db = sqlite3.connect("database.db")
     cursor = db.cursor()
@@ -345,10 +356,12 @@ create_stats()
 
 
 def is_admin():
-    """is_admin Checks if the ccurrent user is an admin (Teacher or in the admins list)
+    """is_admin Checks if the user is admin or in the admins file
 
-    Returns:
-        bool: Whether the user is admin
+    Returns
+    -------
+    bool
+        Whether or not they are an admin
     """
     if any(i.isdigit() for i in current_user.email) and current_user.email not in admins:
         return False
@@ -357,10 +370,12 @@ def is_admin():
 
 
 def getname():
-    """getname Gets the name of the user, based on email. This is to account for NB people who don't want to use their legal name
+    """getname Gets the first name of the user
 
-    Returns:
-        str: The name of the user
+    Returns
+    -------
+    str
+        The name to use for the person
     """
     email = current_user.email
     with open("names.json", "r") as names:
