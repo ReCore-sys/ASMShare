@@ -1,0 +1,42 @@
+.cookie-bar {
+	position: fixed;
+	bottom: 0px;
+	padding: 10px 15px;
+	width: 100%;
+	z-index: 15;
+  background-color: #1f1f1f;
+	font-family: "Poppins", sans-serif;
+}
+
+.cookie-para {
+	color: white;
+	font-size: 12px;
+	font-weight: normal;
+	display: inline-block;
+	padding-bottom: 5px;
+}
+
+.cookie-space {
+	padding-bottom: 45px;
+}
+
+.cookie-btn {
+	font-size: 14px;
+	color: black;
+	background: #1de9b6;
+	padding: 4px 15px;
+	border-radius: 4px;
+	display: inline-block;
+  margin-left: 10px;
+}
+
+.cookie-btn.secondary {
+	color: #ffffff;
+	background: #3575ff;
+}
+
+@media (max-width: 767px) {
+	.cookie-bar {
+		padding: 10px 15px 40px 15px;
+	}
+}

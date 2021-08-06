@@ -138,3 +138,8 @@ secret_data.py
 static/file-images/pdfs/*
 static/file-images/images/*
 logs
+csscleaner.py
+*.txt
+static/fonts/
+.vscode/
+names.json

@@ -1,5 +1,9 @@
 bind = "0.0.0.0:443"
-workers = 3
+workers = 2
 ca_certs = "/etc/letsencrypt/live/asmshare.xyz/chain.pem"
 keyfile = "/etc/letsencrypt/live/asmshare.xyz/privkey.pem"
-cert = "/etc/letsencrypt/live/asmshare.xyz/cert.pem"
+certfile = "/etc/letsencrypt/live/asmshare.xyz/cert.pem"
+# worker_class = "gthread"
+keepalive = 5
+accesslog = '-'
+access_log_format = "%(h)s %(l)s %(r)s %(l)s %(M)s ms"

@@ -14,7 +14,7 @@
 		<meta content="#43B581" data-react-helmet="true" name="theme-color" />
 
 		<!--Inter UI font-->
-		<link href="https://rsms.me/inter/inter-ui.css" rel="stylesheet">
+		<link href="{{ url_for('static', filename='css/inter-ui.css')}}" rel="stylesheet">
 
 		<!--vendors styles-->
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -23,9 +23,90 @@
 
 		<!-- Bootstrap CSS / Color Scheme -->
 		<link rel="stylesheet" href="{{ url_for('static', filename='css/default.css')}}" id="theme-color">
+		<link rel="stylesheet" href="{{ url_for('static', filename='css/cookies.css')}}" id="theme-color">
 		{% include "menu.html" %}
 		{% block menu %}
 		{% endblock %}
+		<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+		<!-- region Cookie script -->
+		<script>
+      $(document).ready(function(){
+       if(readCookie("cookie_accepted") == "1"){
+          $(".cookie-bar").hide();
+      }
+      else{
+          $(".cookie-bar").show();
+              $('body').addClass('cookie-space');
+              $('.cookie-btn').click(function(){
+                  $('body').removeClass('cookie-space');
+              $('.cookie-bar').fadeOut();
+              createCookie("cookie_accepted", 1, 365);
+          });
+      }
+      });
+
+
+
+      function getParameterByName(name, url) {
+          if (!url) {
+              url = window.location.href;
+          }
+          name = name.replace(/[\[\]]/g, "\\$&");
+          var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+              results = regex.exec(url);
+          if (!results) return null;
+          if (!results[2]) return '';
+          return decodeURIComponent(results[2].replace(/\+/g, " "));
+      }
+
+      function createCookie(name, value, days) {
+          var expires = "";
+          if (days) {
+              var date = new Date();
+              date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+              expires = "; expires=" + date.toUTCString();
+          }
+          document.cookie = name + "=" + value + expires + "; path=/";
+      }
+
+      function readCookie(name) {
+          var nameEQ = name + "=";
+          var ca = document.cookie.split(';');
+          for (var i = 0; i < ca.length; i++) {
+              var c = ca[i];
+              while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+              if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+          }
+          return null;
+      }
+
+      function eraseCookie(name) {
+          createCookie(name, "", -1);
+      }
+
+      $(document).ready(function() {
+          var advMedium = getParameterByName('advm');
+          if (advMedium != null) {
+              $('input[name=advm]').val(advMedium);
+              createCookie('advm', advMedium, 1);
+          } else {
+              advMedium = readCookie('advm');
+              $('input[name=advm]').val(advMedium);
+          }
+          var nodeCount = document.getElementsByName('ft').length;
+          for (count = 0; count < nodeCount; count++) {
+              document.getElementsByName('ft')[count].value = window.location.href;
+          }
+      });
+      </script>
+
+		<section class="cookie-bar">
+			<div class="cookie-notice container">
+				<p class="cookie-para">This si'e uses biscuits to record da'a like whee tah sen' yah aftah loggin in, yeah?</p>
+				<a href="javascript:;" class="cookie-btn">Hunky dory</a>
+
+			</div>
+		</section>
 	</head>
 
 	<body>
@@ -100,11 +181,11 @@
 							<div class="col-md-6 box">
 								<div class="icon-box box-primary">
 									<div class="icon-box-inner">
-										<span data-feather="eye-off" width="35" height="35"></span>
+										<span data-feather="zap" width="35" height="35"></span>
 									</div>
 								</div>
-								<h5>Anyonmous</h5>
-								<p class="text-muted">The only details recorded is your name so the site can welcome you and an email address and that is only used so I can work out who uploaded 4 hours of "Around the world". Your email is never shown to anyone else.</p>
+								<h5>Easy to use</h5>
+								<p class="text-muted">With a simple design and globally available links, you can get to nearly any part of the site site from anywhere else. No more trawling through every hyperlink to find that upload page.</p>
 							</div>
 							<div class="col-md-6 box">
 								<div class="icon-box box-primary">
@@ -130,7 +211,7 @@
 				</div>
 				<div class="row mt-6">
 					<div class="col-md-6 mr-auto">
-						<h2>More than just a <del>cheat site</del> assignment repository</h2>
+						<h2>More than just a assignment repository</h2>
 						<p class="mb-5">Its a place to learn from those before you, and those before them</p>
 						<a href="#" class="btn btn-light" onclick="window.location.href='{{redir}}'">
 							Log in here
@@ -154,27 +235,28 @@
 						<div class="row">
 							<div class="col-md-6 mb-5">
 								<h6>Do you have my password?</h6>
-								<p class="text-muted">Nope. Google does though. Through some funky web magic, you sign in with Google and then Google just gives me your name and email. Your password is safe.</p>
+								<p class="text-muted">Nope. Google does though. Through some funky web magic, you sign in with Google and then Google just gives me your name and email. Your password is safe. And besides, I probably should not be trusted with your passwords
+									since I have next to no understanding how hashing works.</p>
 							</div>
 							<div class="col-md-6 mb-5">
 								<h6>Why did you make this?</h6>
-								<p class="text-muted">Uhhh I didn't know what to do for my industrial design assignment</p>
+								<p class="text-muted">Uhhh I didn't know what to do for my industrial design assignment. Also I wanted to see if I could make a site. Spoiler alert, I can.</p>
 							</div>
 							<div class="col-md-6 mb-5">
 								<h6>What can I upload?</h6>
-								<p class="text-muted">You can upload any file type you want, but PDF files are prefered</p>
+								<p class="text-muted">You can upload any file type you want, but PDF files are prefered cos I can turn them into nice images</p>
 							</div>
 							<div class="col-md-6 mb-5">
 								<h6>Why didn't my upload appear?</h6>
-								<p class="text-muted">So I don't get arrested, you can't upload an assignment during the year you completed it. You will be able to upload it now and the assignment will appear on the site on the first of January</p>
+								<p class="text-muted">So I don't get arrested by SACE moderators, you can't upload an assignment during the year you completed it. You will be able to upload it now and the assignment will appear on the site on the first of January</p>
 							</div>
 							<div class="col-md-6 mb-5">
 								<h6>How did you make this?</h6>
-								<p class="text-muted">Python, HTML and lots of redbull</p>
+								<p class="text-muted">Python, HTML and obscenly little sleep</p>
 							</div>
 							<div class="col-md-6 mb-5">
 								<h6>How can I contact you?</h6>
-								<p class="text-muted">At school I'm the dude with neon blue hair. Otherwise, idk I might stick my insta/discord/email/number here?</p>
+								<p class="text-muted">At school I'm the dude with neon blue hair. Otherwise, you can find my socials n stuff <a href="https://github.com/ReCore-sys/ASMShare">here</a>?</p>
 							</div>
 						</div>
 					</div>

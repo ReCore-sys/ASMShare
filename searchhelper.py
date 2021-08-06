@@ -47,10 +47,10 @@ Fuzzy search nested dictionaries
                 if type(search_dict[y][x]) == list:
                     for value in search_dict[y][x]:
                         if query.lower() in value.lower():
-                            accuracy += 50
+                            accuracy *= 2
                 else:
                     if query.lower() in search_dict[y][x].lower():
-                        accuracy += 50
+                        accuracy *= 2
 
                 # add the points the the scoretable, then start again
                 scoretable[y] += round(accuracy)
@@ -68,7 +68,7 @@ Fuzzy search nested dictionaries
     rng = mx - mn
     print("range", rng)
     # Set a percentage. This can be tweaked
-    percentage = 45
+    percentage = 75
     # Get a threshold based off these number (Gets percentage% of the range, then adds it to the min)
     threshold = mn + round((rng / 100) * percentage)
     print("threshold: ", threshold)

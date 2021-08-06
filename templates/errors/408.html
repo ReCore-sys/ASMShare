@@ -9,7 +9,7 @@
 		<link rel="shortcut icon" href="{{ url_for('static', filename='img/ASMS.ico') }}">
 
 		<!--Inter UI font-->
-		<link href="https://rsms.me/inter/inter-ui.css" rel="stylesheet">
+		<link href="{{ url_for('static', filename='css/inter-ui.css')}}" rel="stylesheet">
 
 		<!--vendors styles-->
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -24,18 +24,6 @@
 	</head>
 
 	<body>
-		<section class="smart-scroll">
-			<div class="container-fluid">
-				<nav class="navbar navbar-expand-md navbar-dark">
-					<a class="navbar-brand heading-black" href="/">
-						ASMShare
-					</a>
-					<button class="navbar-toggler navbar-toggler-right border-0" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-						<span data-feather="grid"></span>
-					</button>
-				</nav>
-			</div>
-		</section>
 		<!--hero header-->
 		<section class="py-7 py-md-0 bg-hero" id="home">
 			<div class="container">

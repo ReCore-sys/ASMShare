@@ -9,7 +9,7 @@
 		<link rel="shortcut icon" href="{{ url_for('static', filename='img/ASMS.ico') }}">
 
 		<!--Inter UI font-->
-		<link href="https://rsms.me/inter/inter-ui.css" rel="stylesheet">
+		<link href="{{ url_for('static', filename='css/inter-ui.css')}}" rel="stylesheet">
 
 		<!--vendors styles-->
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -187,9 +187,9 @@ section#counter-stats {
 					</div>
 
 					<div class="col-lg-3 stats">
-						<i class="fa" aria-hidden="true"></i>
-						<div class="counting" data-count="999">0</div>
-						<h5>Cups of coffee</h5>
+						<i class="fa" data-feather="log-in" aria-hidden="true"></i>
+						<div class="counting" data-count={{stats["logins"]}}>0</div>
+						<h5>Individual logins</h5>
 					</div>
 
 					<script>

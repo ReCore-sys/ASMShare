@@ -8,6 +8,7 @@ import functools
 import json
 import os
 import random
+import re
 import sqlite3
 import sys
 import threading
@@ -22,6 +23,7 @@ import requests
 import searchhelper
 from db import init_db_command
 from flask import *
+from flask_compress import Compress
 from flask_htmlmin import HTMLMIN
 from flask_login import (LoginManager, UserMixin, current_user, login_user,
                          logout_user)
@@ -51,12 +53,17 @@ filepath = os.path.abspath(os.path.dirname(__file__))
 app = Flask("ASMShare")
 app.config['UPLOAD_PATH'] = f"{filepath}/files/"
 app.config['MAX_CONTENT_LENGTH'] = 50 * 1024 * 1024
+app.config['MINIFY_HTML'] = True
 
 login_manager = LoginManager()
 login_manager.init_app(app)
 client = WebApplicationClient(GOOGLE_CLIENT_ID)
 app.secret_key = appkey
 login_needed = True
+compress = Compress()
+app.config["COMPRESS_ALGORITHM"] = "br"
+app.config["COMPRESS_BR_LEVEL"] = 11
+Compress(app)
 
 # //////////////////////////////////////////////////////////////////////////// #
 
@@ -78,13 +85,6 @@ except:
 
 db.commit()
 db.close()
-
-# Naive database setup
-try:
-    init_db_command()
-except sqlite3.OperationalError:
-    # Assume it's already been created
-    pass
 
 # //////////////////////////////////////////////////////////////////////////// #
 
@@ -127,22 +127,14 @@ cached = {}
 
 
 def convert_bytes(num):
-    """Converts bytes to human readable format
+    """convert_bytes Gets a number of bytes and turns it into something easier to read
 
-     Parameters
-     ----------
-     Bytes : Int
-     Total bytes to be formatted
+    Args:
+        num (int): Raw byte count
 
-     Returns
-     -------
-     Formatted : Str
-     Bytes in KB/MB/GB
-
-     Examples
-     --------
-     >>> 10000
-     > 9.765625 KB"""
+    Returns:
+        str: Human readable byte count
+    """
 
     step_unit = 1024
 
@@ -153,22 +145,23 @@ def convert_bytes(num):
 
 
 def log(message, level=2):
-    """Logs input to a file
+    """log Logs a message to the logs file
 
-     Parameters
-     ----------
-     message : str
-     The message to log
-
-     Level : int
-     What level of logging to use
-     """
+    Args:
+        message (str): What message to use
+        level (int, optional): What level of logging to use. Not implemented yet. Defaults to 2.
+    """
     with open(f"{filepath}/logs", mode="a") as f:
-        f.write(f"\n{(datetime.now()).strftime('%d/%m/%Y- %I:%M:%S %p')}: {message}")
+        f.write(
+            f"\n{(datetime.now()).strftime('%d/%m/%Y- %I:%M:%S %p')}: {message}")
 
 
 def notfoundmessage():
-    """Loops through the list of 404 messages"""
+    """notfoundmessage Returns a random message for the 404 page
+
+    Returns:
+        str: Message to use
+    """
     global c
     message = fourohfour[c]
     c += 1
@@ -178,25 +171,15 @@ def notfoundmessage():
 
 
 def shred(d, n=2):
-    """Custom function to split a dict into a list of dicts
+    """shred Cuts a dict into a list of dict of `n` size
 
-     Parameters
-     ----------
-     d : dict
-     The dictionary to split
+    Args:
+        d (dict): The dict to cut up
+        n (int, optional): What size to cut it into. Defaults to 2.
 
-     n : int
-     How many dictionaries per chunk in the list
-
-     Returns
-     -------
-     y: list
-     The list cut into parts with n length
-
-     Examples
-     --------
-     >>> shred({key1: result1, key2: result2, key3: result3, key4: result4}, 2)
-     > [{key1: result1, key2: result2}, {key3: result3, key4: result4}]"""
+    Returns:
+        list: list of dicts
+    """
     c = 0
     y = []
     g = {}
@@ -213,6 +196,12 @@ def shred(d, n=2):
 
 
 def updatestats(type=None):
+    """updatestats Update the statistics
+
+    Args:
+        type (str, optional): The stat to increase. Defaults to None.
+    """
+    create_stats()
     db = sqlite3.connect("database.db")
     cursor = db.cursor()
     cursor.execute("select * from stats")
@@ -226,30 +215,16 @@ def updatestats(type=None):
         db.commit()
         db.close()
 
-# //////////////////////////////////////////////////////////////////////////// #
-
-# Function to get the thumbnail for a file type
-
-# //////////////////////////////////////////////////////////////////////////// #
-
 
 def findfileicon(filename):
-    """File icon finder
+    """findfileicon Returns a path to the image to use for a file
 
-     Parameters
-     ----------
-     File name : str
-     The name of the file to get the icon for
+    Args:
+        filename (str): The name of the file to find an image for
 
-     Returns
-     -------
-     path to icon: str
-     Path to the icon to use
-
-     Examples
-     --------
-     >>> file.docx
-     > ../static/file-images/docx.jpg"""
+    Returns:
+        str: Path to image
+    """
 
     ext = filename.split(".")[-1]
     # if the file is an image, just use the image
@@ -295,15 +270,10 @@ def findfileicon(filename):
 cards = {}
 imgfolder = r"""../static/file-images/"""
 
-# //////////////////////////////////////////////////////////////////////////// #
-
-# Recompiles the cards (Call whenever db gets updated)
-
-# //////////////////////////////////////////////////////////////////////////// #
-
 
 def compileimages():
-    """Turns the sql entry for each file into a dictionary so the site can display it"""
+    """compileimages Recompiles the cards dict
+    """
     global cards
     cards = {}
     db = sqlite3.connect("database.db")
@@ -340,6 +310,8 @@ stats = {}
 
 
 def create_stats():
+    """create_stats Creates and updates the stats dict
+    """
     db = sqlite3.connect("database.db")
     cursor = db.cursor()
     cursor.execute("SELECT COUNT(1) FROM filemapping;")
@@ -353,17 +325,50 @@ def create_stats():
     db.close()
 
     rec = 0
-    paths = [f"{filepath}/files", f"{filepath}/static/file-images/images", f"{filepath}/static/file-images/pdfs"]
+    paths = [f"{filepath}/files", f"{filepath}/static/file-images/images",
+             f"{filepath}/static/file-images/pdfs"]
     for x in paths:
         root_directory = Path(x)
-        b = sum(f.stat().st_size for f in root_directory.glob('**/*') if f.is_file())
+        b = sum(f.stat().st_size for f in root_directory.glob(
+            '**/*') if f.is_file())
         rec += b
     stats["size"] = convert_bytes(rec).split(" ")
 
+    db = sqlite3.connect("database.db")
+    cursor = db.cursor()
+    cursor.execute("SELECT logins FROM stats;")
+    stats["logins"] = cursor.fetchone()[0]
+    db.close()
+
 
 create_stats()
-print(stats)
 
+
+def is_admin():
+    """is_admin Checks if the ccurrent user is an admin (Teacher or in the admins list)
+
+    Returns:
+        bool: Whether the user is admin
+    """
+    if any(i.isdigit() for i in current_user.email) and current_user.email not in admins:
+        return False
+    else:
+        return True
+
+
+def getname():
+    """getname Gets the name of the user, based on email. This is to account for NB people who don't want to use their legal name
+
+    Returns:
+        str: The name of the user
+    """
+    email = current_user.email
+    with open("names.json", "r") as names:
+        names = json.load(names)
+        if email in names:
+            return names[email]
+        else:
+            return current_user.name
 # //////////////////////////////////////////////////////////////////////////// #
 
 # Errors
@@ -453,9 +458,13 @@ def improved_login(func):
     def page():
         if current_user.is_authenticated:
             return func()
-        res = make_response(redirect(url_for("login")))
-        res.set_cookie("return-page", func.__name__, 60 * 5)
-        return res
+        else:
+            res = make_response(redirect(url_for("login")))
+            if func.__name__ == "entry":
+                res.set_cookie("return-page", "home", 60 * 5)
+            else:
+                res.set_cookie("return-page", func.__name__, 60 * 5)
+            return res
     return page
 
     # //////////////////////////////////////////////////////////////////////////// #
@@ -471,9 +480,9 @@ def improved_login(func):
 def entry():
     """Main Page"""
     if current_user.is_authenticated:
-        return render_template('index.html', redir="/home", logged=f"Logged In: {current_user.name}")
+        return render_template('index.html', redir="/home", logged=f"Logged In: {getname()}")
     else:
-        return render_template('index.html', redir="/login", logged="Log in")
+        return render_template('index.html', redir="/home", logged="Log in")
 
 
 # This will be the main page for logged in users. Will show the exemplars
@@ -506,7 +515,7 @@ def fullcard(item):
     if item in cards:
         return render_template('cardview.html', card=cards[item], download=item, taglist=taglist)
     else:
-        return render_template('errors/404.html', message=notfoundmessage()), 404
+        return redirect(url_for("not_found", message=notfoundmessage())), 404
 
 
 # No real use but meh
@@ -514,16 +523,17 @@ def fullcard(item):
 @improved_login
 def logout():
     logout_user()
-    return redirect(url_for("index"))
+    return redirect(url_for("entry"))
 
 
 @app.route("/logs")
+@improved_login
 def logs():
-    if any(i.isdigit() for i in current_user.email) and current_user.email not in admins:
-        return redirect(url_for("fourohthreepage"))
-    else:
+    if is_admin():
         with open(f'{filepath}/logs', 'r') as f:
             return render_template('logs.html', logfile=f.readlines())
+    else:
+        return redirect(url_for("fourohthreepage"))
 
 
 # even i don't know what the next few bits do. google auth is a pain
@@ -531,7 +541,6 @@ def logs():
 @app.route("/login")
 @logger.catch
 def login():
-    print(f"Login required: {login_needed}")
     if login_needed == True:
         # Find out what URL to hit for Google login
         google_provider_cfg = get_google_provider_cfg()
@@ -612,7 +621,8 @@ def callback():
             if not User.get(unique_id):
                 User.create(unique_id, users_name, users_email, picture)
             login_user(user)
-            log(f"User {current_user.name} {userinfo_response.json()['family_name']} has logged in")
+            log(
+                f"User {getname()} {userinfo_response.json()['family_name']} has logged in")
             print(f"usr: {current_user.email}")
             hold = random.randint(1, 10000)
             if hold == 1:
@@ -637,7 +647,8 @@ def upload():
     # Retrieves the tags from a file
     tagfile = json.load(open(f"{filepath}/tags.json", "r"))
     # Sorts the tags by their usage
-    tagsdict = {k: v for k, v in sorted(tagfile.items(), key=lambda item: item[1], reverse=True)}
+    tagsdict = {k: v for k, v in sorted(
+        tagfile.items(), key=lambda item: item[1], reverse=True)}
     # Turns them into a list of keys
     tags = list(tagsdict.keys())
     return render_template("upload.html", tags=tags)
@@ -670,7 +681,7 @@ def success():
             veryshort = short
 
         # Honestly I don't know why I have this. So far it hasn't caused any issues so I'll leave it
-        if len([fname, form["short"], form["long"], current_user.name, form["subject"], form["tags"]]) == 6:
+        if len([fname, form["short"], form["long"], getname(), form["subject"], form["tags"]]) == 6:
 
             # SQL stuff
             db = sqlite3.connect("database.db")
@@ -690,20 +701,20 @@ def success():
                 tryid = random.randint(int("1" + ("0" * 5)), int("9" * 6))
             # Now we do some funky stuff with tags
             tags = json.loads(form["tags"])
-            print(tags)
             # max of 5 tags. You can enter more, but they won't show up
-            tags = [x["value"].replace(" ", "-") for x in tags][:5]
+            tags = [x["value"].replace(" ", "-") for x in tags[:5]]
 
             prettytags = ",".join(tags)
 
             # Add all the stuff the the database
             cursor.execute(f'INSERT INTO filemapping VALUES (?, ?, ?, ?, ?, ?, ?, 1, ?, ?)',
-                           (fname, short, form["long"], current_user.name, form["subject"], prettytags, ((datetime.now()).strftime('%d/%m/%Y')), veryshort, f"{tryid}.{ext}"))
+                           (fname, short, form["long"], getname(), form["subject"], prettytags, ((datetime.now()).strftime('%d/%m/%Y')), veryshort, f"{tryid}.{ext}"))
             db.commit()
             db.close()
 
             # This bit just pulls apart the list into it's indvidual tags, then takes apart the tag, putting it back together but only with alphanumetic characters or hyphens
-            tags = [x for x in [ch.lower() for ch in tags if ch.isalnum() or "-"]]
+            tags = [x for x in [ch.lower()
+                                for ch in tags if ch.isalnum() or "-"]]
             # Opens a json file to store the tag frequency
             tagfile = json.load(open(f"{filepath}/tags.json", "r"))
             # Loops though all the tags
@@ -720,7 +731,7 @@ def success():
             f.save(f"{app.config['UPLOAD_PATH']}/{tryid}.{ext}")
 
             # Log the upload
-            log(f"User {current_user.name} has uploaded '{fname}' ({tryid})")
+            log(f"User {getname()} has uploaded '{fname}' ({tryid})")
 
             # Reload the image cache to account for the new uploads
             compileimages()
@@ -760,13 +771,15 @@ def search(query):
     return render_template("search.html", results=results, query=query)
 
 
-@app.route('/download/<filename>', methods=['GET', 'POST'])
-@improved_login
+@app.route('/download/<filename>')
+# @improved_login
 def download(filename):
-    log(f"{current_user.name} has downloaded {filename}")
-    path = f"{filepath}/files/{filename}"
-    updatestats("downloads")
-    return send_file(path, as_attachment=True)
+    if filename in os.listdir(f"{filepath}/files"):
+        path = f"{filepath}/files/{filename}"
+        updatestats("downloads")
+        return send_file(path, as_attachment=True)
+    else:
+        return redirect(url_for("not_found"))
 
 
 # //////////////////////////////////////////////////////////////////////////// #
@@ -775,26 +788,15 @@ def download(filename):
 
 # //////////////////////////////////////////////////////////////////////////// #
 
-
 if __name__ == "__main__":
+
     # Checks if the ssl cert files exist. If they don't, fall back to a testing cert
     if os.path.isfile(r"/etc/letsencrypt/live/asmshare.xyz/fullchain.pem") and os.path.isfile(r"/etc/letsencrypt/live/asmshare.xyz/privkey.pem"):
-        def redir():
-            redir = Flask(__name__)
-
-            @app.route('/')
-            def hello():
-                return redirect("https://asmshare.xyz", code=302)
-
-            if __name__ == '__main__':
-                redir.run(host='0.0.0.0', port=80)
-        # run a simple server in another thread. This just redirects to the https version
-        threading.Thread(target="redir").start()
-        os.sys(f"gnunicorn -c {filepath}/wsig-config.py")  # Use gnunicorn to run the server if we are on prod
+        # Use gnunicorn to run the server if we are on prod. For some god forsaken reason, if I don't add the --preload, stuff breaks and refuses to work.
+        os.system(f"gunicorn -c {filepath}/wsgi-config.py app:app --preload")
 
     else:
         app.run(ssl_context="adhoc",  # If the good one fails, use a testing one
                 host="0.0.0.0",  # Listen on all ips
                 port=5000
                 )
-        print("We got this far")

@@ -3,23 +3,27 @@
 <nav class="navigation">
 
 	<ul class="menu">
-		<li><a class="active" href="home"><svg class="home" width="30px" height="30px" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 512 512" enable-background="new 0 0 512 512"
-					xml:space="preserve">
-					<path d="M419.492,275.815v166.213H300.725v-90.33h-89.451v90.33H92.507V275.815H50L256,69.972l206,205.844H419.492 z M394.072,88.472h-47.917v38.311l47.917,48.023V88.472z" />
-				</svg><span title="Home">Home</span></a></li>
-		<li><a href="upload"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-upload">
-					<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-					<polyline points="17 8 12 3 7 8"></polyline>
-					<line x1="12" y1="3" x2="12" y2="15"></line>
-				</svg><span title="About">Upload</span></a></li>
-		<li><a href="search"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search">
-					<circle cx="11" cy="11" r="8"></circle>
-					<line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-				</svg><span title="Work">Search</span></a></li>
-		<li><a href="feedback"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-mail">
-					<path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-					<polyline points="22,6 12,13 2,6"></polyline>
-				</svg><span title="Lab">Feedback</span></a></li>
+		<li><a class="active" href="../home">
+				<div data-feather="home"></div><span title="Home">Home</span>
+			</a></li>
+		<li><a href="../upload">
+				<div data-feather="upload"></div><span title="Upload files">Upload</span>
+			</a></li>
+		<li><a href="../search">
+				<div data-feather="search"></div><span title="Search for files">Search</span>
+			</a></li>
+		<li><a href="../feedback">
+				<div data-feather="inbox"></div><span title="Give feedback">Feedback</span>
+			</a></li>
+		{% if current_user.is_authenticated %}
+		<li><a href="../logout">
+				<div data-feather="log-out"></div><span title="Log out">Log out</span>
+			</a></li>
+		{% else %}
+		<li><a href="../home">
+				<div data-feather="log-in"></div><span title="Log in">Log in</span>
+			</a></li>
+		{% endif %}
 	</ul>
 
 </nav>
