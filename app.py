@@ -61,18 +61,10 @@ Compress(app)
 
 # //////////////////////////////////////////////////////////////////////////// #
 
-
+# Connect to the db file and try create a table. If the table exists already it just does nothing. If the file does not exist, it creates one then adds the table
 db = sqlite3.connect("database.db")
 cursor = db.cursor()
-
-try:
-    # try create the database if it does not exist
-    cursor.execute("CREATE TABLE filemapping (name TEXT, shortdesc TEXT, longdesc TEXT, uploader TEXT, subject TEXT, tags TEXT, time TIME, score INT, veryshort TEXT, id INT);")
-except:
-    # looks like it does exist
-    pass
-
-
+cursor.execute("CREATE TABLE IF NOT EXISTS filemapping (name TEXT, shortdesc TEXT, longdesc TEXT, uploader TEXT, subject TEXT, tags TEXT, time TIME, score INT, veryshort TEXT, id INT);")
 db.commit()
 db.close()
 
@@ -86,7 +78,7 @@ db.close()
 fourohfour = ["Welp. This is awkward",
               "Nice One",
               "This isn't great. In the meantime, drink some water",
-              "THIS ERROR PAGE IS SPONSERED BY RAID SHADOW LEGENDS, ONE OF THE BIGGEST MOBILE ROLE PLAYING GAMES OF 2019 AND IT'S TOTALLY FREE!",
+              "THIS ERROR PAGE IS SPONSORED BY RAID SHADOW LEGENDS, ONE OF THE BIGGEST MOBILE ROLE PLAYING GAMES OF 2019 AND IT'S TOTALLY FREE!",
               "Real smooth",
               "Honestly, the home depot song is a banger",
               "Does anyone even read these?",
@@ -118,7 +110,9 @@ cached = {}
 
 
 def convert_bytes(num):
-    """convert_bytes Turns a bytecount into a nicely readable string
+    """convert_bytes 
+\n
+Turns a bytecount into a nicely readable string
 
     Parameters
     ----------
@@ -140,7 +134,8 @@ def convert_bytes(num):
 
 
 def log(message, level=2):
-    """log Writes the input to the log file to
+    """log\n
+    Writes the input to the log file to
 
     Parameters
     ----------
@@ -155,7 +150,8 @@ def log(message, level=2):
 
 
 def notfoundmessage():
-    """notfoundmessage Gets a message to display on the 404 page.
+    """notfoundmessage\n
+    Gets a message to display on the 404 page.
 
     Returns
     -------
@@ -171,7 +167,8 @@ def notfoundmessage():
 
 
 def shred(d, n=2):
-    """shred Cuts a dict into a list of n sized dicts
+    """shred\n
+    Cuts a dict into a list of n sized dicts
 
     Parameters
     ----------
@@ -201,7 +198,8 @@ def shred(d, n=2):
 
 
 def updatestats(type=None):
-    """updatestats Adds 1 to the specified stat
+    """updatestats\n
+    Adds 1 to the specified stat
 
     Parameters
     ----------
@@ -224,7 +222,8 @@ def updatestats(type=None):
 
 
 def findfileicon(filename):
-    """findfileicon Gets an icon for each type of file
+    """findfileicon\n
+    Gets an icon for each type of file
 
     Parameters
     ----------
@@ -283,7 +282,8 @@ imgfolder = r"""../static/file-images/"""
 
 
 def compileimages():
-    """compileimages Recompiles the image dict
+    """compileimages\n
+    Recompile the image dict
     """
     global cards
     cards = {}
@@ -321,7 +321,8 @@ stats = {}
 
 
 def create_stats():
-    """create_stats Pulls stats from the db
+    """create_stats\n
+    Pulls stats from the db
     """
     db = sqlite3.connect("database.db")
     cursor = db.cursor()
@@ -356,7 +357,8 @@ create_stats()
 
 
 def is_admin():
-    """is_admin Checks if the user is admin or in the admins file
+    """is_admin\n
+    Checks if the user is admin or in the admins file
 
     Returns
     -------
@@ -370,7 +372,8 @@ def is_admin():
 
 
 def getname():
-    """getname Gets the first name of the user
+    """getname\n
+    Gets the first name of the user
 
     Returns
     -------
@@ -469,6 +472,19 @@ def load_user(user_id):
 
 
 def improved_login(func):
+    """improved_login\n
+    Custom login Manager
+
+    Parameters
+    ----------
+    func : function
+        The page to attach to and check if user is logged in
+
+    Returns
+    -------
+    func
+        The page to send them to (either the page they were trying to visit or the login page)
+    """
     @functools.wraps(func)
     def page():
         if current_user.is_authenticated:
@@ -514,11 +530,13 @@ def home():
 
 @app.route("/rickroll")
 def rickroll():
+    """:)"""
     return render_template('rickroll.html')
 
 
 @app.route("/feedback")
 def feedback():
+    "Feedback form"
     return render_template('feedback.html')
 
 # A full screen view of the examplars
@@ -526,6 +544,7 @@ def feedback():
 
 @app.route('/items/<item>')
 def fullcard(item):
+    "Fullscreen display of an item"
     taglist = cards[item]["tags"]
     if item in cards:
         return render_template('cardview.html', card=cards[item], download=item, taglist=taglist)
@@ -537,6 +556,7 @@ def fullcard(item):
 @app.route("/logout")
 @improved_login
 def logout():
+    "Logs the user out"
     logout_user()
     return redirect(url_for("entry"))
 
@@ -544,6 +564,7 @@ def logout():
 @app.route("/logs")
 @improved_login
 def logs():
+    "A page to show the logs"
     if is_admin():
         with open(f'{filepath}/logs', 'r') as f:
             return render_template('logs.html', logfile=f.readlines())
@@ -556,6 +577,7 @@ def logs():
 @app.route("/login")
 @logger.catch
 def login():
+    "Either send you to the login handler or logs you in with dummy data"
     if login_needed == True:
         # Find out what URL to hit for Google login
         google_provider_cfg = get_google_provider_cfg()
@@ -592,6 +614,7 @@ def login():
 @app.route('/upload/callback')
 @app.route('/home/callback')
 def callback():
+    "Blasphemy"
     # Get authorization code Google sent back to you
     code = request.args.get("code")
     # Find out what URL to hit to get tokens that allow you to ask for
@@ -659,6 +682,7 @@ def callback():
 @app.route('/upload')
 @improved_login
 def upload():
+    "The upload page"
     # Retrieves the tags from a file
     tagfile = json.load(open(f"{filepath}/tags.json", "r"))
     # Sorts the tags by their usage
@@ -672,6 +696,7 @@ def upload():
 # If the upload goes well, send it here to actually be stored
 @app.route('/success', methods=['POST'])
 def success():
+    "A page that you get sent to when you upload something"
     # Oh boy, this one is gunna be a pain to explain
 
     # We assume the request will be a GET request. If not, idk. I'll deal with that later
@@ -758,11 +783,13 @@ def success():
 
 @app.route("/search/")
 def emptysearch():
+    "If there is no search query, show this"
     return render_template("search.html", query="")
 
 
 @app.route("/search/<query>")
 def search(query):
+    "Shows searched stuff"
     global cached
     query = query.strip()
     # Here we cache the results of a search
@@ -789,6 +816,7 @@ def search(query):
 @app.route('/download/<filename>')
 # @improved_login
 def download(filename):
+    "Download a file. Requires you to log in first"
     if filename in os.listdir(f"{filepath}/files"):
         path = f"{filepath}/files/{filename}"
         updatestats("downloads")

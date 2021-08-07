@@ -15,8 +15,7 @@
 - [ ] Add a "Help" link to the top of every page
 - [ ] Add an about page
 - [ ] Add a "Report Bug" button to the top of every page
-- [ ] Block .exe, .jar, .py and other executable file uploads
-- [ ] Check for code embedded in pdf's
+- [ ] Stick a virus scanner in it
 - [ ] Add voting
 - [ ] Redo home page to be more helpful
 ### Post-launch
