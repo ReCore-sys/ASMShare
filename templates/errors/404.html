@@ -1,58 +1,62 @@
 <!doctype html>
 <html lang="en">
 
-	<head>
-		<!-- Required meta tags -->
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-		<title>404</title>
-		<link rel="shortcut icon" href="{{ url_for('static', filename='img/ASMS.ico') }}">
+<head>
+	<!-- Required meta tags -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<title>404</title>
+	<link rel="shortcut icon" href="{{ url_for('static', filename='img/ASMS.ico') }}">
 
-		<!--Inter UI font-->
-		<link href="{{ url_for('static', filename='css/inter-ui.css')}}" rel="stylesheet">
+	<!--Inter UI font-->
+	<link href="https://rsms.me/inter/inter-ui.css" rel="stylesheet">
 
-		<!--vendors styles-->
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css">
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.min.css">
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/95/three.min.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-		{% include "menu.html" %}
-		{% block menu %}
-		{% endblock %}
+	<!--vendors styles-->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.min.css">
+	{% include "menu.html" %}
+	{% block menu %}
+	{% endblock %}
 
-		<!-- Bootstrap CSS / Color Scheme -->
-		<link rel="stylesheet" href="{{ url_for('static', filename='css/default.css')}}" id="theme-color">
-	</head>
+	<!-- Bootstrap CSS / Color Scheme -->
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/default.css')}}" id="theme-color">
+</head>
 
-	<body>
-		<section class="game" style="opacity: 0">
-			{% include "game.html" %}
-			{% block game %}
-			{% endblock %}
-		</section>
-		<!--hero header-->
-		<section class="py-7 py-md-0 bg-hero" id="home">
-			<div class="container">
-				<div class="row vh-md-100">
-					<div class="col-md-8 col-sm-10 col-12 mx-auto my-auto text-center">
-						<h1 class="heading-black text-capitalize">4<div onclick="game()">0</div>4</h1>
-						<script>
-            function game() {
-              $(".game").attr("style", "opacity: 1;");
-            }
-            </script>
-						<p class="lead py-3">{{message}}</p>
-						<button class="btn btn-primary d-inline-flex flex-row align-items-center" onclick="window.location.href='/'">
-							¯\_₍⸍⸌̣ʷ̣̫⸍̣⸌₎_/¯
-							<em class="ml-2" data-feather="arrow-right"></em>
-						</button>
-					</div>
+<body>
+	<script>
+		console.log("Huh. Nice job. You know how to open the console. Considering the majority of ASMS students have the technological skills similar to those of my cat" +
+			", Thats pretty good. Anyway, at some point, I will put something here. For now, just feel good about yourself")
+	</script>
+	<section class="smart-scroll">
+		<div class="container-fluid">
+			<nav class="navbar navbar-expand-md navbar-dark">
+				<button class="navbar-toggler navbar-toggler-right border-0" type="button" data-toggle="collapse"
+					data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false"
+					aria-label="Toggle navigation">
+					<span data-feather="grid"></span>
+				</button>
+			</nav>
+		</div>
+	</section>
+	<!--hero header-->
+	<section class="py-7 py-md-0 bg-hero" id="home">
+		<div class="container">
+			<div class="row vh-md-100">
+				<div class="col-md-8 col-sm-10 col-12 mx-auto my-auto text-center">
+					<h1 class="heading-black text-capitalize">404</h1>
+					<p class="lead py-3">{{message}}</p>
+					<button class="btn btn-primary d-inline-flex flex-row align-items-center"
+						onclick="window.location.href='/'">
+						¯\_₍⸍⸌̣ʷ̣̫⸍̣⸌₎_/¯
+						<em class="ml-2" data-feather="arrow-right"></em>
+					</button>
 				</div>
 			</div>
-		</section>
+		</div>
+	</section>
 
-		<!-- jQuery first, then Popper.js, then Bootstrap JS -->
-	</body>
+	<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+</body>
 
 </html>

@@ -8,7 +8,7 @@
 ### Pre-launch
 - [x] Live type search
 - [x] Write a better "How to help file"
-- [ ] Add error 500 logger
+- [x] Add error 500 logger
 - [x] Require admin to see logs
 - [ ] Users can change their name
 - [ ] Add a "Report" button to the user page
@@ -22,8 +22,8 @@
 - [ ] Game in an error page
 - [ ] Add a credits page
 - [ ] Write documentation for API and other stuffs
-- [ ] Add a "Contribute" button to the top of every page
 - [ ] Add an "About" link to the footer
 - [ ] Add a "Change Log" link to the footer
 - [x] Add search caching
 - [ ] Clean up code
+- [ ] Add hooks for google drive

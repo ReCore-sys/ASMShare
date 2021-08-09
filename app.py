@@ -3,7 +3,7 @@
 # IMPORT EVERYTHING
 
 # //////////////////////////////////////////////////////////////////////////// #
-
+# Builtin imports
 import functools
 import os
 import random
@@ -12,6 +12,7 @@ import sys
 from datetime import datetime
 from pathlib import Path
 
+# 3rd party imports
 import requests
 import ujson as json
 from flask import *
@@ -21,6 +22,7 @@ from loguru import logger
 from oauthlib.oauth2 import WebApplicationClient
 from pdf2image import convert_from_path
 
+# local imports
 import searchhelper
 from secret_data import *
 from user import User
@@ -31,14 +33,19 @@ from user import User
 
 # //////////////////////////////////////////////////////////////////////////// #
 # this gets the directory this script is in. Makes it much easier to transfer between systems.
+
 filepath = os.path.abspath(os.path.dirname(__file__))
+
+# Adds a logger to catch errors
+logger.add(f"{filepath}/deeplogs.log", enqueue=True, format=("="*20 + "\n"*5 +
+                                                             "<green>{time:YYYY-MM-DD HH:mm:ss.SSS}</green> | <level>{level: <8}</level> | <cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> - <level>{message}</level>"))
+
 
 # //////////////////////////////////////////////////////////////////////////// #
 
 # Flask config
 
 # //////////////////////////////////////////////////////////////////////////// #
-
 
 app = Flask("ASMShare")
 app.config['UPLOAD_PATH'] = f"{filepath}/files/"
@@ -97,9 +104,6 @@ fourohfour = ["Welp. This is awkward",
 
 random.shuffle(fourohfour)
 
-
-c = 0
-
 cached = {}
 
 # //////////////////////////////////////////////////////////////////////////// #
@@ -109,6 +113,7 @@ cached = {}
 # //////////////////////////////////////////////////////////////////////////// #
 
 
+@logger.catch
 def convert_bytes(num):
     """convert_bytes 
 \n
@@ -133,6 +138,7 @@ Turns a bytecount into a nicely readable string
         num /= step_unit
 
 
+@logger.catch
 def log(message, level=2):
     """log\n
     Writes the input to the log file to
@@ -149,6 +155,7 @@ def log(message, level=2):
             f"\n{(datetime.now()).strftime('%d/%m/%Y- %I:%M:%S %p')}: {message}")
 
 
+@logger.catch
 def notfoundmessage():
     """notfoundmessage\n
     Gets a message to display on the 404 page.
@@ -158,14 +165,20 @@ def notfoundmessage():
     str
         The message to use
     """
-    global c
-    message = fourohfour[c]
-    c += 1
-    if c == len(fourohfour):
-        c = 0
-    return message
+    # Check if the variable choices exists. If not, create it. Pylance has a stroke if I use global vars so I have to do this
+    # to stop my IDE yelling slurs at me
+    if 'choices' not in locals():
+        choices = random.choices(fourohfour, k=5)
+    if len(choices) > 0:
+        msg = choices[-1]
+    else:
+        choices = random.choices(fourohfour, k=5)
+        msg = choices[-1]
+    choices.pop(-1)
+    return msg
 
 
+@logger.catch
 def shred(d, n=2):
     """shred\n
     Cuts a dict into a list of n sized dicts
@@ -197,6 +210,7 @@ def shred(d, n=2):
     return y
 
 
+@logger.catch
 def updatestats(type=None):
     """updatestats\n
     Adds 1 to the specified stat
@@ -221,6 +235,7 @@ def updatestats(type=None):
         db.close()
 
 
+@logger.catch
 def findfileicon(filename):
     """findfileicon\n
     Gets an icon for each type of file
@@ -281,6 +296,7 @@ cards = {}
 imgfolder = r"""../static/file-images/"""
 
 
+@logger.catch
 def compileimages():
     """compileimages\n
     Recompile the image dict
@@ -320,6 +336,7 @@ compileimages()
 stats = {}
 
 
+@logger.catch
 def create_stats():
     """create_stats\n
     Pulls stats from the db
@@ -356,6 +373,7 @@ def create_stats():
 create_stats()
 
 
+@logger.catch
 def is_admin():
     """is_admin\n
     Checks if the user is admin or in the admins file
@@ -371,6 +389,7 @@ def is_admin():
         return True
 
 
+@logger.catch
 def getname():
     """getname\n
     Gets the first name of the user
@@ -395,64 +414,75 @@ def getname():
 
 
 @app.errorhandler(404)
+@logger.catch
 def not_found(e):
     return render_template('errors/404.html', message=notfoundmessage()), 404
 
 
 @app.errorhandler(403)
+@logger.catch
 def fourohthree(e):
     return render_template('errors/403.html'), 403
 
 
 @app.route("/403")
+@logger.catch
 def fourohthreepage():
     return render_template('errors/403.html')
 
 
 @app.errorhandler(406)
+@logger.catch
 def fourohsix(e):
     return render_template('errors/406.html'), 406
 
 
 @app.route("/406")
+@logger.catch
 def fourohsixpage():
     return render_template('errors/406.html')
 
 
 @app.errorhandler(500)
+@logger.catch
 def fivehundred(e):
     return render_template('errors/500.html'), 500
 
 
 @app.route("/500")
+@logger.catch
 def fivehundredpage():
     return render_template('errors/500.html')
 
 
 @app.route("/553")
+@logger.catch
 def fivethreethreepage():
     return render_template('errors/553.html')
 
 
 @app.errorhandler(408)
+@logger.catch
 def fouroheight(e):
     return render_template('errors/408.html'), 408
 
 
 @app.route("/408")
+@logger.catch
 def fouroheightpage():
     return render_template('errors/408.html')
 
 
 @app.errorhandler(400)
+@logger.catch
 def fourhundred(e):
     return render_template('errors/400.html'), 400
 
 
 @app.route("/400")
+@logger.catch
 def fourhundredpage():
     return render_template('errors/400.html')
-
 
 # //////////////////////////////////////////////////////////////////////////// #
 
@@ -464,8 +494,9 @@ def fourhundredpage():
 def get_google_provider_cfg():
     return requests.get(GOOGLE_DISCOVERY_URL).json()
 
-
 # Even god does not know what this bit does
+
+
 @login_manager.user_loader
 def load_user(user_id):
     return User.get(user_id)
@@ -508,6 +539,7 @@ def improved_login(func):
 
 
 @app.route("/")
+@logger.catch
 def entry():
     """Main Page"""
     if current_user.is_authenticated:
@@ -515,9 +547,11 @@ def entry():
     else:
         return render_template('index.html', redir="/home", logged="Log in")
 
-
 # This will be the main page for logged in users. Will show the exemplars
+
+
 @app.route("/home", methods=["GET", "POST"])
+@logger.catch
 @improved_login
 def home():
     """Home page for user"""
@@ -529,12 +563,21 @@ def home():
 
 
 @app.route("/rickroll")
+@logger.catch
 def rickroll():
     """:)"""
     return render_template('rickroll.html')
 
 
+@app.route("/error")
+@logger.catch
+def error():
+    """A page that only exists to raise a 500 error"""
+    raise OSError("UWU harder daddy")
+
+
 @app.route("/feedback")
+@logger.catch
 def feedback():
     "Feedback form"
     return render_template('feedback.html')
@@ -543,6 +586,7 @@ def feedback():
 
 
 @app.route('/items/<item>')
+@logger.catch
 def fullcard(item):
     "Fullscreen display of an item"
     taglist = cards[item]["tags"]
@@ -552,8 +596,8 @@ def fullcard(item):
         return redirect(url_for("not_found", message=notfoundmessage())), 404
 
 
-# No real use but meh
 @app.route("/logout")
+@logger.catch
 @improved_login
 def logout():
     "Logs the user out"
@@ -562,6 +606,7 @@ def logout():
 
 
 @app.route("/logs")
+@logger.catch
 @improved_login
 def logs():
     "A page to show the logs"
@@ -571,8 +616,9 @@ def logs():
     else:
         return redirect(url_for("fourohthreepage"))
 
-
 # even i don't know what the next few bits do. google auth is a pain
+
+
 @login_manager.unauthorized_handler
 @app.route("/login")
 @logger.catch
@@ -591,6 +637,7 @@ def login():
             scope=["openid", "email", "profile"],
         )
         return redirect(request_uri)
+    # If the login_needed var is off, use a dummy account
     else:
         unique_id = u"0"
         users_email = "test1234@asms.sa.edu.au"
@@ -608,11 +655,13 @@ def login():
         else:
             return redirect(url_for(request.cookies.get("return-page")))
 
-
 # ALL of the callbacks
+
+
 @app.route("/login/callback")
 @app.route('/upload/callback')
 @app.route('/home/callback')
+@logger.catch
 def callback():
     "Blasphemy"
     # Get authorization code Google sent back to you
@@ -677,9 +726,11 @@ def callback():
     else:
         return "User email not available or not verified by Google.", 400
 
-
 # Page where you upload your files
+
+
 @app.route('/upload')
+@logger.catch
 @improved_login
 def upload():
     "The upload page"
@@ -692,9 +743,11 @@ def upload():
     tags = list(tagsdict.keys())
     return render_template("upload.html", tags=tags)
 
-
 # If the upload goes well, send it here to actually be stored
+
+
 @app.route('/success', methods=['POST'])
+@logger.catch
 def success():
     "A page that you get sent to when you upload something"
     # Oh boy, this one is gunna be a pain to explain
@@ -782,15 +835,16 @@ def success():
 
 
 @app.route("/search/")
+@logger.catch
 def emptysearch():
     "If there is no search query, show this"
     return render_template("search.html", query="")
 
 
 @app.route("/search/<query>")
+@logger.catch
 def search(query):
     "Shows searched stuff"
-    global cached
     query = query.strip()
     # Here we cache the results of a search
     if query in cached:
@@ -824,19 +878,20 @@ def download(filename):
     else:
         return redirect(url_for("not_found"))
 
-
 # //////////////////////////////////////////////////////////////////////////// #
 
 # If we run the file directly, start a server
 
 # //////////////////////////////////////////////////////////////////////////// #
 
+
 if __name__ == "__main__":
 
     # Checks if the ssl cert files exist. If they don't, fall back to a testing cert
     if os.path.isfile(r"/etc/letsencrypt/live/asmshare.xyz/fullchain.pem") and os.path.isfile(r"/etc/letsencrypt/live/asmshare.xyz/privkey.pem"):
         # Use gnunicorn to run the server if we are on prod. For some god forsaken reason, if I don't add the --preload, stuff breaks and refuses to work.
-        os.system(f"gunicorn -c {filepath}/wsgi-config.py app:app --preload")
+        os.system(
+            f"gunicorn -c {filepath}/wsgi-config.py app:app --preload")
 
     else:
         app.run(ssl_context="adhoc",  # If the good one fails, use a testing one
