@@ -277,15 +277,12 @@ def findfileicon(filename):
         fileicon = r"""../static/file-images/audio.jpg"""
     elif ext in ["pdf"]:
         # Stick it inside a try cos someone is gunna upload a .exe after renaming it to a .pdf (Duncan I'm looking at you)
-        try:
-            # only create a preview if it does not exist
-            if (filename + ".jpg") not in os.listdir(f"{filepath}/static/file-images/pdfs"):
-                convert_from_path(f'{filepath}/files/{filename}', output_folder=f"{filepath}/static/file-images/pdfs",
-                                  fmt="jpeg", single_file=True, output_file=filename)
-            fileicon = r"""../static/file-images/pdfs/""" + filename + ".jpg"
+        # only create a preview if it does not exist
+        if (filename + ".jpg") not in os.listdir(f"{filepath}/static/file-images/pdfs"):
+            convert_from_path(f'{filepath}/files/{filename}', output_folder=f"{filepath}/static/file-images/pdfs",
+                              fmt="jpeg", single_file=True, output_file=filename)
+        fileicon = r"""../static/file-images/pdfs/""" + filename + ".jpg"
         # if the library nopes out, just keep going and use the normal pdf icon
-        except:
-            pass
     else:
         # if it fits into none of the above catagories, search for a jpg named the file type (docx.jpg, txt.jpg, ect)
         if (ext + ".jpg") in os.listdir(f"{filepath}/static/file-images"):
@@ -312,6 +309,8 @@ def getname(email=None):
         names = json.load(names)
         if email in names:
             return names[email]
+        elif current_user == None:
+            return "Anon"
         else:
             return current_user.name
 
