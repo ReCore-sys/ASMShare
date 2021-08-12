@@ -19,6 +19,18 @@ def search(search_dict: dict,
     dict
         A sorted dict that is ordered by it's relation to the query
     """
+    modifiers = {
+        "name": 2,
+        "short": 1.2,
+        "long": 0.9,
+        "uploader": 1.6,
+        "subject": 1.4,
+        "tags": 1.75,
+        "date": 0,
+        "score": 0.5,
+        "image": 0,
+        "veryshort": 0.8
+    }
     # Create a dictionary to store
     scoretable = {k: 0 for k in search_dict}
 
@@ -28,29 +40,29 @@ def search(search_dict: dict,
     # Looping fun
     for y in search_dict:
         for x in search_dict[y]:
-            if x not in ["score", "date", "image"]:
-                if type(search_dict[y][x]) == list:
-                    accuracy = 0
-                    for value in search_dict[y][x]:
-                        accuracy += fuzz.ratio(value.lower(), query.lower())
-                else:
-                    # This function from fuzzywuzzy works out the similarity of the 2 arguments in a score of 1-100
-                    accuracy = fuzz.ratio(
-                        (search_dict[y][x]).lower(), query.lower())
+            if type(search_dict[y][x]) == list:
+                accuracy = 0
+                for value in search_dict[y][x]:
+                    accuracy += fuzz.ratio(value.lower(),
+                                           query.lower()) * modifiers[x]
+            else:
+                # This function from fuzzywuzzy works out the similarity of the 2 arguments in a score of 1-100
+                accuracy = fuzz.ratio(
+                    str(search_dict[y][x]).lower(), str(query).lower()) * modifiers[x]
 
-                # if the query is directly in the part we are matching for (ie, if we search for "example", if the
-                # result for the section is "lorum ipsum example") add 50 points. This helps narrow searches when you
-                # know exactly what you are after
-                if type(search_dict[y][x]) == list:
-                    for value in search_dict[y][x]:
-                        if query.lower() in value.lower():
-                            accuracy *= 2
-                else:
-                    if query.lower() in search_dict[y][x].lower():
+            # if the query is directly in the part we are matching for (ie, if we search for "example", if the
+            # result for the section is "lorum ipsum example") add 50 points. This helps narrow searches when you
+            # know exactly what you are after
+            if type(search_dict[y][x]) == list:
+                for value in search_dict[y][x]:
+                    if query.lower() in value.lower():
                         accuracy *= 2
+            else:
+                if query.lower() in str(search_dict[y][x]).lower():
+                    accuracy *= 2
 
-                # add the points the the scoretable, then start again
-                scoretable[y] += round(accuracy)
+            # add the points the the scoretable, then start again
+            scoretable[y] += round(accuracy)
 
     # Sort the dict by the values from biggest to smallest
     scoretable = {k: v for k, v in sorted(
@@ -61,20 +73,20 @@ def search(search_dict: dict,
     vals = [scoretable[x] for x in scoretable]
     # Assign the biggest and smallest to mx and mn
     mx, mn = max(vals), min(vals)
-    print("Min and max: ", mx, mn)
+    print("Min and max:", mx, mn)
     # Get the range
     rng = mx - mn
-    print("range", rng)
+    print("range:", rng)
     # Set a percentage. This can be tweaked
     percentage = 75
     # Get a threshold based off these number (Gets percentage% of the range, then adds it to the min)
     threshold = mn + round((rng / 100) * percentage)
-    print("threshold: ", threshold)
+    print("threshold:", threshold)
     print("")
     for x in scoretable:
         print(f"{x}: {scoretable[x]}")
         # Only include the item if it's score is over the threshold
-        if scoretable[x] > threshold:
+        if scoretable[x] >= threshold:
             results[x] = search_dict[x]
 
     # return it

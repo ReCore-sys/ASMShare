@@ -1,26 +1,23 @@
 {% block loader %}
+<!-- By using "defer", it tells the browser to download the scripts in parralel. This stops it from blocking the display while it downloads -->
+<script src="{{ url_for('static', filename='js/loader.js')}}" defer></script>
+<script src="https://animejs.com/lib/anime.min.js" defer></script>
 <!-- so in this file is a loading screen that does a lot of things -->
 <script>
-// Here we add an OnSubmit value to any submit buttons. This new value triggers the function below when the form is submitted
-$(':submit').submit(loader)
-// A line of HTML that is just importing a stylesheet and an element called stagger-visualizer
-var newContent=`<link rel="stylesheet" href="{{ url_for('static', filename='css/loader.css')}}" id="theme-color"><div class="stagger-visualizer"></div>
-`;
-// Here we define a function to overwrite the whole page with the HTML above
-function ReplaceContent(NC) {
-document.open();
-document.write(NC);
-document.close();
-}
-// This function is called when the user submits
-function loader() {
-  // Loads the loader's js file
-  $.getScript("{{ url_for('static', filename='js/loader.js')}}")
-  // Imports anime.js (an animation library)
-  $.getScript("https://animejs.com/lib/anime.min.js")
-  // Calls the overwrite function. This removes everything on the page and replaces it with that line of HTML above
-  ReplaceContent(newContent);
-}
+    $('.wrapper').width($(window).width());
+    $('.wrapper').height($(window).height());
+    // Here we add an OnSubmit value to any submit buttons. This new value triggers the function below when the form is submitted
+    $(document).ready(function () {
+        $('#form').submit(function ()
+        // This function is called when the user submits
+        {
+            console.log("Yes")
+            $('.wrapper').css({ display: "inline-block" })
+            $('#form').css({ visibility: "hidden" })
+            $("body").css('background-color', 'black');
+            $('input').css({ visibility: "hidden" })
+        })
+    })
 </script>
 
 {% endblock %}

@@ -10,7 +10,7 @@
 		<meta content="ASMShare" property="og:title" />
 		<meta content="A site for ASMS students to share their work" property="og:description" />
 		<meta content="../." property="og:url" />
-		<meta content="https://embed.com/embedimage.png" property="og:image" />
+		<meta content="{{ url_for('static', filename='img/ASMS.ico') }}"property="og:image" />
 		<meta content="#43B581" data-react-helmet="true" name="theme-color" />
 
 		<!--Inter UI font-->
@@ -18,8 +18,8 @@
 
 		<!--vendors styles-->
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css">
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.min.css">
+		
+		
 
 		<!-- Bootstrap CSS / Color Scheme -->
 		<link rel="stylesheet" href="{{ url_for('static', filename='css/default.css')}}" id="theme-color">
@@ -110,10 +110,10 @@
 	</head>
 
 	<body>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+		
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.7.3/feather.min.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
+		
 
 		<!--navigation-->
 		<section class="smart-scroll">

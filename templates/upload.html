@@ -1,61 +1,64 @@
 <!doctype html>
 <html lang="en">
 
-	<head>
-		<!-- Required meta tags -->
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-		<title>Upload</title>
-		<link rel="shortcut icon" href="{{ url_for('static', filename='img/ASMS.ico') }}">
-		<link href='https://fonts.googleapis.com/css?family=Oswald' rel='stylesheet' type='text/css'>
+<head>
+	<!-- Required meta tags -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<title>Upload</title>
+	<link rel="shortcut icon" href="{{ url_for('static', filename='img/ASMS.ico') }}">
+	<link href='https://fonts.googleapis.com/css?family=Oswald' rel='stylesheet' type='text/css'>
 
 
-		<!-- Autocomplete scripts -->
-		<script src="https://unpkg.com/@yaireo/tagify"></script>
-		<script src="https://unpkg.com/@yaireo/tagify@3.1.0/dist/tagify.polyfills.min.js"></script>
-		<link rel="stylesheet" href="{{ url_for('static', filename='css/tags.css')}}" id="theme-color">
+	<!-- Autocomplete scripts -->
+	<script src="https://unpkg.com/@yaireo/tagify"></script>
+	<script src="https://unpkg.com/@yaireo/tagify@3.1.0/dist/tagify.polyfills.min.js"></script>
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/tags.css')}}" id="theme-color">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/loader.css')}}" id="theme-color">
 
-		<!-- Bootstrap CSS / Color Scheme -->
-		<link rel="stylesheet" href="{{ url_for('static', filename='css/default.css')}}" id="theme-color">
-		<link rel="stylesheet" href="{{ url_for('static', filename='css/upload.css')}}" id="theme-color">
-		<script src="https://animejs.com/lib/anime.min.js"></script>
-		<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
-		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.7.3/feather.min.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
-		<script src="{{ url_for('static', filename='js/scripts.js')}}"></script>
-	</head>
+	<!-- Bootstrap CSS / Color Scheme -->
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/default.css')}}" id="theme-color">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/upload.css')}}" id="theme-color">
+	<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.7.3/feather.min.js"></script>
+	
+	<script src="{{ url_for('static', filename='js/scripts.js')}}"></script>
+	
+</head>
 
-	<body>
-		<form action="/success" method="post" enctype="multipart/form-data">
-			<div class="form-wrap">
+<body>
+<!-- Here we import a loading screen from loader.html. Once the user submits, it runs it. Go to the file to see how it works -->
+	{% include "loader.html" %}
+	{% block loader %}
+	{% endblock %}
+	<div class="wrapper"></div>
 
-				<h1>Upload</h1>
-				<input type="file" placeholder="File">
-				<input type="text" placeholder="Name" name="name" required="true">
-				<input type="text" placeholder="Subject" name="subject" required="true">
-				<input type="text" placeholder="Short description" name="short" required="true">
-				<input type="text" placeholder="Long description" name="long" required="true" class="longarea">
-				<input type="text" placeholder="Tags" name="tags">
-				<input type="submit" value="Submit" class="topmarg">
-				<!-- The tags library -->
-				<script>
-        var input = document.querySelector('input[name="tags"]')
-        if (input !== "") {
-        var tagify = new Tagify(input, {
-          dropdown: {
-            enabled: 0
-          },
-           whitelist: {{tags|tojson}}
+	<form action="/success" method="post" enctype="multipart/form-data" id="form">
+		<div class="form-wrap">
+
+			<h1>Upload</h1>
+			<input type="file" placeholder="File" name="file">
+			<input type="text" placeholder="Name" name="name">
+			<input type="text" placeholder="Subject" name="subject">
+			<input type="text" placeholder="Short description" name="short">
+			<input type="text" placeholder="Long description" name="long" class="longarea">
+			<input type="text" placeholder="Tags" name="tags">
+			<input type="submit" value="Submit" class="topmarg">
+			<!-- The tags library -->
+			<script>
+				var input = document.querySelector('input[name="tags"]')
+				if (input !== "") {
+					var tagify = new Tagify(input, {
+						dropdown: {
+							enabled: 0
+						},
+						whitelist: {{ tags | tojson}}
         })}
-        </script>
-			</div>
-		</form>
-		<!-- Here we import a loading screen from loader.html. Once the user submits, it runs it. Go to the file to see how it works -->
-		{% include "loader.html" %}
-		{% block loader %}
-		{% endblock %}
-	</body>
+			</script>
+		</div>
+	</form>
+
+</body>
 
 </html>

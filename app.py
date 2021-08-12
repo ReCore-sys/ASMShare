@@ -5,6 +5,7 @@
 # //////////////////////////////////////////////////////////////////////////// #
 # Builtin imports
 import functools
+import time
 import os
 import random
 import sqlite3
@@ -37,8 +38,8 @@ from user import User
 filepath = os.path.abspath(os.path.dirname(__file__))
 
 # Adds a logger to catch errors
-logger.add(f"{filepath}/deeplogs.log", enqueue=True, format=("="*20 + "\n"*5 +
-                                                             "<green>{time:YYYY-MM-DD HH:mm:ss.SSS}</green> | <level>{level: <8}</level> | <cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> - <level>{message}</level>"))
+logger.add(f"{filepath}/deeplogs.log", backtrace=False, enqueue=True, format=("="*20 + "\n"*5 +
+                                                                              "<green>{time:YYYY-MM-DD HH:mm:ss.SSS}</green> | <level>{level: <8}</level> | <cyan>{name}</cyan>:<cyan>{function}</cyan>:<blue>{line}</blue> - <level>{message}</level>"))
 
 
 # //////////////////////////////////////////////////////////////////////////// #
@@ -46,6 +47,9 @@ logger.add(f"{filepath}/deeplogs.log", enqueue=True, format=("="*20 + "\n"*5 +
 # Flask config
 
 # //////////////////////////////////////////////////////////////////////////// #
+
+# Detects if we are running the actual version that others will be using
+prod = (os.name == "posix")
 
 app = Flask("ASMShare")
 app.config['UPLOAD_PATH'] = f"{filepath}/files/"
@@ -56,7 +60,7 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 client = WebApplicationClient(GOOGLE_CLIENT_ID)
 app.secret_key = appkey
-login_needed = True
+login_needed = False
 compress = Compress()
 app.config["COMPRESS_ALGORITHM"] = "br"
 app.config["COMPRESS_BR_LEVEL"] = 11
@@ -150,7 +154,7 @@ def log(message, level=2):
     level : int, optional
         What level of logging to use, by default 2
     """
-    with open(f"{filepath}/logs", mode="a") as f:
+    with open(f"{filepath}/logs.log", mode="a") as f:
         f.write(
             f"\n{(datetime.now()).strftime('%d/%m/%Y- %I:%M:%S %p')}: {message}")
 
@@ -292,6 +296,26 @@ def findfileicon(filename):
     return fileicon
 
 
+@logger.catch
+def getname(email=None):
+    """getname\n
+    Gets the first name of the user
+
+    Returns
+    -------
+    str
+        The name to use for the person
+    """
+    if email == None:
+        email = current_user.email
+    with open("names.json", "r") as names:
+        names = json.load(names)
+        if email in names:
+            return names[email]
+        else:
+            return current_user.name
+
+
 cards = {}
 imgfolder = r"""../static/file-images/"""
 
@@ -317,11 +341,14 @@ def compileimages():
         # adds the long description
         cards[x[9]]["long"] = x[2]
         # adds uploader's name
-        cards[x[9]]["uploader"] = x[3]
+        cards[x[9]]["uploader"] = getname(x[3])
         # subject is added
         cards[x[9]]["subject"] = x[4]
         # tags
-        cards[x[9]]["tags"] = x[5].split(",")
+        if x[5] == None:
+            cards[x[9]]["tags"] = "None"
+        else:
+            cards[x[9]]["tags"] = x[5].split(",")
         cards[x[9]]["date"] = x[6]
         cards[x[9]]["score"] = x[7]
         # uses the above function to get/create an image for the thumbnail
@@ -389,23 +416,6 @@ def is_admin():
         return True
 
 
-@logger.catch
-def getname():
-    """getname\n
-    Gets the first name of the user
-
-    Returns
-    -------
-    str
-        The name to use for the person
-    """
-    email = current_user.email
-    with open("names.json", "r") as names:
-        names = json.load(names)
-        if email in names:
-            return names[email]
-        else:
-            return current_user.name
 # //////////////////////////////////////////////////////////////////////////// #
 
 # Errors
@@ -573,7 +583,9 @@ def rickroll():
 @logger.catch
 def error():
     """A page that only exists to raise a 500 error"""
-    raise OSError("UWU harder daddy")
+    a = 10
+    b = 0
+    a/b
 
 
 @app.route("/feedback")
@@ -616,6 +628,26 @@ def logs():
     else:
         return redirect(url_for("fourohthreepage"))
 
+
+@app.route("/change", methods=["POST", "GET"])
+@logger.catch
+@improved_login
+def changename():
+    "Page that allows you to change your name"
+    if request.method == "GET":
+        return render_template('change.html')
+    elif request.method == "POST":
+        rename = request.form["name"]
+        log(f"User {current_user.email} changed their name to {rename} (was {getname()})")
+        with open(f"{filepath}/names.json") as j:
+            j = json.load(j)
+            if rename == "clear":
+                j.pop(current_user.email)
+            else:
+                j[current_user.email] = rename
+            json.dump(j, open(f"{filepath}/names.json", "w"))
+        return redirect(url_for("home"))
+
 # even i don't know what the next few bits do. google auth is a pain
 
 
@@ -624,7 +656,7 @@ def logs():
 @logger.catch
 def login():
     "Either send you to the login handler or logs you in with dummy data"
-    if login_needed == True:
+    if login_needed:
         # Find out what URL to hit for Google login
         google_provider_cfg = get_google_provider_cfg()
         authorization_endpoint = google_provider_cfg["authorization_endpoint"]
@@ -760,6 +792,7 @@ def success():
         # Split the name at the last . to get the file extension. This is to make sure we ignore any other .'s in tha name
         ext = (f.filename).split(".")[-1]
         form = request.form
+        print(form)
 
         # get the short description and name from the form, then assign them to their own variables. I should probs do it with the rest but eh
         short = form["short"]
@@ -792,45 +825,60 @@ def success():
             # If the id is already in the database, try again
             while tryid in usedids:
                 tryid = random.randint(int("1" + ("0" * 5)), int("9" * 6))
-            # Now we do some funky stuff with tags
-            tags = json.loads(form["tags"])
-            # max of 5 tags. You can enter more, but they won't show up
-            tags = [x["value"].replace(" ", "-") for x in tags[:5]]
+            if len(form["tags"]) > 0:
+                # Now we do some funky stuff with tags
+                tags = json.loads(form["tags"])
+                # max of 5 tags. You can enter more, but they won't show up
+                tags = [x["value"].replace(" ", "-") for x in tags[:5]]
 
-            prettytags = ",".join(tags)
+                prettytags = ",".join(tags)
+
+                # This bit just pulls apart the list into it's indvidual tags, then takes apart the tag, putting it back together but only with alphanumetic characters or hyphens
+                tags = [x for x in [ch.lower()
+                                    for ch in tags if ch.isalnum() or "-"]]
+                # Opens a json file to store the tag frequency
+                tagfile = json.load(open(f"{filepath}/tags.json", "r"))
+                # Loops though all the tags
+                for x in tags:
+                    # If the tag already exists in the json file, just add 1 to it's frequency
+                    if x in tagfile:
+                        tagfile[x] = tagfile[x] + 1
+                    # Otherwise just set the frequency to 1
+                    else:
+                        tagfile[x] = 1
+                json.dump(tagfile, open(f"{filepath}/tags.json", "w"))
+            else:
+                prettytags = None
 
             # Add all the stuff the the database
             cursor.execute(f'INSERT INTO filemapping VALUES (?, ?, ?, ?, ?, ?, ?, 1, ?, ?)',
-                           (fname, short, form["long"], getname(), form["subject"], prettytags, ((datetime.now()).strftime('%d/%m/%Y')), veryshort, f"{tryid}.{ext}"))
-            db.commit()
-            db.close()
-
-            # This bit just pulls apart the list into it's indvidual tags, then takes apart the tag, putting it back together but only with alphanumetic characters or hyphens
-            tags = [x for x in [ch.lower()
-                                for ch in tags if ch.isalnum() or "-"]]
-            # Opens a json file to store the tag frequency
-            tagfile = json.load(open(f"{filepath}/tags.json", "r"))
-            # Loops though all the tags
-            for x in tags:
-                # If the tag already exists in the json file, just add 1 to it's frequency
-                if x in tagfile:
-                    tagfile[x] = tagfile[x] + 1
-                # Otherwise just set the frequency to 1
-                else:
-                    tagfile[x] = 1
-            json.dump(tagfile, open(f"{filepath}/tags.json", "w"))
+                           (fname, short, form["long"], current_user.email, form["subject"], prettytags, ((datetime.now()).strftime('%d/%m/%Y')), veryshort, f"{tryid}.{ext}"))
 
             # Save the file in the folder
             f.save(f"{app.config['UPLOAD_PATH']}/{tryid}.{ext}")
+            # If the file does not pass the AV, quarentine it. I should probably do it before saving/adding to db but eh
+            if prod:
+                import clamd
+                cd = clamd.ClamdUnixSocket()
+                scan = cd.scan(f"{app.config['UPLOAD_PATH']}/{tryid}.{ext}")
+                if scan[f"{app.config['UPLOAD_PATH']}/{tryid}.{ext}"][0] == "FOUND":
+                    cursor.execute(
+                        "DELETE FROM filemapping WHERE id = ?", (f"{tryid}.{ext}",))
+                    os.rename(
+                        f"{app.config['UPLOAD_PATH']}/{tryid}.{ext}", f"{filepath}/quaranteen/{tryid}.{ext}")
+                    log(f"User {getname()} ({current_user.email}) tried to upload a file that was caught by the virus scanner.\nThe file {tryid}.{ext} was deemed unsafe with the code " +
+                        scan[f"{app.config['UPLOAD_PATH']}/{tryid}.{ext}"][1] + " and was moved to quaranteen")
 
             # Log the upload
             log(f"User {getname()} has uploaded '{fname}' ({tryid})")
-
+            db.commit()
+            db.close()
             # Reload the image cache to account for the new uploads
             compileimages()
     else:
         return redirect(url_for("fourohsixpage"))
     # Head back home
+    time.sleep(3)
     return redirect(url_for("home"))
 
 
@@ -868,7 +916,6 @@ def search(query):
 
 
 @app.route('/download/<filename>')
-# @improved_login
 def download(filename):
     "Download a file. Requires you to log in first"
     if filename in os.listdir(f"{filepath}/files"):
@@ -890,10 +937,16 @@ if __name__ == "__main__":
     # Checks if the ssl cert files exist. If they don't, fall back to a testing cert
     if os.path.isfile(r"/etc/letsencrypt/live/asmshare.xyz/fullchain.pem") and os.path.isfile(r"/etc/letsencrypt/live/asmshare.xyz/privkey.pem"):
         # Use gnunicorn to run the server if we are on prod. For some god forsaken reason, if I don't add the --preload, stuff breaks and refuses to work.
+        if prod == False:
+            raise Warning(
+                "WARNING\nNot running on the correct OS, but you somehow have the right cert files. How? TBH your prod var is probably broken")
         os.system(
             f"gunicorn -c {filepath}/wsgi-config.py app:app --preload")
 
     else:
+        if prod:
+            raise Warning(
+                "WARNING\nRunning on the correct server, but the cert files cannot be found, so using the fallback one")
         app.run(ssl_context="adhoc",  # If the good one fails, use a testing one
                 host="0.0.0.0",  # Listen on all ips
                 port=5000

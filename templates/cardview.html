@@ -12,8 +12,8 @@
 	<link href="{{ url_for('static', filename='css/inter-ui.css')}}" rel="stylesheet">
 	<!--vendors styles-->
 	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-	<link href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css" rel="stylesheet">
-	<link href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.min.css" rel="stylesheet">
+	
+	
 	<!-- Bootstrap CSS / Color Scheme -->
 	<link href="{{ url_for('static', filename='css/fullcard.css')}}" id="theme-color" rel="stylesheet">
 	<link href="../static/css/fullcard.css" id="theme-color" rel="stylesheet">
@@ -47,6 +47,7 @@
 					<a class="contentdata">{{card["date"]}}
 					</a>
 				</li>
+				{% if card["tags"] != "None" %}
 				<li>
 					<span class="icon" data-feather="tag">
 					</span>
@@ -56,6 +57,7 @@
 					</a>
 					{% endfor %}
 				</li>
+				{% endif %}
 			</ul>
 		</div>
 		<div class="gradient-overlay"></div>

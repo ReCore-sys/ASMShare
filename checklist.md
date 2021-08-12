@@ -11,8 +11,6 @@
 - [x] Add error 500 logger
 - [x] Require admin to see logs
 - [ ] Users can change their name
-- [ ] Add a "Report" button to the user page
-- [ ] Add a "Help" link to the top of every page
 - [ ] Add an about page
 - [ ] Add a "Report Bug" button to the top of every page
 - [ ] Stick a virus scanner in it
