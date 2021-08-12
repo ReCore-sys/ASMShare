@@ -3,7 +3,6 @@ import sqlite3
 from fuzzywuzzy import fuzz
 import time
 import threading
-thr = False
 
 
 def search(search_dict: dict,
@@ -16,16 +15,14 @@ def search(search_dict: dict,
         List if all items to match for
     query : str
         The string to match against
+    thr : bool
+        Whether to run each search in a different thread
 
     Returns
     -------
     dict
         A sorted dict that is ordered by it's relation to the query
     """
-    # Only run in threaded mode for 300+ entries
-    # Also only use this if not already set
-    if "thr" not in locals():
-        thr = len(search_dict) > 300
     modifiers = {
         "name": 2,
         "short": 1.2,
