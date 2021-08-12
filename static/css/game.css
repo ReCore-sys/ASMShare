@@ -1,0 +1,710 @@
+@import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro');
+
+$game-area: 400px;
+$maze__size--1: 5;
+$maze__size--2: 10;
+$maze__size--3: 20;
+$maze__size--4: 25;
+$maze__size--5: 40;
+$maze__startpoint: 10px;
+
+$anim-speed: 0.3s;
+
+$empty: transparent;
+$blue: rgb(18, 121, 142);
+$green: rgb(55, 200, 123);
+$red: rgb(208, 61, 60);
+$white: rgb(255, 255, 255);
+$black: darken($white, 100%);
+
+$tweet: rgb(29, 161, 242); //#1da1f2
+
+// Screen size
+// --------------------------------------------------------------------------------
+$screen-xs: 480px;
+$screen-xs-min: $screen-xs;
+
+$screen-sm: 768px;
+$screen-sm-min: $screen-sm;
+
+$screen-md: 992px;
+$screen-md-min: $screen-md;
+
+$screen-lg: 1200px;
+$screen-lg-min: $screen-lg;
+
+$screen-xs-max: ($screen-sm-min - 1);
+$screen-sm-max: ($screen-md-min - 1);
+$screen-md-max: ($screen-lg-min - 1);
+
+@mixin size($height, $width) {
+  height: $height;
+  width: $width;
+}
+
+@mixin square($size) {
+  @include size($size, $size);
+}
+
+* {
+  background-repeat: no-repeat;
+  box-sizing: border-box;
+  outline: 0;
+  user-select: none;
+
+  &:before, &:after {
+    background-repeat: no-repeat;
+    box-sizing: border-box;  
+    outline: 0;
+  }
+}
+
+html, body, .wrapper {
+  align-items: center;
+  background-color: $blue;
+  display: grid;
+  font-family: 'Source Sans Pro', sans-serif;
+  height: 100vh;
+  justify-content: center;
+  margin: 0;
+  overflow: hidden;
+  padding: 0;
+  width: 100vw;
+}
+
+.wrapper {
+
+  &:hover {
+
+    .gameover {
+      display: none;
+    }
+  }
+}
+
+@media (max-width: $screen-xs-max) {
+  .mobile {
+    display: grid;
+    background-color: #fff;
+    border: solid 1px $black;
+    box-shadow: 0 0 15px 5px rgba($black, 0.5);
+    flex-direction: column;
+    left: 50%;
+    max-width: 200px;
+    padding: 20px;
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .instruction,
+  .game {
+    display: none;
+  }
+}
+
+@media (min-width: $screen-sm-min) {
+  .mobile {
+    display: none;
+  }
+
+  .instruction {
+    display: flex;
+  }
+
+  .game {
+    @include square($game-area);
+    display: grid;
+    left: 50%;
+    position: absolute;
+    top: 50%;
+    transform: translate3d(-50%, -50%, 0);
+  }
+
+  .gameover {
+    align-items: center;
+    align-content: center;
+    background-color: rgba($black, 0.7);
+    color: $white;
+    display: none;
+    font-size: 24px;
+    flex-wrap: wrap;
+    height: 100%;
+    justify-content: center;
+    position: absolute;
+    text-align: center;
+    text-shadow: 1px 1px 2px $black;
+    width: 100%;
+    user-select: none;
+
+    &:hover {
+      display: flex;
+    }
+
+    .line {
+      transform: perspective(100rem) rotateZ(45deg);
+    }
+  }
+
+  .finish {
+    align-items: center;
+    align-content: center;
+    background-color: $black;
+    bottom: -120px;
+    color: $white;
+    cursor: default;
+    display: flex;
+    opacity: 0;
+    font-size: 16px;
+    flex-wrap: wrap;
+    height: 120px;
+    justify-content: center;
+    position: absolute;
+    pointer-events: none;
+    text-align: center;
+    width: 100%;
+    z-index: 10;
+
+    &:hover {
+      display: flex;
+      opacity: 1;
+      pointer-events: all;
+
+      & + .gameover {
+        display: none !important;
+      }
+    }
+  }
+
+  .maze {
+    @include square($game-area);
+    background-color: $red;
+    border: solid 1px $red;
+    display: grid;
+    left: 50%;
+    opacity: 0;
+    pointer-events: all;
+    position: absolute;
+    top: 50%;
+    transform: perspective(100rem) translate3d(-50%, -50%, 0) rotateZ(-45deg);
+    transition: opacity $anim-speed;
+    user-select: none;
+
+    &:before,
+    &:after {
+      content: '';
+      display: block;
+      position: absolute;
+      pointer-events: none;
+    }
+
+    &:before {
+      @include size(100%, 30px);
+      background-color: darken($red, 30%);
+      transform: skewy(-45deg);
+      transform-origin: 100% 100%;
+      top: 0;
+      left: -30px;
+
+    }
+
+    &:after {
+      @include size(30px, 100%);
+      background-color: darken($red, 20%);
+      transform: skewX(-45deg);
+      transform-origin: 0% 0%;
+      top: 100%;
+    }
+
+    &--1 {
+      opacity: 1;
+      grid-template-columns: repeat($maze__size--1, 1fr);
+      grid-template-rows: repeat($maze__size--1, 1fr);
+      transition: opacity $anim-speed;
+      z-index: 5;
+
+      .path {
+
+        &--1 {
+          grid-column-start: 3;
+          grid-column-end: 4;
+          grid-row-start: 1;
+          grid-row-end: 4;
+
+          &:before {
+            height: $maze__startpoint;
+            left: 0;
+            top: -1px;
+            width: 100%;
+          }
+        }
+
+        &--finish {
+          grid-column-start: 3;
+          grid-column-end: 4;
+          grid-row-start: 4;
+          grid-row-end: 5;
+        }
+
+        &--end {
+          grid-column-start: 3;
+          grid-column-end: 4;
+          grid-row-start: 5;
+          grid-row-end: 6;
+        }
+      }
+    }
+
+    &--2 {
+      grid-template-columns: repeat($maze__size--2, 1fr);
+      grid-template-rows: repeat($maze__size--2, 1fr);
+
+      .path {
+
+        &--1 {
+          grid-column-start: 1;
+          grid-column-end: 10;
+          grid-row-start: 2;
+          grid-row-end: 3;
+
+          &:before {
+            height: 100%;
+            top: 0;
+            left: -1px;
+            width: $maze__startpoint;
+          }
+        }
+
+        &--2 {
+          grid-column-start: 9;
+          grid-column-end: 10;
+          grid-row-start: 3;
+          grid-row-end: 5;
+        }
+
+        &--3 {
+          grid-column-start: 2;
+          grid-column-end: 10;
+          grid-row-start: 5;
+          grid-row-end: 6;
+        }
+
+        &--4 {
+          grid-column-start: 2;
+          grid-column-end: 3;
+          grid-row-start: 6;
+          grid-row-end: 10;
+        }
+
+        &--5 {
+          grid-column-start: 2;
+          grid-column-end: 9;
+          grid-row-start: 9;
+          grid-row-end: 10;
+        }
+
+        &--finish {
+          grid-column-start: 9;
+          grid-column-end: 10;
+          grid-row-start: 9;
+          grid-row-end: 10;
+        }
+
+        &--end {
+          grid-column-start: 9;
+          grid-column-end: 10;
+          grid-row-start: 10;
+          grid-row-end: 11;
+        }
+      }
+    }
+
+    &--3 {
+      grid-template-columns: repeat($maze__size--3, 1fr);
+      grid-template-rows: repeat($maze__size--3, 1fr);
+
+      .path {
+
+        &--1 {
+          grid-column-start: 1;
+          grid-column-end: 19;
+          grid-row-start: 2;
+          grid-row-end: 2;
+
+          &:before {
+            height: 100%;
+            top: 0;
+            left: -1px;
+            width: $maze__startpoint;
+          }
+        }
+
+        &--2 {
+          grid-column-start: 19;
+          grid-column-end: 19;
+          grid-row-start: 2;
+          grid-row-end: 11;
+        }
+
+        &--3 {
+          grid-column-start: 2;
+          grid-column-end: 19;
+          grid-row-start: 10;
+          grid-row-end: 11;
+        }
+
+        &--4 {
+          grid-column-start: 2;
+          grid-column-end: 3;
+          grid-row-start: 11;
+          grid-row-end: 13;
+        }
+
+        &--5 {
+          grid-column-start: 3;
+          grid-column-end: 20;
+          grid-row-start: 12;
+          grid-row-end: 13;
+        }
+
+        &--6 {
+          grid-column-start: 19;
+          grid-column-end: 20;
+          grid-row-start: 12;
+          grid-row-end: 20;
+        }
+
+        &--7 {
+          grid-column-start: 3;
+          grid-column-end: 20;
+          grid-row-start: 19;
+          grid-row-end: 20;
+        }
+
+        &--finish {
+          grid-column-start: 2;
+          grid-column-end: 3;
+          grid-row-start: 19;
+          grid-row-end: 20;
+        }
+
+        &--end {
+          grid-column-start: 2;
+          grid-column-end: 3;
+          grid-row-start: 20;
+          grid-row-end: 21;
+        }
+      }
+    }
+
+    &--4 {
+      grid-template-columns: repeat($maze__size--4, 1fr);
+      grid-template-rows: repeat($maze__size--4, 1fr);
+
+      .path {
+
+        &--1 {
+          grid-column-start: 4;
+          grid-column-end: 5;
+          grid-row-start: 1;
+          grid-row-end: 16;
+
+          &:before {
+            height: $maze__startpoint;
+            top: -1px;
+            left: 0;
+            width: 100%;
+          }
+        }
+
+        &--2 {
+          grid-column-start: 4;
+          grid-column-end: 15;
+          grid-row-start: 16;
+          grid-row-end: 17;
+        }
+
+        &--3 {
+          grid-column-start: 14;
+          grid-column-end: 15;
+          grid-row-start: 2;
+          grid-row-end: 16;
+        }
+
+        &--4 {
+          grid-column-start: 15;
+          grid-column-end: 17 ;
+          grid-row-start: 2;
+          grid-row-end: 3;
+        }
+
+        &--5 {
+          grid-column-start: 16;
+          grid-column-end: 17;
+          grid-row-start: 3;
+          grid-row-end: 24;
+        }
+
+        &--finish {
+          grid-column-start: 16;
+          grid-column-end: 17;
+          grid-row-start: 24;
+          grid-row-end: 25;
+        }
+
+        &--end {
+          grid-column-start: 16;
+          grid-column-end: 17;
+          grid-row-start: 25;
+          grid-row-end: 26;
+        }
+      }
+    }
+
+    &--5 {
+      grid-template-columns: repeat($maze__size--5, 1fr);
+      grid-template-rows: repeat($maze__size--5, 1fr);
+
+      .path {
+
+        &--1 {
+          grid-column-start: 2;
+          grid-column-end: 41;
+          grid-row-start: 2;
+          grid-row-end: 3;
+
+          &:before {
+            height: 100%;
+            top: 0;
+            right: -1px;
+            width: $maze__startpoint;
+          }
+        }
+
+        &--2 {
+          grid-column-start: 2;
+          grid-column-end: 3;
+          grid-row-start: 3;
+          grid-row-end: 20;
+        }
+
+        &--3 {
+          grid-column-start: 2;
+          grid-column-end: 40;
+          grid-row-start: 20;
+          grid-row-end: 21;
+        }
+
+        &--4 {
+          grid-column-start: 39;
+          grid-column-end: 40;
+          grid-row-start: 21;
+          grid-row-end: 40;
+        }
+
+        &--5 {
+          grid-column-start: 3;
+          grid-column-end: 39;
+          grid-row-start: 39;
+          grid-row-end: 40;
+        }
+
+        &--finish {
+          grid-column-start: 2;
+          grid-column-end: 3;
+          grid-row-start: 39;
+          grid-row-end: 40;
+
+          &:hover {
+
+            & + .finish {
+              opacity: 1;
+              pointer-events: all;
+            }
+          }
+        }
+      }
+
+      .finish {
+        bottom: 0;
+        height: 100%;
+        font-size: 24px;
+        top: 0;
+
+        .line {
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: center;
+        }
+
+        &:hover {
+          opacity: 1;
+          pointer-events: all;
+        }
+
+      }
+    }
+
+    &:hover {
+      cursor: not-allowed;
+
+      & .gameover {
+        display: flex;
+      }
+    }
+
+    .path {
+      background-color: #fff;
+      cursor: default;
+      position: relative;
+
+      &:first-child {
+
+        &:before {
+          background-color: $green;
+          content: '';
+          display: block;
+          position: absolute;
+        }
+      }
+
+      &:hover {
+
+        & ~ .gameover {
+          display: none;
+        }
+      }
+
+      &--finish {
+
+        &:hover {
+
+          & ~ .path--end {
+            height: 100%;
+            opacity: 1;
+            transition: all $anim-speed;
+          }
+        }
+      }
+
+      &--end {
+        @include size(0, 100%);
+        opacity: 0;
+        transition: opacity $anim-speed, height $anim-speed;
+
+        &:hover {
+          height: 100%;
+          opacity: 1;
+          transition: all $anim-speed;
+
+          & ~ .finish {
+            display: flex;
+            opacity: 1;
+            pointer-events: all;
+          }
+        }
+      }
+    }
+  }
+
+  .step {
+    @include square(0);
+    left: 0;
+    position: absolute;
+    top: 0;
+    visibility: hidden;
+
+    &:checked {
+
+      & + .maze {
+        opacity: 0 !important;
+        pointer-events: none !important;
+        transition: opacity $anim-speed;
+
+        & + .step {
+
+          & + .maze {
+            opacity: 1;
+            pointer-events: all;
+            transition: opacity $anim-speed $anim-speed;
+            z-index: 5;
+          }
+        }
+      }
+    }
+  }
+
+  .line {
+    padding: 0 30px;
+    width: 100%;
+
+    label {
+      cursor: pointer;
+      font-weight: bold;
+      text-decoration: underline;
+    }
+  }
+
+  .upper {
+    text-transform: uppercase;
+  }
+}
+
+.instruction {
+  background-color: #fff;
+  border: solid 1px $black;
+  box-shadow: 0 0 15px 5px rgba($black, 0.5);
+  flex-direction: column;
+  left: 10px;
+  max-width: 200px;
+  padding: 20px;
+  position: absolute;
+  top: 10px;
+
+  .line {
+    padding: 0;
+  }
+}
+
+.line {
+  margin-bottom: 10px;
+}
+
+.title {
+  font-size: 24px;
+}
+
+.tweet {
+  background-color: $tweet;
+  border: solid 1px $tweet;
+  border-radius: 15px;
+  color: $white;
+  font-size: 16px;
+  margin-top: 20px;
+  padding: 10px 20px;
+  text-decoration: none;
+}
+
+footer {
+  background-color: lighten($blue, 5%);
+  bottom: 0;
+  box-shadow: 0px 0px 10px 5px rgba($black, 0.5);
+  color: $white;
+  display: flex;
+  justify-content: space-around;
+  left: 0;
+  padding: 15px;
+  position: fixed;
+  right: 0;
+
+  a {
+    color: $white;
+  }
+
+  .center {
+    justify-content: center;
+  }
+
+  .opposite {
+  }
+}
