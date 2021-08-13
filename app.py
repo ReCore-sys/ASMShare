@@ -3,10 +3,18 @@
 # IMPORT EVERYTHING
 
 # //////////////////////////////////////////////////////////////////////////// #
+"""
+try:
+    from gevent import monkey
+    monkey.patch_all(sll=False)
+    
+except ModuleNotFoundError:
+    pass
+    """
 # Builtin imports
 import functools
 import time
-import os
+
 import random
 import sqlite3
 import sys
@@ -16,6 +24,7 @@ from pathlib import Path
 # 3rd party imports
 import requests
 import ujson as json
+from werkzeug import exceptions
 from flask import *
 from flask_compress import Compress
 from flask_login import LoginManager, current_user, login_user, logout_user
@@ -60,7 +69,7 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 client = WebApplicationClient(GOOGLE_CLIENT_ID)
 app.secret_key = appkey
-login_needed = False
+login_needed = True
 compress = Compress()
 app.config["COMPRESS_ALGORITHM"] = "br"
 app.config["COMPRESS_BR_LEVEL"] = 11
@@ -493,6 +502,18 @@ def fourhundred(e):
 def fourhundredpage():
     return render_template('errors/400.html')
 
+
+@app.errorhandler(413)
+@logger.catch
+def fouronethree(e):
+    return render_template('errors/413.html'), 413
+
+
+@app.route("/413")
+@logger.catch
+def fouronethreepage():
+    return render_template('errors/413.html')
+
 # //////////////////////////////////////////////////////////////////////////// #
 
 # Login based black magic
@@ -622,8 +643,20 @@ def logout():
 def logs():
     "A page to show the logs"
     if is_admin():
-        with open(f'{filepath}/logs', 'r') as f:
+        with open(f'{filepath}/logs.log', 'r') as f:
             return render_template('logs.html', logfile=f.readlines())
+    else:
+        return redirect(url_for("fourohthreepage"))
+
+
+@app.route("/deeplogs")
+@logger.catch
+@improved_login
+def deeplogs():
+    "A page to show the deeplogs"
+    if is_admin():
+        with open(f'{filepath}/deeplogs.log', 'r') as f:
+            return render_template('deeplogs.html', logfile=f.read())
     else:
         return redirect(url_for("fourohthreepage"))
 
@@ -772,7 +805,8 @@ def upload():
         tagfile.items(), key=lambda item: item[1], reverse=True)}
     # Turns them into a list of keys
     tags = list(tagsdict.keys())
-    return render_template("upload.html", tags=tags)
+    req = True
+    return render_template("upload.html", tags=tags, req=req)
 
 # If the upload goes well, send it here to actually be stored
 
@@ -786,7 +820,10 @@ def success():
     # We assume the request will be a GET request. If not, idk. I'll deal with that later
     if request.method == 'POST':
         # Assign the file to the variable f. I'm not sure what data type this is, but I assume binary
-        f = request.files['file']
+        try:
+            f = request.files['file']
+        except exceptions.RequestEntityTooLarge:
+            return abort(413)
 
         # Split the name at the last . to get the file extension. This is to make sure we ignore any other .'s in tha name
         ext = (f.filename).split(".")[-1]

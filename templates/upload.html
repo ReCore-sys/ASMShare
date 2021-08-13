@@ -38,12 +38,12 @@
 		<div class="form-wrap">
 
 			<h1>Upload</h1>
-			<input type="file" placeholder="File" name="file" required=true>
-			<input type="text" placeholder="Name" name="name" required=true>
-			<input type="text" placeholder="Subject" name="subject" required=true>
-			<input type="text" placeholder="Short description" name="short" required=true>
-			<input type="text" placeholder="Long description" name="long" class="longarea" required=true>
-			<input type="text" placeholder="Tags" name="tags" required=true>
+			<input type="file" placeholder="File" name="file" required={{req}}>
+			<input type="text" placeholder="Name" name="name" required={{req}}>
+			<input type="text" placeholder="Subject" name="subject" required={{req}}>
+			<input type="text" placeholder="Short description" name="short" required={{req}}>
+			<input type="text" placeholder="Long description" name="long" class="longarea" required={{req}}>
+			<input type="text" placeholder="Tags" name="tags" required={{req}}>
 			<input type="submit" value="Submit" class="topmarg">
 			<!-- The tags library -->
 			<script>

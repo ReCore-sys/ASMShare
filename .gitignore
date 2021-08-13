@@ -143,3 +143,5 @@ csscleaner.py
 static/fonts/
 .vscode/
 names.json
+plotview.py
+results*

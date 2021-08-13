@@ -1,7 +1,7 @@
 {% block loader %}
 <!-- By using "defer", it tells the browser to download the scripts in parralel. This stops it from blocking the display while it downloads -->
 <script src="{{ url_for('static', filename='js/loader.js')}}" defer></script>
-<script src="https://animejs.com/lib/anime.min.js" defer></script>
+<script src="https://animejs.com/lib/anime.min.js"></script>
 <!-- so in this file is a loading screen that does a lot of things -->
 <script>
     $('.wrapper').width($(window).width());

@@ -14,11 +14,13 @@
 	float : left;
 	height: 470px;
 	width : 300px;
+	margin-right : 20px;
 }
 
 .cardtext {
-	float  : left;
+	padding-left: 5vw;
 	padding: 5%;
+	word-wrap: break-word;
 }
 
 .nonefoundtxt {

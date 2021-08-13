@@ -126,10 +126,6 @@ input[type="submit"] {
 	transition    : opacity 250ms linear;
 }
 
-.topmarg {
-	margin-top: 10vh;
-}
-
 input[type="file"]:hover,
 input[type="submit"]:hover {
 	opacity   : 1;
