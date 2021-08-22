@@ -1,4 +1,4 @@
-@charset "UTF-8"; /* http://meyerweb.com/eric/tools/css/reset/
+@charset "UTF-8"; /* https://meyerweb.com/eric/tools/css/reset/
    v2.0 | 20110126
    License: none (public domain)
 */
@@ -75,11 +75,11 @@ u,
 ul,
 var,
 video {
-	margin        : 0;
-	padding       : 0;
-	border        : 0;
-	font-size     : 100%;
-	vertical-align: baseline;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  vertical-align: baseline;
 }
 /* HTML5 display-role reset for older browsers */
 
@@ -94,96 +94,97 @@ hgroup,
 menu,
 nav,
 section {
-	display: block;
+  display: block;
 }
 
 body {
-	line-height: 1;
+  line-height: 1;
 }
 
 ol,
 ul {
-	list-style: none;
+  list-style: none;
 }
 
 blockquote,
 q {
-	quotes: none;
+  quotes: none;
 }
 
 blockquote:after,
 blockquote:before,
 q:after,
 q:before {
-	content: '';
-	content: none;
+  content: "";
+  content: none;
 }
 
 table {
-	border-collapse: collapse;
-	border-spacing : 0;
+  border-collapse: collapse;
+  border-spacing: 0;
 }
 
 p > svg {
-	display       : inline-block;
-	vertical-align: middle;
+  display: inline-block;
+  vertical-align: middle;
 }
 
 .navigation {
-	z-index         : 999;
-	width           : 100%;
-	height          : auto;
-	display         : block;
-	background-color: #D4D4D4;
-	box-shadow      : #D4D4D4 -1px 1px, #D4D4D4 -2px 2px, #D4D4D4 -3px 3px, #D4D4D4 -4px 4px, #D4D4D4 -5px 5px, #D4D4D4 -6px 6px;
-	transform       : translate3d(4px, 0px, 0);
+  z-index: 999;
+  width: 100%;
+  height: auto;
+  display: block;
+  background-color: #d4d4d4;
+  box-shadow: #d4d4d4 -1px 1px, #d4d4d4 -2px 2px, #d4d4d4 -3px 3px,
+    #d4d4d4 -4px 4px, #d4d4d4 -5px 5px, #d4d4d4 -6px 6px;
+  transform: translate3d(4px, 0px, 0);
 }
 
 .navigation li {
-	width: 100%;
+  width: 100%;
 }
 
 .navigation a {
-	display       : block;
-	padding       : 0.5em 0 0.5em 1em;
-	margin        : 0;
-	line-height   : 2em;
-	font-weight   : 400;
-	color         : #333;
-	text-transform: uppercase;
+  display: block;
+  padding: 0.5em 0 0.5em 1em;
+  margin: 0;
+  line-height: 2em;
+  font-weight: 400;
+  color: #333;
+  text-transform: uppercase;
 }
 
 .navigation a:hover {
-	background-color: #666;
-	color           : #333;
-	box-shadow      : -1px 1px, -2px 2px, -3px 3px, -4px 4px;
-	transform       : translate3d(4px, -4px, 0);
-	transition      : 0.15s;
+  background-color: #666;
+  color: #333;
+  box-shadow: -1px 1px, -2px 2px, -3px 3px, -4px 4px;
+  transform: translate3d(4px, -4px, 0);
+  transition: 0.15s;
 }
 
 .navigation a > span:after {
-	content     : " /";
-	padding-left: 0.2em;
+  content: " /";
+  padding-left: 0.2em;
 }
 
 .navigation li:nth-child(1) > a {
-	background-color: #00FF96;
+  background-color: #00ff96;
 }
 
 .navigation li:nth-child(2) > a {
-	background-color: #FF6524;
+  background-color: #ff6524;
 }
 
 .navigation li:nth-child(3) > a {
-	background-color: #FFA300;
+  background-color: #ffa300;
 }
 
 .navigation li:nth-child(4) > a {
-	background-color: #FFCD00;
+  background-color: #ffcd00;
 }
 
 .navigation li:nth-child(5) > a {
-	background-color: #F2F600;
+  background-color: #f2f600;
 }
 
 .navigation li:nth-child(1) > a:hover,
@@ -191,77 +192,78 @@ p > svg {
 .navigation li:nth-child(3) > a:hover,
 .navigation li:nth-child(4) > a:hover,
 .navigation li:nth-child(5) > a:hover {
-	background-color: #666;
+  background-color: #666;
 }
 
 .navigation svg {
-	width         : 0.8em;
-	height        : 0.8em;
-	vertical-align: text-top;
+  width: 0.8em;
+  height: 0.8em;
+  vertical-align: text-top;
 }
 
 svg {
-	vertical-align: top;
-	opacity       : 1;
-	fill-opacity  : 1;
-	fill-rule     : nonzero;
-	fill          : #333;
+  vertical-align: top;
+  opacity: 1;
+  fill-opacity: 1;
+  fill-rule: nonzero;
+  fill: #333;
 }
 
 .navigation a:hover svg {
-	fill: #333;
+  fill: #333;
 }
 
 .navigation span {
-	display     : inline-block;
-	padding-left: 0.5em;
+  display: inline-block;
+  padding-left: 0.5em;
   visibility: visible;
   transition: all 0.4s ease;
 }
 /* END Navigation
 ----------------- */
 .navigation {
-	box-shadow                : 0 0;
-	transition-delay          : 0s;
-	transition-duration       : 0.4s;
-	transition-property       : all;
-	transition-timing-function: line;
-	transform                 : translate3d(0px, 0px, 0);
+  box-shadow: 0 0;
+  transition-delay: 0s;
+  transition-duration: 0.4s;
+  transition-property: all;
+  transition-timing-function: line;
+  transform: translate3d(0px, 0px, 0);
 }
 
 .navigation a:hover {
-	box-shadow                : #303030 -1px 1px, #333 -2px 2px, #2E2E2E -3px 3px, #2B2B2B -4px 4px, #292929 -5px 5px, #262626 -6px 6px;
-	transition-delay          : 0s;
-	transition-duration       : 0.2s;
-	transition-property       : all;
-	transition-timing-function: line;
-	transform                 : translate3d(6px, 0px, 0);
+  box-shadow: #303030 -1px 1px, #333 -2px 2px, #2e2e2e -3px 3px,
+    #2b2b2b -4px 4px, #292929 -5px 5px, #262626 -6px 6px;
+  transition-delay: 0s;
+  transition-duration: 0.2s;
+  transition-property: all;
+  transition-timing-function: line;
+  transform: translate3d(6px, 0px, 0);
 }
 
 .navigation {
-	position        : fixed;
-	left            : 0;
-	top             : 0;
-	bottom          : 0;
-	width           : 4em;
-	height          : 100%;
-	background-color: #333;
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4em;
+  height: 100%;
+  background-color: #333;
 }
 
 .navigation:hover {
-	width: 12em;
+  width: 12em;
 }
 
 .navigation li,
 .navigation ul {
-	display: block;
+  display: block;
 }
 
 .navigation a {
-	padding      : 0.8em 0.6em 0.8em 1em;
-	color        : #F1F1F1;
-	border-bottom: 1px solid transparent;
-	border-top   : 1px solid transparent;
+  padding: 0.8em 0.6em 0.8em 1em;
+  color: #f1f1f1;
+  border-bottom: 1px solid transparent;
+  border-top: 1px solid transparent;
 }
 
 .navigation li:nth-child(1) a,
@@ -269,90 +271,90 @@ svg {
 .navigation li:nth-child(3) a,
 .navigation li:nth-child(4) a,
 .navigation li:nth-child(5) a {
-	background-color: transparent;
+  background-color: transparent;
 }
 
 .navigation a:hover {
-	width      : 6em;
-	display    : inline-block;
-	padding    : 0 0 0 1em;
-	margin     : 0;
-	font-weight: 400;
-	line-height: 2em;
+  width: 6em;
+  display: inline-block;
+  padding: 0 0 0 1em;
+  margin: 0;
+  font-weight: 400;
+  line-height: 2em;
 }
 
 .navigation:hover a {
-	width  : 12em;
-	display: inline-block;
-	padding: 0.8em 0 0.8em 1em;
+  width: 12em;
+  display: inline-block;
+  padding: 0.8em 0 0.8em 1em;
 }
 
 .navigation span {
-	text-indent: -200px;
+  text-indent: -200px;
 }
 
 .navigation:hover span {
-	display    : inline-block;
-	text-indent: 0;
+  display: inline-block;
+  text-indent: 0;
 }
 
 .active {
-	background-color: #F1F1F1;
+  background-color: #f1f1f1;
 }
 
 .navigation a > span:after {
-	color: #666;
+  color: #666;
 }
 
 .navigation a:hover > span:after {
-	color: #333;
+  color: #333;
 }
 
 .navigation svg {
-	width         : 30px;
-	height        : 2em;
-	vertical-align: top;
+  width: 30px;
+  height: 2em;
+  vertical-align: top;
 }
 
 .navigation svg:hover {
-	fill: #333;
+  fill: #333;
 }
 
 .home {
-	fill: #00FF96;
+  fill: #00ff96;
 }
 
 .about {
-	fill: #FF6524;
+  fill: #ff6524;
 }
 
 .work {
-	fill: #FFA300;
+  fill: #ffa300;
 }
 
 .lab {
-	fill: #FFCD00;
+  fill: #ffcd00;
 }
 
 .contact {
-	fill: #F2F600;
+  fill: #f2f600;
 }
 /* Menu position on the navigation bar */
 
 .menu {
-	position: fixed;
-	top     : 0;
-	left    : 0;
-	width   : auto;
-	height  : auto;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: auto;
+  height: auto;
 }
 @media only screen and (min-height: 1920px) {
-	.navigation:hover {
-		width: 8.592em;
-	}
+  .navigation:hover {
+    width: 8.592em;
+  }
 
-	.navigation a {
-		font-size: 0.9em;
-		padding  : 0.8em 0.8259em 0.8em 1em;
-	}
+  .navigation a {
+    font-size: 0.9em;
+    padding: 0.8em 0.8259em 0.8em 1em;
+  }
 }

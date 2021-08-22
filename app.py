@@ -3,36 +3,30 @@
 # IMPORT EVERYTHING
 
 # //////////////////////////////////////////////////////////////////////////// #
-"""
-try:
-    from gevent import monkey
-    monkey.patch_all(sll=False)
-    
-except ModuleNotFoundError:
-    pass
-    """
 # Builtin imports
 import functools
-import time
-
 import random
 import sqlite3
 import sys
+import time
 from datetime import datetime
 from pathlib import Path
+import shutil
 
 # 3rd party imports
 import requests
 import ujson as json
-from werkzeug import exceptions
 from flask import *
 from flask_compress import Compress
 from flask_login import LoginManager, current_user, login_user, logout_user
 from loguru import logger
 from oauthlib.oauth2 import WebApplicationClient
 from pdf2image import convert_from_path
+from werkzeug import exceptions
+
 
 # local imports
+import scan  # A custom lib to scan files for danger. So you guys can't go find exploits, this will be hidden
 import searchhelper
 from secret_data import *
 from user import User
@@ -128,7 +122,7 @@ cached = {}
 
 @logger.catch
 def convert_bytes(num):
-    """convert_bytes 
+    """convert_bytes
 \n
 Turns a bytecount into a nicely readable string
 
@@ -404,6 +398,10 @@ def create_stats():
     stats["logins"] = cursor.fetchone()[0]
     db.close()
 
+    tags = json.load(open(f"{filepath}/tags.json"))
+    top = max(tags.items(), key=lambda k: k[1])
+    stats["toptag"] = top[0]
+
 
 create_stats()
 
@@ -597,6 +595,13 @@ def home():
 def rickroll():
     """:)"""
     return render_template('rickroll.html')
+
+
+@app.route("/errors")
+@logger.catch
+def errors():
+    """:)"""
+    return render_template('errorsexaplained.html')
 
 
 @app.route("/error")
@@ -854,61 +859,58 @@ def success():
 
             # add em to a list
             usedids = [x[0] for x in cursor.fetchall()]
-
-            # Create a random 6 digit number to assign to the upload
-            tryid = random.randint(int("1" + ("0" * 5)), int("9" * 6))
-
-            # If the id is already in the database, try again
-            while tryid in usedids:
-                tryid = random.randint(int("1" + ("0" * 5)), int("9" * 6))
-            if len(form["tags"]) > 0:
-                # Now we do some funky stuff with tags
-                tags = json.loads(form["tags"])
-                # max of 5 tags. You can enter more, but they won't show up
-                tags = [x["value"].replace(" ", "-") for x in tags[:5]]
-
-                prettytags = ",".join(tags)
-
-                # This bit just pulls apart the list into it's indvidual tags, then takes apart the tag, putting it back together but only with alphanumetic characters or hyphens
-                tags = [x for x in [ch.lower()
-                                    for ch in tags if ch.isalnum() or "-"]]
-                # Opens a json file to store the tag frequency
-                tagfile = json.load(open(f"{filepath}/tags.json", "r"))
-                # Loops though all the tags
-                for x in tags:
-                    # If the tag already exists in the json file, just add 1 to it's frequency
-                    if x in tagfile:
-                        tagfile[x] = tagfile[x] + 1
-                    # Otherwise just set the frequency to 1
-                    else:
-                        tagfile[x] = 1
-                json.dump(tagfile, open(f"{filepath}/tags.json", "w"))
+            # If the idlist is empty, create the first id (0)
+            if usedids == []:
+                tryid = 0
             else:
-                prettytags = None
+                # Get the largest id and add one
+                tryid = max(usedids) + 1
 
-            # Add all the stuff the the database
-            cursor.execute(f'INSERT INTO filemapping VALUES (?, ?, ?, ?, ?, ?, ?, 1, ?, ?)',
-                           (fname, short, form["long"], current_user.email, form["subject"], prettytags, ((datetime.now()).strftime('%d/%m/%Y')), veryshort, f"{tryid}.{ext}"))
-
+            # If for some reason it already exists, try again
+            while tryid in usedids:
+                tryid = max(usedids) + 1
             # Save the file in the folder
             f.save(f"{app.config['UPLOAD_PATH']}/{tryid}.{ext}")
-            # If the file does not pass the AV, quarentine it. I should probably do it before saving/adding to db but eh
-            if prod:
-                import clamd
-                cd = clamd.ClamdUnixSocket()
-                scan = cd.scan(f"{app.config['UPLOAD_PATH']}/{tryid}.{ext}")
-                if scan[f"{app.config['UPLOAD_PATH']}/{tryid}.{ext}"][0] == "FOUND":
-                    cursor.execute(
-                        "DELETE FROM filemapping WHERE id = ?", (f"{tryid}.{ext}",))
-                    os.rename(
-                        f"{app.config['UPLOAD_PATH']}/{tryid}.{ext}", f"{filepath}/quaranteen/{tryid}.{ext}")
-                    log(f"User {getname()} ({current_user.email}) tried to upload a file that was caught by the virus scanner.\nThe file {tryid}.{ext} was deemed unsafe with the code " +
-                        scan[f"{app.config['UPLOAD_PATH']}/{tryid}.{ext}"][1] + " and was moved to quaranteen")
+            scanres = scan.check(f"{app.config['UPLOAD_PATH']}/{tryid}.{ext}")
+            if scanres[0]:
+                if len(form["tags"]) > 0:
+                    # Now we do some funky stuff with tags
+                    tags = json.loads(form["tags"])
+                    # max of 5 tags. You can enter more, but they won't show up
+                    tags = [x["value"].replace(" ", "-") for x in tags[:5]]
 
-            # Log the upload
-            log(f"User {getname()} has uploaded '{fname}' ({tryid})")
-            db.commit()
-            db.close()
+                    prettytags = ",".join(tags)
+
+                    # This bit just pulls apart the list into it's indvidual tags, then takes apart the tag, putting it back together but only with alphanumetic characters or hyphens
+                    tags = [x for x in [ch.lower()
+                                        for ch in tags if ch.isalnum() or "-"]]
+                    # Opens a json file to store the tag frequency
+                    tagfile = json.load(open(f"{filepath}/tags.json", "r"))
+                    # Loops though all the tags
+                    for x in tags:
+                        # If the tag already exists in the json file, just add 1 to it's frequency
+                        if x in tagfile:
+                            tagfile[x] = tagfile[x] + 1
+                        # Otherwise just set the frequency to 1
+                        else:
+                            tagfile[x] = 1
+                    json.dump(tagfile, open(f"{filepath}/tags.json", "w"))
+                else:
+                    prettytags = None
+
+                # Add all the stuff the the database
+                cursor.execute(f'INSERT INTO filemapping VALUES (?, ?, ?, ?, ?, ?, ?, 1, ?, ?)',
+                               (fname, short, form["long"], current_user.email, form["subject"], prettytags, ((datetime.now()).strftime('%d/%m/%Y')), veryshort, f"{tryid}.{ext}"))
+
+                # Log the upload
+                log(f"User {getname()} has uploaded '{fname}' ({tryid})")
+                db.commit()
+                db.close()
+            else:
+                log(
+                    f"User {getname()} has tried to upload '{fname}' ({tryid}) but it was caught by the scanner ({scanres[1]})")
+                shutil.move(f"{app.config['UPLOAD_PATH']}/{tryid}.{ext}",
+                            f"{filepath}/quarantine/{tryid}.{ext}_")
             # Reload the image cache to account for the new uploads
             compileimages()
     else:

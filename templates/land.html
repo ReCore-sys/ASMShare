@@ -13,20 +13,20 @@
 
 		<!--vendors styles-->
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-		
-		
+
+
 
 		<!-- Bootstrap CSS / Color Scheme -->
 		<link rel="stylesheet" href="{{ url_for('static', filename='css/search.css')}}" id="theme-color">
 		<link rel="stylesheet" href="{{ url_for('static', filename='css/default.css')}}" id="theme-color">
 		<link rel="stylesheet" href="{{ url_for('static', filename='css/cards.css')}}" id="theme-color">
-		<link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/ui-lightness/jquery-ui.css" rel="stylesheet" type="text/css" />
+		<link href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/ui-lightness/jquery-ui.css" rel="stylesheet" type="text/css" />
 		<!-- Local js -->
 		<script src="{{ url_for('static', filename='js/autocomplete.js')}}" , id="autocompleteScript"></script>
-		
+
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.7.3/feather.min.js"></script>
-		
+
 
 	</head>
 
@@ -59,6 +59,7 @@
 					<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.js"></script>
 					<!--
           Look, I don't want to use jQuery either, but here we are. If someone wants to convert this to regular js, go for it
+		  Note: I take that back. JQuery is pretty good ngl
           -->
 					<script>
 					$("input#post_id").on("change", function() { // Whenever this field changes
@@ -137,30 +138,39 @@
 				</div>
 			</div>
 		</section>
-		<style>
-@import url(https://fonts.googleapis.com/css?family=Lato:400,700|Montserrat:400,700);
-@import url(https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css);
+<style>
+		@import url(https://fonts.googleapis.com/css?family=Lato:400,700|Montserrat:400,700);
+		@import url(https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css);
 
-/*/ start count stats /*/
+		/*/ start count stats /*/
 
-section#counter-stats {
-	display: flex;
-	justify-content: center;
-	margin-top: 100px;
-}
+		section#counter-stats {
+			display: flex;
+			justify-content: center;
+			margin-top: 100px;
+		}
 
-.stats {
-	text-align: center;
-	font-size: 35px;
-	font-weight: 700;
-	font-family: 'Montserrat', sans-serif;
-}
+		.stats {
+			text-align: center;
+			font-size: 35px;
+			font-weight: 700;
+			font-family: 'Montserrat', sans-serif;
+		}
+		.smolstats {
+			text-align: center;
+			font-size: 15px;
+			font-weight: 700;
+			font-family: 'Montserrat', sans-serif;
+			margin-right: auto;
+			margin-left: auto;
+			padding: 1rem;
+		}
 
-.stats .fa {
-	color: #008080;
-	font-size: 60px;
-}
-		</style>
+		.stats .fa {
+			color: #008080;
+			font-size: 60px;
+		}
+</style>
 
 		<!-- start count stats -->
 
@@ -191,8 +201,13 @@ section#counter-stats {
 						<div class="counting" data-count={{stats["logins"]}}>0</div>
 						<h5>Individual logins</h5>
 					</div>
+					<div class="col-lg-3 smolstats">
+						<i class="fa" data-feather="tag" aria-hidden="true"></i>
+						<p>{{stats["toptag"]}}</p>
+						<h5>Most popular tag</h5>
+					</div>
 
-					<script>
+		<script>
             // number count for stats, using jQuery animate
 
             $('.counting').each(function() {
@@ -219,10 +234,10 @@ section#counter-stats {
 
 
             });
-          </script>
-					<script>
+		</script>
+		<script>
           feather.replace()
-          </script>
+		</script>
 
 				</div>
 				<!-- end row -->

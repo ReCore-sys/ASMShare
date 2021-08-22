@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<!-- Required meta tags -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<title>Errors</title>
+	<link rel="shortcut icon" href="{{ url_for('static', filename='img/ASMS.ico') }}">
+
+	<!--Inter UI font-->
+	<link href="{{ url_for('static', filename='css/inter-ui.css')}}" rel="stylesheet" defer>
+
+	<!--vendors styles-->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	
+	
+	{% include "menu.html" %}
+	{% block menu %}
+	{% endblock %}
+
+	<!-- Bootstrap CSS / Color Scheme -->
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/default.css')}}" id="theme-color">
+</head>
+
+<body>
+	<!--hero header-->
+	<section class="py-7 py-md-0 bg-hero" id="home">
+		<div class="container">
+			<script>
+				console.log("8==)")
+			</script>
+			<div class="row vh-md-100">
+				<div class="col-md-8 col-sm-10 col-12 mx-auto my-auto text-center">
+					<h1 class="heading-black text-capitalize">HTTP errors</h1>
+					<p class="lead py-3">So, you may be a little confused about what different errors means. Good news is that I am here to explain. I will explain the technical details, and also a version in the context of getting a drink from a bar</p>
+					<br>
+                    <h2 class="heading-black text-capitalize">Errors 2xx</h2>
+                    <br>
+                    <h3 class="heading-black text-capitalize">200</h3>
+                    <p class="lead py-3">Everything went as planned. The page loaded and nothing broke. You probably won't see this one<br><strong>You asked for a beer and the bartender said sure</strong></p>
+                    <br>
+                    <h3 class="heading-black text-capitalize">201</h3>
+                    <p class="lead py-3">You got the page back, but it had to be created to do so<br><strong>You asked for a beer and the bartender said sure, but had to summon it out of the void</strong></p>
+                    <br>
+                    <h3 class="heading-black text-capitalize">204</h3>
+                    <p class="lead py-3">It worked, but you got nothing back. It didn't exactly break though<br><strong>You ask for a beer and the bartender says sure. He hands you an empty glass but little did he know, you wanted a nice glass of air</strong></p>
+                    <br>
+                    <h2 class="heading-black text-capitalize">Errors 3xx</h2>
+                    <br>
+                    <h3 class="heading-black text-capitalize">301</h3>
+                    <p class="lead py-3">The resource exists but has moved<br><strong>You ask for a beer and the bartender says they don't sell it. He does however point you to a nearby bar that does</strong></p>
+                    <br>
+                    <h3 class="heading-black text-capitalize">302</h3>
+                    <p class="lead py-3">The resource exists but has moved. Future changes to the location may happen<br><strong>You ask for a beer and the bartender says they don't sell it. He does however point you to a nearby bar that does. This bar happens to randomly teleport around town, so the bartender tells you to ask him where it is each time.</strong></p>
+                    <h2 class="heading-black text-capitalize">Errors 4xx</h2>
+                    <br>
+                    <h3 class="heading-black text-capitalize">401</h3>
+                    <p class="lead py-3">You need to sign in<br><strong>You ask for a beer. The bartender asks for some ID.</strong></p>
+                    <br>
+                    <h3 class="heading-black text-capitalize">403</h3>
+                    <p class="lead py-3">You are not allowed to see this resource<br><strong>You ask for a beer. The bartender reminds you of the many threats of physical violence you issue last week while drunk and kicks you out.</strong></p>
+                    <br>
+                    <h3 class="heading-black text-capitalize">404</h3>
+                    <p class="lead py-3">The resource does not exist<br><strong>You ask for a beer. The bartender asks what a beer is.</strong></p>
+                    <br>
+                    <h3 class="heading-black text-capitalize">405</h3>
+                    <p class="lead py-3">That method is not allowed<br><strong>You ask for a beer. The bartender does not speak English.</strong></p>
+                    <br>
+                    <h3 class="heading-black text-capitalize">408</h3>
+                    <p class="lead py-3">The resource timed out<br><strong>You ask for a beer. The bartender takes too long to grab the beer so you leave.</strong></p>
+                    <br>
+                    <h3 class="heading-black text-capitalize">410</h3>
+                    <p class="lead py-3">The resource is gone with no further explaination<br><strong>You ask for a beer. The bartender says no and refuses to elaborate.</strong></p>
+                    <br>
+                    <h3 class="heading-black text-capitalize">429</h3>
+                    <p class="lead py-3">You made too many requests too fast<br><strong>You ask for a beer. The bartender says no because you have already had 86 that night.</strong></p>
+                    <br>
+                    <h3 class="heading-black text-capitalize">451</h3>
+                    <p class="lead py-3">This resource is blocked for legal reasons<br><strong>You ask for a beer. It is 1930 however, so alcohol is illegal and you get shot by the police </strong></p>
+                    <br>
+                    <h2 class="heading-black text-capitalize">Errors 5xx</h2>
+                    <br>
+                    <h3 class="heading-black text-capitalize">500</h3>
+                    <p class="lead py-3">The server breaks<br><strong>You ask for a beer. The bartender has a hemorrhage.</strong></p>
+                    <br>
+                    <h3 class="heading-black text-capitalize">502</h3>
+                    <p class="lead py-3">The server can't fetch a resource<br><strong>You ask for a beer. The bartender's hand melts off, then he apolgises.</strong></p>
+                </div>
+			</div>
+		</div>
+	</section>
+
+	<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+</body>
+
+</html>

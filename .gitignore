@@ -145,3 +145,5 @@ static/fonts/
 names.json
 plotview.py
 results*
+safe/
+scan.py
