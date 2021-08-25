@@ -1,36 +1,66 @@
-const wrapperEl = document.querySelector('.wrapper');
-const numberOfEls = 90;
-const duration = 6000;
-const delay = duration / numberOfEls;
+const staggerVisualizerEl = document.querySelector('.stagger-visualizer');
+const fragment = document.createDocumentFragment();
+const grid = [15, 15];
+const col = grid[0];
+const row = grid[1];
+const numberOfElements = col * row;
 
-let tl = anime.timeline({
-  duration: delay,
-  complete: function () { tl.restart(); }
-});
+for (let i = 0; i < numberOfElements; i++) {
+  fragment.appendChild(document.createElement('div'));
+}
 
-function createEl(i) {
-  let el = document.createElement('div');
-  const rotate = (360 / numberOfEls) * i;
-  const translateY = -50;
-  const hue = Math.round(360 / numberOfEls * i);
-  el.classList.add('el');
-  el.style.backgroundColor = 'hsl(' + hue + ', 40%, 60%)';
-  el.style.transform = 'rotate(' + rotate + 'deg) translateY(' + translateY + '%)';
-  tl.add({
-    begin: function () {
-      anime({
-        targets: el,
-        backgroundColor: ['hsl(' + hue + ', 40%, 60%)', 'hsl(' + hue + ', 60%, 80%)'],
-        rotate: [rotate + 'deg', rotate + 10 + 'deg'],
-        translateY: [translateY + '%', translateY + 10 + '%'],
-        scale: [1, 1.25],
-        easing: 'easeInOutSine',
-        direction: 'alternate',
-        duration: duration * .1
-      });
-    }
-  });
-  wrapperEl.appendChild(el);
-};
+staggerVisualizerEl.appendChild(fragment);
 
-for (let i = 0; i < numberOfEls; i++) createEl(i);
+const staggersAnimation = anime.timeline({
+  targets: '.stagger-visualizer div',
+  easing: 'easeInOutSine',
+  delay: anime.stagger(50),
+  loop: true,
+  autoplay: false
+})
+.add({
+  translateX: [
+    {value: anime.stagger('-.1rem', {grid: grid, from: 'center', axis: 'x'}) },
+    {value: anime.stagger('.1rem', {grid: grid, from: 'center', axis: 'x'}) }
+  ],
+  translateY: [
+    {value: anime.stagger('-.1rem', {grid: grid, from: 'center', axis: 'y'}) },
+    {value: anime.stagger('.1rem', {grid: grid, from: 'center', axis: 'y'}) }
+  ],
+  duration: 1000,
+  scale: .5,
+  delay: anime.stagger(100, {grid: grid, from: 'center'})
+})
+.add({
+  translateX: () => anime.random(-30, 30),
+  translateY: () => anime.random(-30, 30),
+  delay: anime.stagger(8, {from: 'last'})
+})
+.add({
+  translateX: anime.stagger('.25rem', {grid: grid, from: 'center', axis: 'x'}),
+  translateY: anime.stagger('.25rem', {grid: grid, from: 'center', axis: 'y'}),
+  rotate: 0,
+  scaleX: 2.5,
+  scaleY: .25,
+  delay: anime.stagger(4, {from: 'center'})
+})
+.add({
+  rotate: anime.stagger([90, 0], {grid: grid, from: 'center'}),
+  delay: anime.stagger(50, {grid: grid, from: 'center'})
+})
+.add({
+  translateX: 0,
+  translateY: 0,
+  scale: .4,
+  scaleX: 1,
+  rotate: 90,
+  duration: 250,
+  delay: anime.stagger(100, {grid: grid, from: 'center'})
+})
+.add({
+  scaleY: 1,
+  scale: 1,
+  delay: anime.stagger(20, {grid: grid, from: 'center'})
+})
+
+staggersAnimation.play();

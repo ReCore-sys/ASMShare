@@ -1,85 +1,104 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+      name="viewport"
+    />
+    <title>{{card["name"]}}</title>
+    <link
+      rel="shortcut icon"
+      href="{{ url_for('static', filename='img/ASMS.ico') }}"
+    />
+    <meta
+      content="Knight is a beautiful Bootstrap 4 template for product landing pages."
+      name="description"
+    />
+    <!--Inter UI font-->
+    <link
+      href="{{ url_for('static', filename='css/inter-ui.css')}}"
+      rel="stylesheet"
+      defer
+    />
+    <!--vendors styles-->
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+      rel="stylesheet"
+    />
 
-<head>
-	<!-- Required meta tags -->
-	<meta charset="utf-8">
-	<meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
-	<title>{{card["name"]}}</title>
-	<link rel="shortcut icon" href="{{ url_for('static', filename='img/ASMS.ico') }}">
-	<meta content="Knight is a beautiful Bootstrap 4 template for product landing pages." name="description">
-	<!--Inter UI font-->
-	<link href="{{ url_for('static', filename='css/inter-ui.css')}}" rel="stylesheet" defer>
-	<!--vendors styles-->
-	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-	
-	
-	<!-- Bootstrap CSS / Color Scheme -->
-	<link href="{{ url_for('static', filename='css/fullcard.css')}}" id="theme-color" rel="stylesheet">
-	<link href="../static/css/fullcard.css" id="theme-color" rel="stylesheet">
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.7.3/feather.min.js"></script>
-	{% include "menu.html" %}
-	{% block menu %}
-	{% endblock %}
-</head>
+    <!-- Bootstrap CSS / Color Scheme -->
+    <link
+      href="{{ url_for('static', filename='css/fullcard.css')}}"
+      id="theme-color"
+      rel="stylesheet"
+    />
+    <link href="../static/css/fullcard.css" id="theme-color" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.7.3/feather.min.js"></script>
+    {% include "menu.html" %} {% block menu %} {% endblock %}
+  </head>
 
-<body>
-	<div class="blog-card spring-fever" background="{{card['image']}}" style="background: center no-repeat;">
-		<div class="title-content">
-			<h3><a href="#" class="nofade">{{card["name"]}}</a></h3>
-			<div class="intro"> <a href="#">{{card["short"]}}</a> </div>
-		</div>
-		<div class="card-info">
-			{{card["long"]}}
-			<a href='../search/{{card["uploader"]}}'>{{card["uploader"]}}</a>
-		</div>
-		<div class="utility-info">
-			<ul class="utility-list">
-				<li>
+  <body>
+    <div
+      class="blog-card spring-fever"
+      background="{{card['image']}}"
+      style="background: center no-repeat"
+    >
+      <div class="title-content">
+        <h3><a href="#" class="nofade">{{card["name"]}}</a></h3>
+        <div class="intro"><a href="#">{{card["short"]}}</a></div>
+      </div>
+      <div class="card-info">
+        {{card["long"]}}
+        <a href='../search/{{card["uploader"]}}'>{{card["uploader"]}}</a>
+      </div>
+      <div class="utility-info">
+        <ul class="utility-list">
+          <!--<li>
 					<span class="icon" data-feather="heart">
 					</span>
 					<a class="contentdata">{{card["score"]}}
 					</a>
-				</li>
-				<li>
-					<span class="icon" data-feather="calendar">
-					</span>
-					<a class="contentdata">{{card["date"]}}
-					</a>
-				</li>
-				{% if card["tags"] != "None" %}
-				<li>
-					<span class="icon" data-feather="tag">
-					</span>
-					{% for x in card["tags"] %}
-					<a class="contentdata" href='../search/{{x|trim}}'>{{x|trim}}{% if x != (card["tags"] | last) %},{%
-						endif %}
-					</a>
-					{% endfor %}
-				</li>
-				{% endif %}
-			</ul>
-		</div>
-		<div class="gradient-overlay"></div>
-		<div class="color-overlay"></div>
-	</div><!-- /.blog-card -->
-	{% if current_user.is_authenticated %}
-	<section class="buttonholder">
-		<button class="downloadbutton" onclick="window.location.href='/download/{{download}}'">
-			<h2>Download</h2>
-		</button>
-	</section>
-	{% else %}
-	<section class="buttonholder">
-		<button class="downloadbutton">
-			<h2>Log in to download</h2>
-		</button>
-	</section>
-	{% endif %}
-	<script>
-		feather.replace()
-	</script>
-
-</body>
-
+				</li>-->
+          <li>
+            <span class="icon" data-feather="calendar"> </span>
+            <a class="contentdata">{{card["date"]}} </a>
+          </li>
+          {% if card["tags"] != "None" %}
+          <li>
+            <span class="icon" data-feather="tag"> </span>
+            {% for x in card["tags"] %}
+            <a class="contentdata" href="../search/{{x|trim}}"
+              >{{x|trim}}{% if x != (card["tags"] | last) %},{% endif %}
+            </a>
+            {% endfor %}
+          </li>
+          {% endif %}
+        </ul>
+      </div>
+      <div class="gradient-overlay"></div>
+      <div class="color-overlay"></div>
+    </div>
+    <!-- /.blog-card -->
+    {% if current_user.is_authenticated %}
+    <section class="buttonholder">
+      <button
+        class="downloadbutton"
+        onclick="window.location.href='/download/{{download}}'"
+      >
+        <h2>Download</h2>
+      </button>
+    </section>
+    {% else %}
+    <section class="buttonholder">
+      <button class="downloadbutton">
+        <h2>Log in to download</h2>
+      </button>
+    </section>
+    {% endif %}
+    <script>
+      feather.replace();
+    </script>
+  </body>
 </html>
