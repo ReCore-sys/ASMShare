@@ -858,7 +858,7 @@ def success():
             cursor.execute("select id from filemapping")
 
             # add em to a list
-            usedids = [x[0] for x in cursor.fetchall()]
+            usedids = [int(x[0].split(".")[0]) for x in cursor.fetchall()]
             # If the idlist is empty, create the first id (0)
             if usedids == []:
                 tryid = 0
@@ -913,11 +913,13 @@ def success():
                             f"{filepath}/quarantine/{tryid}.{ext}_")
             # Reload the image cache to account for the new uploads
             compileimages()
+            
     else:
         return redirect(url_for("fourohsixpage"))
     # Head back home
     time.sleep(3)
     return redirect(url_for("home"))
+    compileimages()
 
 
 @app.route("/search/")
@@ -931,6 +933,8 @@ def emptysearch():
 @logger.catch
 def search(query):
     "Shows searched stuff"
+    global cards
+    compileimages()
     query = query.strip()
     # Here we cache the results of a search
     if query in cached:
