@@ -14,9 +14,11 @@
 - [x] Require admin to see logs
 - [x] Users can change their name
 - [ ] Redo home page to be more helpful (WIP)
+- [ ] Add an info page
 
 ### Post-launch
 
+- [ ] Get an actual search algorithm, not this mess I have
 - [ ] Add voting
 - [ ] Somehow get async workers on gunicorn
 - [ ] Game in an error page
