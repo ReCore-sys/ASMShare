@@ -36,8 +36,6 @@ Hey there. So you wanna help out with this thing? Cool. You don't need to be abl
 
 - <strong>HARD WORK</strong> Turn the site into a desktop app. I can provide API's n stuff to get the actual data, but you will need to create a UI to show these. React would probably be easiest since it can support most of the existing CSS and scripts. Or tkinter, since it will work nicely with existing python stuff.
 
-- Make the site Discord embeddable.
-
 - Not so much coding as just techy stuff, but see if we can get an externally hosted storage server to hold all the files.
 
 - If you really know your stuff (You know Python and HTML/CSS) or are really willing to learn, let me know if you want to take over in 2022 since I will be leaving the school. Since I have made the platform already, your job would be to go fix the bugs that people find and just do general upkeep. The platform mostly works itself out and is designed with a fire and forget mindset, but every now and then a library will need updating or new feature added.
