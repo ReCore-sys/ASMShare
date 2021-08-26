@@ -2,11 +2,14 @@
 <html lang="en">
 
 	<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 		<!-- Required meta tags -->
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 		<title>Logs</title>
-		<link rel="shortcut icon" href="{{ url_for('static', filename='img/ASMS.ico') }}">
+		{% include "pageicon.html" %}
+					{% block pageicon %}
+					{% endblock %}
 		<meta name="description" content="Knight is a beautiful Bootstrap 4 template for product landing pages." />
 
 		<!--Inter UI font-->
@@ -17,7 +20,7 @@
 		
 		
 
-		<!-- Bootstrap CSS / Color Scheme -->
+		
 		<link rel="stylesheet" href="{{ url_for('static', filename='css/default.css')}}" id="theme-color">
 		<link rel="stylesheet" href="{{ url_for('static', filename='css/logs.css')}}" id="theme-color">
 	</head>
@@ -31,7 +34,7 @@
 			var element = document.getElementById("LogArea");
 			element.scrollTop = element.scrollHeight;
 		</script>
-		<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+		
 		<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 		
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>

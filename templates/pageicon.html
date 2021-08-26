@@ -1,0 +1,21 @@
+{% block pageicon %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script>
+  if (
+    window.matchMedia &&
+    window.matchMedia("(prefers-color-scheme: dark)").matches
+  ) {
+    $("head").append(
+      '<link href="' +
+        "{{ url_for('static', filename='img/ASMS-light.ico') }}" +
+        '" rel="shortcut icon"/>'
+    );
+  } else {
+    $("head").append(
+      '<link href="' +
+        "{{ url_for('static', filename='img/ASMS-dark.ico') }}" +
+        '" rel="shortcut icon"/>'
+    );
+  }
+</script>
+{% endblock %}

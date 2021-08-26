@@ -1,301 +1,375 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
+  <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <title>ASMShare</title>
+    {% include "pageicon.html" %} {% block pageicon %} {% endblock %}
+    <meta content="ASMShare" property="og:title" />
+    <meta
+      content="A site for ASMS students to share their work"
+      property="og:description"
+    />
+    <meta content="../." property="og:url" />
+    <meta
+      content="{{ url_for('static', filename='img/ASMS.png') }}"
+      property="og:image"
+    />
+    <meta content="#43B581" data-react-helmet="true" name="theme-color" />
 
-	<head>
-		<!-- Required meta tags -->
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-		<title>ASMShare</title>
-		<link rel="shortcut icon" href="{{ url_for('static', filename='img/ASMS.ico') }}">
-		<meta content="ASMShare" property="og:title" />
-		<meta content="A site for ASMS students to share their work" property="og:description" />
-		<meta content="../." property="og:url" />
-		<meta content="{{ url_for('static', filename='img/ASMS.png') }}"property="og:image" />
-		<meta content="#43B581" data-react-helmet="true" name="theme-color" />
+    <!--Inter UI font-->
+    <link
+      href="{{ url_for('static', filename='css/inter-ui.css')}}"
+      rel="stylesheet"
+      defer
+    />
 
-		<!--Inter UI font-->
-		<link href="{{ url_for('static', filename='css/inter-ui.css')}}" rel="stylesheet" defer>
+    <!--vendors styles-->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+      defer
+    />
 
-		<!--vendors styles-->
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" defer>
-		
-		
-
-		<!-- Bootstrap CSS / Color Scheme -->
-		<link rel="stylesheet" href="{{ url_for('static', filename='css/default.css')}}" id="theme-color">
-		<link rel="stylesheet" href="{{ url_for('static', filename='css/cookies.css')}}" id="theme-color">
-		{% include "menu.html" %}
-		{% block menu %}
-		{% endblock %}
-		<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-		<!-- region Cookie script -->
-		<script>
-      $(document).ready(function(){
-       if(readCookie("cookie_accepted") == "1"){
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/default.css')}}"
+      id="theme-color"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/cookies.css')}}"
+      id="theme-color"
+    />
+    {% include "menu.html" %} {% block menu %} {% endblock %}
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <!-- region Cookie script -->
+    <script>
+      $(document).ready(function () {
+        if (readCookie("cookie_accepted") == "1") {
           $(".cookie-bar").hide();
-      }
-      else{
+        } else {
           $(".cookie-bar").show();
-              $('body').addClass('cookie-space');
-              $('.cookie-btn').click(function(){
-                  $('body').removeClass('cookie-space');
-              $('.cookie-bar').fadeOut();
-              createCookie("cookie_accepted", 1, 365);
+          $("body").addClass("cookie-space");
+          $(".cookie-btn").click(function () {
+            $("body").removeClass("cookie-space");
+            $(".cookie-bar").fadeOut();
+            createCookie("cookie_accepted", 1, 365);
           });
-      }
+        }
       });
 
-
-
       function getParameterByName(name, url) {
-          if (!url) {
-              url = window.location.href;
-          }
-          name = name.replace(/[\[\]]/g, "\\$&");
-          var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
-              results = regex.exec(url);
-          if (!results) return null;
-          if (!results[2]) return '';
-          return decodeURIComponent(results[2].replace(/\+/g, " "));
+        if (!url) {
+          url = window.location.href;
+        }
+        name = name.replace(/[\[\]]/g, "\\$&");
+        var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+          results = regex.exec(url);
+        if (!results) return null;
+        if (!results[2]) return "";
+        return decodeURIComponent(results[2].replace(/\+/g, " "));
       }
 
       function createCookie(name, value, days) {
-          var expires = "";
-          if (days) {
-              var date = new Date();
-              date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-              expires = "; expires=" + date.toUTCString();
-          }
-          document.cookie = name + "=" + value + expires + "; path=/";
+        var expires = "";
+        if (days) {
+          var date = new Date();
+          date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
+          expires = "; expires=" + date.toUTCString();
+        }
+        document.cookie = name + "=" + value + expires + "; path=/";
       }
 
       function readCookie(name) {
-          var nameEQ = name + "=";
-          var ca = document.cookie.split(';');
-          for (var i = 0; i < ca.length; i++) {
-              var c = ca[i];
-              while (c.charAt(0) == ' ') c = c.substring(1, c.length);
-              if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
-          }
-          return null;
+        var nameEQ = name + "=";
+        var ca = document.cookie.split(";");
+        for (var i = 0; i < ca.length; i++) {
+          var c = ca[i];
+          while (c.charAt(0) == " ") c = c.substring(1, c.length);
+          if (c.indexOf(nameEQ) == 0)
+            return c.substring(nameEQ.length, c.length);
+        }
+        return null;
       }
 
       function eraseCookie(name) {
-          createCookie(name, "", -1);
+        createCookie(name, "", -1);
       }
 
-      $(document).ready(function() {
-          var advMedium = getParameterByName('advm');
-          if (advMedium != null) {
-              $('input[name=advm]').val(advMedium);
-              createCookie('advm', advMedium, 1);
-          } else {
-              advMedium = readCookie('advm');
-              $('input[name=advm]').val(advMedium);
-          }
-          var nodeCount = document.getElementsByName('ft').length;
-          for (count = 0; count < nodeCount; count++) {
-              document.getElementsByName('ft')[count].value = window.location.href;
-          }
+      $(document).ready(function () {
+        var advMedium = getParameterByName("advm");
+        if (advMedium != null) {
+          $("input[name=advm]").val(advMedium);
+          createCookie("advm", advMedium, 1);
+        } else {
+          advMedium = readCookie("advm");
+          $("input[name=advm]").val(advMedium);
+        }
+        var nodeCount = document.getElementsByName("ft").length;
+        for (count = 0; count < nodeCount; count++) {
+          document.getElementsByName("ft")[count].value = window.location.href;
+        }
       });
-      </script>
+    </script>
 
-		<section class="cookie-bar">
-			<div class="cookie-notice container">
-				<p class="cookie-para">This si'e uses biscuits to record da'a like whee tah sen' yah aftah loggin in, yeah?</p>
-				<a href="javascript:;" class="cookie-btn">Hunky dory</a>
+    <section class="cookie-bar">
+      <div class="cookie-notice container">
+        <p class="cookie-para">
+          This si'e uses biscuits to record da'a like whee tah sen' yah aftah
+          loggin in, yeah?
+        </p>
+        <a href="javascript:;" class="cookie-btn">Hunky dory</a>
+      </div>
+    </section>
+  </head>
 
-			</div>
-		</section>
-	</head>
+  <body>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.7.3/feather.min.js"></script>
 
-	<body>
-		
-		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.7.3/feather.min.js"></script>
-		
+    <!--navigation-->
+    <section class="smart-scroll">
+      <div class="container-fluid">
+        <nav class="navbar navbar-expand-md navbar-dark">
+          <button
+            class="navbar-toggler navbar-toggler-right border-0"
+            type="button"
+            data-toggle="collapse"
+            data-target="#navbarCollapse"
+            aria-controls="navbarCollapse"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span data-feather="grid"></span>
+          </button>
+        </nav>
+      </div>
+    </section>
 
-		<!--navigation-->
-		<section class="smart-scroll">
-			<div class="container-fluid">
-				<nav class="navbar navbar-expand-md navbar-dark">
+    <!-- CONTACT POPUP -->
+    <style>
+      #text {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        font-size: 50px;
+        color: white;
+        transform: translate(-50%, -50%);
+        -ms-transform: translate(-50%, -50%);
+      }
+    </style>
 
-					<button class="navbar-toggler navbar-toggler-right border-0" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-						<span data-feather="grid"></span>
-					</button>
-				</nav>
-			</div>
-		</section>
+    <!--hero header-->
+    <section class="py-7 py-md-0 bg-hero" id="home">
+      <div class="container">
+        <div class="row vh-md-100">
+          <div class="col-md-8 col-sm-10 col-12 mx-auto my-auto text-center">
+            <h1 class="heading-black text-capitalize">ASMShare</h1>
+            <p class="lead py-3">
+              I got sick of 1 exemplar per assignment, so I made this
+            </p>
+            <button
+              class="btn btn-primary d-inline-flex flex-row align-items-center"
+              onclick="window.location.href='{{redir}}'"
+            >
+              {{logged}}
+              <em class="ml-2" data-feather="arrow-right"></em>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
 
-		<!-- CONTACT POPUP -->
-		<style>
-			#text {
-				position: absolute;
-				top: 50%;
-				left: 50%;
-				font-size: 50px;
-				color: white;
-				transform: translate(-50%, -50%);
-				-ms-transform: translate(-50%, -50%);
-			}
-		</style>
+    <!-- features section -->
+    <section class="pt-6 pb-7" id="features">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-6 mx-auto text-center">
+            <h2 class="heading-black">Assignment sharing for ASMS students</h2>
+            <p class="text-muted lead">
+              Fast, effective and anyonmous sharing of assignments
+            </p>
+          </div>
+        </div>
+        <div class="row mt-5">
+          <div class="col-md-10 mx-auto">
+            <div class="row feature-boxes">
+              <div class="col-md-6 box">
+                <div class="icon-box box-primary">
+                  <div class="icon-box-inner">
+                    <span data-feather="lock" width="35" height="35"></span>
+                  </div>
+                </div>
+                <h5>Safe</h5>
+                <p class="text-muted">
+                  Uses SSL technology: The same stuff your bank's website runs
+                  on. It is also further encrypted cos I was bored on a friday
+                  afternoon. Also since the login is with google only, I never
+                  see any passwords
+                </p>
+              </div>
+              <div class="col-md-6 box">
+                <div class="icon-box box-primary">
+                  <div class="icon-box-inner">
+                    <span data-feather="zap" width="35" height="35"></span>
+                  </div>
+                </div>
+                <h5>Easy to use</h5>
+                <p class="text-muted">
+                  With a simple design and globally available links, you can get
+                  to nearly any part of the site site from anywhere else. No
+                  more trawling through every hyperlink to find that upload
+                  page.
+                </p>
+              </div>
+              <div class="col-md-6 box">
+                <div class="icon-box box-primary">
+                  <div class="icon-box-inner">
+                    <span data-feather="layout" width="35" height="35"></span>
+                  </div>
+                </div>
+                <h5>Stylish design</h5>
+                <p class="text-muted">
+                  I hate light mode as much as you guys, so thats why I didn't
+                  add it. Your eyes are safe from flashbangs. I also spent ages
+                  making sure it look nice and snazzy, on my laptop at least. I
+                  have no idea what it looks like for you.
+                </p>
+              </div>
+              <div class="col-md-6 box">
+                <div class="icon-box box-primary">
+                  <div class="icon-box-inner">
+                    <span data-feather="clock" width="35" height="35"></span>
+                  </div>
+                </div>
+                <h5>Fast</h5>
+                <p class="text-muted">
+                  The site squishes the files down to tenny tiny sizes, so you
+                  can get that F- Order from Chaos assignment really fast
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row mt-6">
+          <div class="col-md-6 mr-auto">
+            <h2>More than just a assignment repository</h2>
+            <p class="mb-5">
+              Its a place to learn from those before you, and those before them
+            </p>
+            <a
+              href="#"
+              class="btn btn-light"
+              onclick="window.location.href='{{redir}}'"
+            >
+              Log in here
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
 
+    <!--faq section-->
+    <section class="py-7" id="faq">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-6 mx-auto text-center">
+            <h2>Frequently asked questions</h2>
+            <p class="text-muted lead">Answers to most common questions.</p>
+          </div>
+        </div>
+        <div class="row mt-5">
+          <div class="col-md-10 mx-auto">
+            <div class="row">
+              <div class="col-md-6 mb-5">
+                <h6>Do you have my password?</h6>
+                <p class="text-muted">
+                  Nope. Google does though. Through some funky web magic, you
+                  sign in with Google and then Google just gives me your name
+                  and email. Your password is safe. And besides, I probably
+                  should not be trusted with your passwords since I have next to
+                  no understanding how hashing works.
+                </p>
+              </div>
+              <div class="col-md-6 mb-5">
+                <h6>Why did you make this?</h6>
+                <p class="text-muted">
+                  Uhhh I didn't know what to do for my industrial design
+                  assignment. Also I wanted to see if I could make a site.
+                  Spoiler alert, I can.
+                </p>
+              </div>
+              <div class="col-md-6 mb-5">
+                <h6>What can I upload?</h6>
+                <p class="text-muted">
+                  You can upload any file type you want, but PDF files are
+                  prefered cos I can turn them into nice images
+                </p>
+              </div>
+              <div class="col-md-6 mb-5">
+                <h6>Why didn't my upload appear?</h6>
+                <p class="text-muted">
+                  So I don't get arrested by SACE moderators, you can't upload
+                  an assignment during the year you completed it. You will be
+                  able to upload it now and the assignment will appear on the
+                  site on the first of January
+                </p>
+              </div>
+              <div class="col-md-6 mb-5">
+                <h6>How did you make this?</h6>
+                <p class="text-muted">Python, HTML and obscenly little sleep</p>
+              </div>
+              <div class="col-md-6 mb-5">
+                <h6>How can I contact you?</h6>
+                <p class="text-muted">
+                  At school I'm the dude with neon blue hair. Otherwise, you can
+                  find my socials n stuff
+                  <a href="https://github.com/ReCore-sys/ASMShare">here</a>?
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
 
-		<!--hero header-->
-		<section class="py-7 py-md-0 bg-hero" id="home">
-			<div class="container">
-				<div class="row vh-md-100">
-					<div class="col-md-8 col-sm-10 col-12 mx-auto my-auto text-center">
-						<h1 class="heading-black text-capitalize">ASMShare</h1>
-						<p class="lead py-3">I got sick of 1 exemplar per assignment, so I made this</p>
-						<button class="btn btn-primary d-inline-flex flex-row align-items-center" onclick="window.location.href='{{redir}}'">
-							{{logged}}
-							<em class="ml-2" data-feather="arrow-right"></em>
-						</button>
-					</div>
-				</div>
-			</div>
-		</section>
-
-		<!-- features section -->
-		<section class="pt-6 pb-7" id="features">
-			<div class="container">
-				<div class="row">
-					<div class="col-md-6 mx-auto text-center">
-						<h2 class="heading-black">Assignment sharing for ASMS students</h2>
-						<p class="text-muted lead">Fast, effective and anyonmous sharing of assignments</p>
-					</div>
-				</div>
-				<div class="row mt-5">
-					<div class="col-md-10 mx-auto">
-						<div class="row feature-boxes">
-							<div class="col-md-6 box">
-								<div class="icon-box box-primary">
-									<div class="icon-box-inner">
-										<span data-feather="lock" width="35" height="35"></span>
-									</div>
-								</div>
-								<h5>Safe</h5>
-								<p class="text-muted">Uses SSL technology: The same stuff your bank's website runs on. It is also further encrypted cos I was bored on a friday afternoon. Also since the login is with google only, I never see any passwords</p>
-							</div>
-							<div class="col-md-6 box">
-								<div class="icon-box box-primary">
-									<div class="icon-box-inner">
-										<span data-feather="zap" width="35" height="35"></span>
-									</div>
-								</div>
-								<h5>Easy to use</h5>
-								<p class="text-muted">With a simple design and globally available links, you can get to nearly any part of the site site from anywhere else. No more trawling through every hyperlink to find that upload page.</p>
-							</div>
-							<div class="col-md-6 box">
-								<div class="icon-box box-primary">
-									<div class="icon-box-inner">
-										<span data-feather="layout" width="35" height="35"></span>
-									</div>
-								</div>
-								<h5>Stylish design</h5>
-								<p class="text-muted">I hate light mode as much as you guys, so thats why I didn't add it. Your eyes are safe from flashbangs. I also spent ages making sure it look nice and snazzy, on my laptop at least. I have no idea what it looks like for
-									you.</p>
-							</div>
-							<div class="col-md-6 box">
-								<div class="icon-box box-primary">
-									<div class="icon-box-inner">
-										<span data-feather="clock" width="35" height="35"></span>
-									</div>
-								</div>
-								<h5>Fast</h5>
-								<p class="text-muted">The site squishes the files down to tenny tiny sizes, so you can get that F- Order from Chaos assignment really fast</p>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="row mt-6">
-					<div class="col-md-6 mr-auto">
-						<h2>More than just a assignment repository</h2>
-						<p class="mb-5">Its a place to learn from those before you, and those before them</p>
-						<a href="#" class="btn btn-light" onclick="window.location.href='{{redir}}'">
-							Log in here
-						</a>
-					</div>
-				</div>
-			</div>
-		</section>
-
-		<!--faq section-->
-		<section class="py-7" id="faq">
-			<div class="container">
-				<div class="row">
-					<div class="col-md-6 mx-auto text-center">
-						<h2>Frequently asked questions</h2>
-						<p class="text-muted lead">Answers to most common questions.</p>
-					</div>
-				</div>
-				<div class="row mt-5">
-					<div class="col-md-10 mx-auto">
-						<div class="row">
-							<div class="col-md-6 mb-5">
-								<h6>Do you have my password?</h6>
-								<p class="text-muted">Nope. Google does though. Through some funky web magic, you sign in with Google and then Google just gives me your name and email. Your password is safe. And besides, I probably should not be trusted with your passwords
-									since I have next to no understanding how hashing works.</p>
-							</div>
-							<div class="col-md-6 mb-5">
-								<h6>Why did you make this?</h6>
-								<p class="text-muted">Uhhh I didn't know what to do for my industrial design assignment. Also I wanted to see if I could make a site. Spoiler alert, I can.</p>
-							</div>
-							<div class="col-md-6 mb-5">
-								<h6>What can I upload?</h6>
-								<p class="text-muted">You can upload any file type you want, but PDF files are prefered cos I can turn them into nice images</p>
-							</div>
-							<div class="col-md-6 mb-5">
-								<h6>Why didn't my upload appear?</h6>
-								<p class="text-muted">So I don't get arrested by SACE moderators, you can't upload an assignment during the year you completed it. You will be able to upload it now and the assignment will appear on the site on the first of January</p>
-							</div>
-							<div class="col-md-6 mb-5">
-								<h6>How did you make this?</h6>
-								<p class="text-muted">Python, HTML and obscenly little sleep</p>
-							</div>
-							<div class="col-md-6 mb-5">
-								<h6>How can I contact you?</h6>
-								<p class="text-muted">At school I'm the dude with neon blue hair. Otherwise, you can find my socials n stuff <a href="https://github.com/ReCore-sys/ASMShare">here</a>?</p>
-							</div>
-						</div>
-					</div>
-				</div>
-
-			</div>
-		</section>
-
-		<!--footer-->
-		<footer class="py-6">
-			<div class="container">
-				<div class="row">
-					<div class="col-sm-5 mr-auto">
-						<h5>About ASMShare</h5>
-						<p class="text-muted">ASMShare is a platform for ASMS students to share their past assignments for future students to view and learn from</p>
-					</div>
-					<div class="col-sm-2">
-						<h5>Help</h5>
-						<ul class="list-unstyled">
-							<li><a href="{{redir}}">Log in</a></li>
-						</ul>
-					</div>
-				</div>
-				<div class="row mt-5">
-					<div class="col-12 text-muted text-center small-xl">
-						&copy; 2021 ASMS - Maybe a couple rights reserved?
-					</div>
-				</div>
-			</div>
-		</footer>
-		<script>
-          feather.replace()
-        </script>
-		<!--scroll to top-->
-		<div class="scroll-top">
-			<i class="fa fa-angle-up" aria-hidden="true"></i>
-		</div>
-
-
-	</body>
-
+    <!--footer-->
+    <footer class="py-6">
+      <div class="container">
+        <div class="row">
+          <div class="col-sm-5 mr-auto">
+            <h5>About ASMShare</h5>
+            <p class="text-muted">
+              ASMShare is a platform for ASMS students to share their past
+              assignments for future students to view and learn from
+            </p>
+          </div>
+          <div class="col-sm-2">
+            <h5>Help</h5>
+            <ul class="list-unstyled">
+              <li><a href="{{redir}}">Log in</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="row mt-5">
+          <div class="col-12 text-muted text-center small-xl">
+            &copy; 2021 ASMS - Maybe a couple rights reserved?
+          </div>
+        </div>
+      </div>
+    </footer>
+    <script>
+      feather.replace();
+    </script>
+    <!--scroll to top-->
+    <div class="scroll-top">
+      <i class="fa fa-angle-up" aria-hidden="true"></i>
+    </div>
+  </body>
 </html>

@@ -7,6 +7,7 @@
 import functools
 import random
 import sqlite3
+import string
 import sys
 import time
 from datetime import datetime
@@ -112,6 +113,8 @@ fourohfour = ["Welp. This is awkward",
 random.shuffle(fourohfour)
 
 cached = {}
+
+validids = []
 
 # //////////////////////////////////////////////////////////////////////////// #
 
@@ -281,10 +284,17 @@ def findfileicon(filename):
     elif ext in ["pdf"]:
         # Stick it inside a try cos someone is gunna upload a .exe after renaming it to a .pdf (Duncan I'm looking at you)
         # only create a preview if it does not exist
-        if (filename + ".jpg") not in os.listdir(f"{filepath}/static/file-images/pdfs"):
-            convert_from_path(f'{filepath}/files/{filename}', output_folder=f"{filepath}/static/file-images/pdfs",
-                              fmt="jpeg", single_file=True, output_file=filename)
-        fileicon = r"""../static/file-images/pdfs/""" + filename + ".jpg"
+        if not prod:
+            poppler_path = r"C:\Users\ReCor\Documents\poppler\poppler-21.03.0\Library\bin"
+            if (filename + ".jpg") not in os.listdir(f"{filepath}/static/file-images/pdfs"):
+                convert_from_path(f'{filepath}/files/{filename}', output_folder=f"{filepath}/static/file-images/pdfs",
+                                  fmt="jpeg", single_file=True, output_file=filename, poppler_path=poppler_path)
+            fileicon = r"""../static/file-images/pdfs/""" + filename + ".jpg"
+        else:
+            if (filename + ".jpg") not in os.listdir(f"{filepath}/static/file-images/pdfs"):
+                convert_from_path(f'{filepath}/files/{filename}', output_folder=f"{filepath}/static/file-images/pdfs",
+                                  fmt="jpeg", single_file=True, output_file=filename)
+            fileicon = r"""../static/file-images/pdfs/""" + filename + ".jpg"
         # if the library nopes out, just keep going and use the normal pdf icon
     else:
         # if it fits into none of the above catagories, search for a jpg named the file type (docx.jpg, txt.jpg, ect)
@@ -426,6 +436,13 @@ def is_admin():
     else:
         return True
 
+
+def updateall():
+    """updateall\n
+    Updates all dictionaries
+    """
+    create_stats()
+    compileimages()
 
 # //////////////////////////////////////////////////////////////////////////// #
 
@@ -588,6 +605,7 @@ def entry():
 @improved_login
 def home():
     """Home page for user"""
+    updateall()
     if request.method == "GET":
         return render_template('land.html', stats=stats)
     elif request.method == "POST":
@@ -600,6 +618,13 @@ def home():
 def rickroll():
     """:)"""
     return render_template('rickroll.html')
+
+
+@app.route("/info")
+@logger.catch
+def info():
+    """:)"""
+    return render_template('info.html')
 
 
 @app.route("/errors")
@@ -643,6 +668,7 @@ def fullcard(item):
 @improved_login
 def logout():
     "Logs the user out"
+    updateall()
     logout_user()
     return redirect(url_for("entry"))
 
@@ -676,6 +702,7 @@ def deeplogs():
 @improved_login
 def changename():
     "Page that allows you to change your name"
+    updateall()
     if request.method == "GET":
         return render_template('change.html')
     elif request.method == "POST":
@@ -807,6 +834,9 @@ def callback():
 @logger.catch
 @improved_login
 def upload():
+    global validids
+    checkid = (''.join(random.choice(string.ascii_letters) for i in range(30)))
+    validids.append(checkid)
     "The upload page"
     # Retrieves the tags from a file
     tagfile = json.load(open(f"{filepath}/tags.json", "r"))
@@ -816,7 +846,7 @@ def upload():
     # Turns them into a list of keys
     tags = list(tagsdict.keys())
     req = True
-    return render_template("upload.html", tags=tags, req=req)
+    return render_template("upload.html", tags=tags, req=req, checkid=checkid)
 
 # If the upload goes well, send it here to actually be stored
 
@@ -838,7 +868,10 @@ def success():
         # Split the name at the last . to get the file extension. This is to make sure we ignore any other .'s in tha name
         ext = (f.filename).split(".")[-1]
         form = request.form
-        print(form)
+        if form["check"] not in validids:
+            abort(429)
+        else:
+            validids.remove(form["check"])
 
         # get the short description and name from the form, then assign them to their own variables. I should probs do it with the rest but eh
         short = form["short"]
@@ -917,14 +950,15 @@ def success():
                 shutil.move(f"{app.config['UPLOAD_PATH']}/{tryid}.{ext}",
                             f"{filepath}/quarantine/{tryid}.{ext}_")
             # Reload the image cache to account for the new uploads
-            compileimages()
+            updateall()
 
     else:
         return redirect(url_for("fourohsixpage"))
     # Head back home
-    time.sleep(3)
+    if not prod:
+        time.sleep(3)
+    updateall()
     return redirect(url_for("home"))
-    compileimages()
 
 
 @app.route("/search/")
@@ -953,8 +987,8 @@ def search(query):
         # Store the result
         cached[query] = results
         print("Not using cache for ", query)
-    # If the cache's size is over 750MB, remove the last item in the cache. Keep going until the size is under 750MB
-    while sys.getsizeof(cached) > 786432000:
+    # If the cache's size is over items, remove the last item in the cache. Keep going until the size is under 10
+    while len(cached) > 10:
         k = list(cached.keys())
         cached.pop(k[-1])
     if len(query) > 30:

@@ -1,47 +1,61 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
+  <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <title>413</title>
+    {% include "pageicon.html" %} {% block pageicon %} {% endblock %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
-	<head>
-		<!-- Required meta tags -->
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-		<title>413</title>
-		<link rel="shortcut icon" href="{{ url_for('static', filename='img/ASMS.ico') }}">
+    <!--Inter UI font-->
+    <link
+      href="{{ url_for('static', filename='css/inter-ui.css')}}"
+      rel="stylesheet"
+      defer
+    />
 
-		<!--Inter UI font-->
-		<link href="{{ url_for('static', filename='css/inter-ui.css')}}" rel="stylesheet" defer>
+    <!--vendors styles-->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
 
-		<!--vendors styles-->
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-		
-		
-		{% include "menu.html" %}
-		{% block menu %}
-		{% endblock %}
+    {% include "menu.html" %} {% block menu %} {% endblock %}
 
-		<!-- Bootstrap CSS / Color Scheme -->
-		<link rel="stylesheet" href="{{ url_for('static', filename='css/default.css')}}" id="theme-color">
-	</head>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/default.css')}}"
+      id="theme-color"
+    />
+  </head>
 
-	<body>
-		<!--hero header-->
-		<section class="py-7 py-md-0 bg-hero" id="home">
-			<div class="container">
-				<div class="row vh-md-100">
-					<div class="col-md-8 col-sm-10 col-12 mx-auto my-auto text-center">
-						<h1 class="heading-black text-capitalize">413</h1>
-						<p class="lead py-3">That file was too big</p>
-						<button class="btn btn-primary d-inline-flex flex-row align-items-center" onclick="window.location.href='/'">
-							F in the chat
-							<em class="ml-2" data-feather="arrow-right"></em>
-						</button>
-						<p class="text-muted" style="margin: 1rem;">You can also check out <a href="../errors">this</a> link to find what the different errors mean</p>
-					</div>
-				</div>
-			</div>
-		</section>
-
-		<!-- jQuery first, then Popper.js, then Bootstrap JS -->
-	</body>
-
+  <body>
+    <!--hero header-->
+    <section class="py-7 py-md-0 bg-hero" id="home">
+      <div class="container">
+        <div class="row vh-md-100">
+          <div class="col-md-8 col-sm-10 col-12 mx-auto my-auto text-center">
+            <h1 class="heading-black text-capitalize">413</h1>
+            <p class="lead py-3">That file was too big</p>
+            <button
+              class="btn btn-primary d-inline-flex flex-row align-items-center"
+              onclick="window.location.href='/'"
+            >
+              F in the chat
+              <em class="ml-2" data-feather="arrow-right"></em>
+            </button>
+            <p class="text-muted" style="margin: 1rem">
+              You can also check out <a href="../errors">this</a> link to find
+              what the different errors mean
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </body>
 </html>

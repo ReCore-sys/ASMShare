@@ -2,11 +2,14 @@
 <html lang="en">
 
 	<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 		<!-- Required meta tags -->
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 		<title>Feedback</title>
-		<link rel="shortcut icon" href="{{ url_for('static', filename='img/ASMS.ico') }}">
+		{% include "pageicon.html" %}
+					{% block pageicon %}
+					{% endblock %}
 
 		<!--Inter UI font-->
 		<link href="{{ url_for('static', filename='css/inter-ui.css')}}" rel="stylesheet" defer>
@@ -16,7 +19,7 @@
 		
 		
 
-		<!-- Bootstrap CSS / Color Scheme -->
+		
 		<link rel="stylesheet" href="{{ url_for('static', filename='css/feedback.css')}}" id="theme-color">
 		<link rel="stylesheet" href="{{ url_for('static', filename='css/default.css')}}" id="theme-color">
 		<link rel="stylesheet" href="{{ url_for('static', filename='css/cards.css')}}" id="theme-color">
@@ -43,19 +46,19 @@
 			<div class="container">
 				<div class="row vh-md-100">
 					<div class="col-md-8 col-sm-10 col-12 mx-auto my-auto text-center">
-						<h1 class="heading-black text-capitalize">Feddback</h1>
-						<p class="lead py-3">Sorry the feedback form looks trash</p>
+						<h1 class="heading-black text-capitalize">Feedback</h1>
+						<p class="lead py-3">Sorry the feedback form looks trash. I will do a proper one at some point<br>(If it breaks, it's google's fault, not mine)</p>
 						<button class="btn btn-primary d-inline-flex flex-row align-items-center" onclick="window.location.href='/home'">
 							Home
 							<em class="ml-2" data-feather="arrow-right"></em>
 						</button>
 					</div>
 		</section>
-		<!-- THIS IS THE PART THAT HANDLES THE DISPLAY OF ITEMS -->
+		
 		<section class="feedbackform">
 			<iframe src="https://docs.google.com/forms/d/e/1FAIpQLSdgxb4Nwg_hgrObc4M9UtUWSeu0j7bYKDap2jNbHJaU3Cwsxw/viewform?embedded=true" width="922px" height="922px" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
 		</section>
-		<!-- theme switcher (FOR DEMO ONLY - REMOVE FROM PRODUCTION)-->
+		
 
 		</div>
 
@@ -66,7 +69,7 @@
 		
 
 
-		<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+		
 	</body>
 
 </html>

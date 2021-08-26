@@ -291,11 +291,13 @@ svg {
 
 .navigation span {
   text-indent: -200px;
+  display: none;
 }
 
 .navigation:hover span {
   display: inline-block;
   text-indent: 0;
+  display: inline-block;
 }
 
 .active {

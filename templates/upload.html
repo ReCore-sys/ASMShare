@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <!-- Required meta tags -->
     <meta charset="utf-8" />
     <meta
@@ -8,10 +9,8 @@
       content="width=device-width, initial-scale=1, shrink-to-fit=no"
     />
     <title>Upload</title>
-    <link
-      rel="shortcut icon"
-      href="{{ url_for('static', filename='img/ASMS.ico') }}"
-    />
+    {% include "pageicon.html" %} {% block pageicon %} {% endblock %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <link
       href="https://fonts.googleapis.com/css?family=Oswald"
       rel="stylesheet"
@@ -32,7 +31,6 @@
       id="theme-color"
     />
 
-    <!-- Bootstrap CSS / Color Scheme -->
     <link
       rel="stylesheet"
       href="{{ url_for('static', filename='css/default.css')}}"
@@ -88,6 +86,12 @@
           name="long"
           class="longarea"
           required="{{req}}"
+        />
+        <input
+          type="hidden"
+          name="check"
+          value="{{checkid}}"
+          id="hiddencheck"
         />
         <input type="text" placeholder="Tags" name="tags" required="{{req}}" />
         <input type="submit" value="Submit" class="topmarg" />

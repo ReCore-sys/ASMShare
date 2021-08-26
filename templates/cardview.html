@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <!-- Required meta tags -->
     <meta charset="utf-8" />
     <meta
@@ -8,10 +9,8 @@
       name="viewport"
     />
     <title>{{card["name"]}}</title>
-    <link
-      rel="shortcut icon"
-      href="{{ url_for('static', filename='img/ASMS.ico') }}"
-    />
+    {% include "pageicon.html" %} {% block pageicon %} {% endblock %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <meta
       content="Knight is a beautiful Bootstrap 4 template for product landing pages."
       name="description"
@@ -28,7 +27,6 @@
       rel="stylesheet"
     />
 
-    <!-- Bootstrap CSS / Color Scheme -->
     <link
       href="{{ url_for('static', filename='css/fullcard.css')}}"
       id="theme-color"

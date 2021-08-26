@@ -2,11 +2,14 @@
 <html lang="en">
 
 	<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 		<!-- Required meta tags -->
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 		<title>Home</title>
-		<link rel="shortcut icon" href="{{ url_for('static', filename='img/ASMS.ico') }}">
+		{% include "pageicon.html" %}
+					{% block pageicon %}
+					{% endblock %}
 
 		<!--Inter UI font-->
 		<link href="{{ url_for('static', filename='css/inter-ui.css')}}" rel="stylesheet" defer>
@@ -16,7 +19,7 @@
 
 
 
-		<!-- Bootstrap CSS / Color Scheme -->
+		
 		<link rel="stylesheet" href="{{ url_for('static', filename='css/search.css')}}" id="theme-color">
 		<link rel="stylesheet" href="{{ url_for('static', filename='css/default.css')}}" id="theme-color">
 		<link rel="stylesheet" href="{{ url_for('static', filename='css/cards.css')}}" id="theme-color">
@@ -55,7 +58,6 @@
 						</button>
 					</div>
 
-					<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 					<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.js"></script>
 					<!--
           Look, I don't want to use jQuery either, but here we are. If someone wants to convert this to regular js, go for it

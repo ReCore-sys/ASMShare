@@ -1,33 +1,60 @@
 {% block menu %}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.7.3/feather.min.js"></script>
-<link rel="stylesheet" href="{{ url_for('static', filename='css/menu.css')}}" id="theme-color">
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='css/menu.css')}}"
+  id="theme-color"
+/>
 <nav class="navigation">
-
-	<ul class="menu">
-		<li><a class="active" href="../home">
-				<div data-feather="home"></div><span title="Home">Home</span>
-			</a></li>
-		<li><a href="../upload">
-				<div data-feather="upload"></div><span title="Upload files">Upload</span>
-			</a></li>
-		<li><a href="../search">
-				<div data-feather="search"></div><span title="Search for files">Search</span>
-			</a></li>
-		<li><a href="../feedback">
-				<div data-feather="inbox"></div><span title="Give feedback">Feedback</span>
-			</a></li>
-		{% if current_user.is_authenticated %}
-		<li><a href="../logout">
-				<div data-feather="log-out"></div><span title="Log out">Log out</span>
-			</a></li>
-		{% else %}
-		<li><a href="../home">
-				<div data-feather="log-in"></div><span title="Log in">Log in</span>
-			</a></li>
-		{% endif %}
-	</ul>
-	<script>
-		feather.replace()
-	</script>
+  <ul class="menu">
+    <li>
+      <a class="active" href="../home">
+        <div data-feather="home"></div>
+        <span title="Home">Home</span>
+      </a>
+    </li>
+    <li>
+      <a href="../upload">
+        <div data-feather="upload"></div>
+        <span title="Upload files">Upload</span>
+      </a>
+    </li>
+    <li>
+      <a href="../search">
+        <div data-feather="search"></div>
+        <span title="Search for files">Search</span>
+      </a>
+    </li>
+    <li>
+      <a href="../info">
+        <div data-feather="info"></div>
+        <span title="Info">Info</span>
+      </a>
+    </li>
+    <li>
+      <a href="../feedback">
+        <div data-feather="inbox"></div>
+        <span title="Give feedback">Feedback</span>
+      </a>
+    </li>
+    {% if current_user.is_authenticated %}
+    <li>
+      <a href="../logout">
+        <div data-feather="log-out"></div>
+        <span title="Log out">Log out</span>
+      </a>
+    </li>
+    {% else %}
+    <li>
+      <a href="../home">
+        <div data-feather="log-in"></div>
+        <span title="Log in">Log in</span>
+      </a>
+    </li>
+    {% endif %}
+  </ul>
+  <script>
+    feather.replace();
+  </script>
 </nav>
 {% endblock %}

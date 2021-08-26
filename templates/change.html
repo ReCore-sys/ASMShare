@@ -2,11 +2,14 @@
 <html lang="en">
 
 <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 	<!-- Required meta tags -->
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<title>Name change</title>
-	<link rel="shortcut icon" href="{{ url_for('static', filename='img/ASMS.ico') }}">
+	{% include "pageicon.html" %}
+					{% block pageicon %}
+					{% endblock %}
 
 	<!--Inter UI font-->
 	<link href="{{ url_for('static', filename='css/inter-ui.css')}}" rel="stylesheet" defer>
@@ -16,7 +19,7 @@
 	
 	
 
-	<!-- Bootstrap CSS / Color Scheme -->
+	
 	<link rel="stylesheet" href="{{ url_for('static', filename='css/feedback.css')}}" id="theme-color">
 	<link rel="stylesheet" href="{{ url_for('static', filename='css/default.css')}}" id="theme-color">
 	<link rel="stylesheet" href="{{ url_for('static', filename='css/cards.css')}}" id="theme-color">
@@ -61,7 +64,7 @@
 	
 
 
-	<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+	
 </body>
 
 </html>
