@@ -5,33 +5,41 @@ Hey there. So you wanna help out with this thing? Cool. You don't need to be abl
 ## Stuff you can do:
 
 ### Non-coding
-* Ideas. I need ideas on what to add so let me know if you think of anything that would be a decent addition to the platform.
 
-* Error codes. If you have a look [here](https://github.com/ReCore-sys/ASMShare/blob/main/app.py#L96) you will see a list of messages. These come up when you get an error 404 (this page/thing does not exist). See if you can come up with any more.
+- Ideas. I need ideas on what to add so let me know if you think of anything that would be a decent addition to the platform.
 
-* Color schemes. I am not great at graphic design and it took a lot of effort to make this site look good. If you can come up with any other color schemes (changing the teal to another color, different background, ect), let me know, preferably with some images of the colors you want. If I get enough requests, I'll add a theme switcher.
+- Error codes. If you have a look [here](https://github.com/ReCore-sys/ASMShare/blob/main/app.py#L96) you will see a list of messages. These come up when you get an error 404 (this page/thing does not exist). See if you can come up with any more.
 
-* Database janitor. Yeah it sounds sucky and it probably is. Someone is going to submit some dodgy info and there is not much I can do about it. No amount of regex or profanity filters can outmatch a 17 year intent on naming their assignment a racial slur. The job here mostly entails going through the database an removing/renaming anything like this. The only upside I can offer is getting to see assignment details (no not the files) before anyone else.
+- Color schemes. I am not great at graphic design and it took a lot of effort to make this site look good. If you can come up with any other color schemes (changing the teal to another color, different background, ect), let me know, preferably with some images of the colors you want. If I get enough requests, I'll add a theme switcher.
 
-* Stress testing. Submit raw binary data, a 52TB image of Shrek, run it on windows 98, just do anything you want to get a nice big error 500 page. If you find a bug before someone else, I'll buy you a lollipop. I'm not joking. Let me know about a bug you found and how to reproduce it, and you can choose a chupachup flavor. (Yeah conditions apply).
+- Database janitor. Yeah it sounds sucky and it probably is. Someone is going to submit some dodgy info and there is not much I can do about it. No amount of regex or profanity filters can outmatch a 17 year intent on naming their assignment a racial slur. The job here mostly entails going through the database an removing/renaming anything like this. The only upside I can offer is getting to see assignment details (no not the files) before anyone else.
 
-* Come up with ideas for Easter eggs. I wanna stick Easter eggs in this thing, so let me know if you can think of any ideas.
+- Stress testing. Submit raw binary data, a 52TB image of Shrek, run it on windows 98, just do anything you want to get a nice big error 500 page. If you find a bug before someone else, I'll buy you a lollipop. I'm not joking. Let me know about a bug you found and how to reproduce it, and you can choose a chupachup flavor. (Yeah conditions apply).
 
-* Have problems so I can stick stuff in the FAQ. Ok I'm joking about having problems, but if have any ideas for what sorta thing I can put in the FAQ, give me a shout or flick me a message on Discord, Insta or just a text (linked in readme).
+- Come up with ideas for Easter eggs. I wanna stick Easter eggs in this thing, so let me know if you can think of any ideas.
+
+- Have problems so I can stick stuff in the FAQ. Ok I'm joking about having problems, but if have any ideas for what sorta thing I can put in the FAQ, give me a shout or flick me a message on Discord, Insta or just a text (linked in readme).
+
+- Become a beta tester. Flick me an email if you are happy to try out new versions of the site and see new features before anyone else. Also if I ever add a profile page, you will get a beta tester badge on it.
 
 ### Coding
-* Have a look through the checklist.md to see what I plan on doing.
 
-* Optimize the website. It's kinda chonky. You can either drop some useless stuff from the actual pages so they load faster for people with slow wifi, or clean up some of the python code so it can perform logical operations faster. Better yet, do both.
+- Have a look through the checklist.md to see what I plan on doing.
 
-* Make the site look nicer. You could add some cool CSS animations, resize some elements or just redesign a page.
+- Optimize the website. It's kinda chonky. You can either drop some useless stuff from the actual pages so they load faster for people with slow wifi, or clean up some of the python code so it can perform logical operations faster. Better yet, do both.
 
-* Find some funky Python/JS libraries that could do some useful things for the site.
+- Make the site look nicer. You could add some cool CSS animations, resize some elements or just redesign a page.
 
-* <strong>HARD WORK</strong> Turn the site into a desktop app. I can provide API's n stuff to get the actual data, but you will need to create a UI to show these. React would probably be easiest since it can support most of the existing CSS and scripts. Or tkinter, since it will work nicely with existing python stuff.
+- If you are really good with web design, you could create a seasonal skin for the site. Stuff like an black and orange theme with pumpkins for halloween, or green and red with presents for christmas.
 
-* Make the site Discord embeddable.
+- Find some funky Python/JS libraries that could do some useful things for the site.
 
-* Not so much coding as just techy stuff, but see if we can get an externally hosted storage server to hold all the files.
+- <strong>HARD WORK</strong> Turn the site into a desktop app. I can provide API's n stuff to get the actual data, but you will need to create a UI to show these. React would probably be easiest since it can support most of the existing CSS and scripts. Or tkinter, since it will work nicely with existing python stuff.
 
-* If you really know your stuff (You know Python and HTML/CSS) or are really willing to learn, let me know if you want to take over in 2022 since I will be leaving the school. Since I have made the platform already, your job would be to go fix the bugs that people find and just do general upkeep. The platform mostly works itself out and is designed with a fire and forget mindset, but every now and then a library will need updating or new feature added.
+- Make the site Discord embeddable.
+
+- Not so much coding as just techy stuff, but see if we can get an externally hosted storage server to hold all the files.
+
+- If you really know your stuff (You know Python and HTML/CSS) or are really willing to learn, let me know if you want to take over in 2022 since I will be leaving the school. Since I have made the platform already, your job would be to go fix the bugs that people find and just do general upkeep. The platform mostly works itself out and is designed with a fire and forget mindset, but every now and then a library will need updating or new feature added.
+
+- Know how to commit cybercrime? Cool. Contact me and we can work out a way for you to try some pentesting on a beta version.

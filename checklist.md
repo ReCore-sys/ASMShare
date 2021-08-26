@@ -13,12 +13,12 @@
 - [x] Add error 500 logger
 - [x] Require admin to see logs
 - [x] Users can change their name
-- [ ] Add a "Report Bug" button to the top of every page
-- [ ] Add voting
 - [ ] Redo home page to be more helpful (WIP)
 
 ### Post-launch
 
+- [ ] Add voting
+- [ ] Somehow get async workers on gunicorn
 - [ ] Game in an error page
 - [ ] Add a credits page
 - [ ] Write documentation for API and other stuffs

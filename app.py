@@ -306,16 +306,21 @@ def getname(email=None):
     str
         The name to use for the person
     """
+
+    db = sqlite3.connect("sqlite_db")
+    cursor = db.cursor()
     if email == None:
         email = current_user.email
+    cursor.execute("Select name from user where email = ?", (email, ))
+    namebyemail = cursor.fetchone()[0]
     with open("names.json", "r") as names:
         names = json.load(names)
+        db.commit()
+        db.close()
         if email in names:
             return names[email]
-        elif current_user == None:
-            return "Anon"
         else:
-            return current_user.name
+            return namebyemail
 
 
 cards = {}
@@ -913,7 +918,7 @@ def success():
                             f"{filepath}/quarantine/{tryid}.{ext}_")
             # Reload the image cache to account for the new uploads
             compileimages()
-            
+
     else:
         return redirect(url_for("fourohsixpage"))
     # Head back home
