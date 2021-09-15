@@ -14,7 +14,7 @@
 - [x] Require admin to see logs
 - [x] Users can change their name
 - [ ] Redo home page to be more helpful (WIP)
-- [ ] Add an info page
+- [x] Add an info page
 
 ### Post-launch
 

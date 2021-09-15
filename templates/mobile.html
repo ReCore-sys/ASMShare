@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <title>553</title>
+    {% include "pageicon.html" %} {% block pageicon %} {% endblock %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <!--Inter UI font-->
+    <link
+      href="{{ url_for('static', filename='css/inter-ui.css')}}"
+      rel="stylesheet"
+      defer
+    />
+
+    <!--vendors styles-->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/default.css')}}"
+      id="theme-color"
+    />
+  </head>
+
+  <body>
+    <!--hero header-->
+    <section class="py-7 py-md-0 bg-hero" id="home">
+      <div class="container">
+        <div class="row vh-md-100">
+          <div class="col-md-8 col-sm-10 col-12 mx-auto my-auto text-center">
+            <h1 class="heading-black text-capitalize">Invalid client</h1>
+            <p class="lead py-3">
+              Please don't use mobile for this. Got to https://asmshare.xyz on
+              your laptop instead.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>

@@ -1,43 +1,43 @@
 body,
 html {
-    position: absolute;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
-    width: 100vw;
-    height: 100vh;
-    background-color: black;
-    overflow: hidden;
-    transition: all 0.25s;
-    text-align: center;
+  position: absolute;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  background-color: black;
+  overflow: auto;
+  transition: all 0.25s;
+  text-align: center;
 }
 body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    height: 100vh;
-  }
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100vh;
+}
 
-  .wrapper {
-    position: relative;
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    width: 1px;
-    height: 100vh;
-    display: none;
-    margin-top: 40vh;
-    margin-left: 50vw;
-  }
+.wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  width: 1px;
+  height: 100vh;
+  display: none;
+  margin-top: 40vh;
+  margin-left: 50vw;
+}
 
-  .el {
-    position: absolute;
-    opacity: 1;
-    width: 2px;
-    height: 24vh;
-    margin-top: -12vh;
-    transform-origin: 50% 100%;
-    background: white;
-  }
+.el {
+  position: absolute;
+  opacity: 1;
+  width: 2px;
+  height: 24vh;
+  margin-top: -12vh;
+  transform-origin: 50% 100%;
+  background: white;
+}

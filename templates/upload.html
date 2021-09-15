@@ -44,8 +44,6 @@
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.7.3/feather.min.js"></script>
-
-    <script src="{{ url_for('static', filename='js/scripts.js')}}"></script>
   </head>
 
   <body>
@@ -93,8 +91,23 @@
           value="{{checkid}}"
           id="hiddencheck"
         />
-        <input type="text" placeholder="Tags" name="tags" required="{{req}}" />
+        <input
+          type="text"
+          placeholder="Tags"
+          name="tags"
+          required="{{req}}"
+          style="box-shadow: none"
+        />
+        {% if current_user.email in banned %}
+        <button
+          class="btn btn-primary d-inline-flex flex-row align-items-center"
+          onclick="window.location.href='../home'"
+        >
+          You are banned from uploading
+        </button>
+        {% else %}
         <input type="submit" value="Submit" class="topmarg" />
+        {% endif %}
         <!-- The tags library -->
         <script>
           var input = document.querySelector('input[name="tags"]')
