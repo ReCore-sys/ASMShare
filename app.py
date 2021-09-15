@@ -263,7 +263,7 @@ def findfileicon(filename):
 
     ext = filename.split(".")[-1]
     # if the file is an image, just use the image
-    if ext in ["jpg", "png", "jpeg", "gif", "svg", "webp", "bmp"]:
+    if ext in ["jpg", "png", "jpeg", "gif", "svg", "webp", "bmp"] and prod:
         # I would just return the path to the file, but noooooooo, flask has to be special, so instead we clone it to the directory with the rest of the stuff
         # First we check if the file is already there cos why not
         if (filename) not in os.listdir(f"{filepath}/static/file-images/images"):
@@ -285,11 +285,7 @@ def findfileicon(filename):
         # Stick it inside a try cos someone is gunna upload a .exe after renaming it to a .pdf (Duncan I'm looking at you)
         # only create a preview if it does not exist
         if not prod:
-            poppler_path = r"C:\Users\ReCor\Documents\poppler\poppler-21.03.0\Library\bin"
-            if (filename + ".jpg") not in os.listdir(f"{filepath}/static/file-images/pdfs"):
-                convert_from_path(f'{filepath}/files/{filename}', output_folder=f"{filepath}/static/file-images/pdfs",
-                                  fmt="jpeg", single_file=True, output_file=filename, poppler_path=poppler_path)
-            fileicon = r"""../static/file-images/pdfs/""" + filename + ".jpg"
+            fileicon = r"""../static/file-images/pdf.jpg"""
         else:
             if (filename + ".jpg") not in os.listdir(f"{filepath}/static/file-images/pdfs"):
                 convert_from_path(f'{filepath}/files/{filename}', output_folder=f"{filepath}/static/file-images/pdfs",
@@ -322,15 +318,20 @@ def getname(email=None):
     if email == None:
         email = current_user.email
     cursor.execute("Select name from user where email = ?", (email, ))
-    namebyemail = cursor.fetchone()[0]
+    res = cursor.fetchone()
+    if res != None:
+        namebyemail = res[0]
+
     with open("names.json", "r") as names:
         names = json.load(names)
         db.commit()
         db.close()
         if email in names:
             return names[email]
-        else:
+        elif "namebyemail" in locals():
             return namebyemail
+        else:
+            return email
 
 
 cards = {}
@@ -534,6 +535,18 @@ def fouronethree(e):
 def fouronethreepage():
     return render_template('errors/413.html')
 
+
+@app.errorhandler(429)
+@logger.catch
+def fourytwentynine(e):
+    return render_template('errors/413.html'), 413
+
+
+@app.route("/429")
+@logger.catch
+def fourytwentyninepage():
+    return render_template('errors/429.html')
+
 # //////////////////////////////////////////////////////////////////////////// #
 
 # Login based black magic
@@ -618,6 +631,13 @@ def home():
 def rickroll():
     """:)"""
     return render_template('rickroll.html')
+
+
+@app.route("/mobile")
+@logger.catch
+def mobile():
+    """:)"""
+    return render_template('mobile.html')
 
 
 @app.route("/info")
@@ -834,9 +854,9 @@ def callback():
 @logger.catch
 @improved_login
 def upload():
-    global validids
+    # TODO: Fix this bit. It causes error randomly. Dunno why
     checkid = (''.join(random.choice(string.ascii_letters) for i in range(30)))
-    validids.append(checkid)
+    # validids.append(checkid)
     "The upload page"
     # Retrieves the tags from a file
     tagfile = json.load(open(f"{filepath}/tags.json", "r"))
@@ -846,7 +866,7 @@ def upload():
     # Turns them into a list of keys
     tags = list(tagsdict.keys())
     req = True
-    return render_template("upload.html", tags=tags, req=req, checkid=checkid)
+    return render_template("upload.html", tags=tags, req=req, checkid=checkid, banned=banned)
 
 # If the upload goes well, send it here to actually be stored
 
@@ -867,11 +887,16 @@ def success():
 
         # Split the name at the last . to get the file extension. This is to make sure we ignore any other .'s in tha name
         ext = (f.filename).split(".")[-1]
+
+        # Check if the attached upload ID is valid. If not, 429 them.
         form = request.form
+        """
         if form["check"] not in validids:
             abort(429)
         else:
+            # Remove the ID if it works
             validids.remove(form["check"])
+        """
 
         # get the short description and name from the form, then assign them to their own variables. I should probs do it with the rest but eh
         short = form["short"]
@@ -974,23 +999,8 @@ def search(query):
     "Shows searched stuff"
     global cards
     compileimages()
-    query = query.strip()
-    # Here we cache the results of a search
-    if query in cached:
-        # If the query is in the cache, use the cached version
-        results = cached[query]
-        print("Using cache for ", query)
-    # If not, toast the cpu
-    else:
-        # So I wrote a custom function here to evaluate and order the options. I imported it from another file so go check out the searchhelper.py (https://github.com/ReCore-sys/ASMShare/blob/main/searchhelper.py) file to see how it works
-        results = searchhelper.search(cards, query)
-        # Store the result
-        cached[query] = results
-        print("Not using cache for ", query)
-    # If the cache's size is over items, remove the last item in the cache. Keep going until the size is under 10
-    while len(cached) > 10:
-        k = list(cached.keys())
-        cached.pop(k[-1])
+    query = query.strip()  # So I wrote a custom function here to evaluate and order the options. I imported it from another file so go check out the searchhelper.py (https://github.com/ReCore-sys/ASMShare/blob/main/searchhelper.py) file to see how it works
+    results = searchhelper.search(cards, query)
     if len(query) > 30:
         query = query[:27] + "..."
     return render_template("search.html", results=results, query=query)
